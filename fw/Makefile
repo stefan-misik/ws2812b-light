@@ -8,8 +8,9 @@ SIZE   = avr-size
 AD     = avrdude
 
 # GCC MCU
-MCU   = atmega328p
-F_CPU = 16000000
+MCU      = atmega328p
+DEF_FREQ = 16000000
+DEF_MCU  = AVR_ATmega328P
 # Avrdude part name
 PART = m328p
 # Avrdude programmer name
@@ -21,9 +22,9 @@ PROJ = ws2812b-x-mass
 # Source files
 SRC  = main.cpp leds.cpp
 
-CPPFLAGS  = -DF_CPU=$(F_CPU)UL
+CPPFLAGS  = -DF_CPU=$(DEF_FREQ)UL -D__$(DEF_MCU)__
 CFLAGS    = -c -ggdb -Og -mmcu=$(MCU)
-CXXFLAGS  = -c -ggdb -Og -mmcu=$(MCU)
+CXXFLAGS  = -c -ggdb -Og -std=c++14 -mmcu=$(MCU)
 LDFLAGS   = -ggdb -Og -mmcu=$(MCU)
 SIZEFLAGS = -C --mcu=$(MCU)
 
@@ -35,7 +36,7 @@ include $(DEP)
 
 .PHONY: all clean stats prog
 
-all: $(PROJ).elf $(PROJ).hex $(PROJ).lss $(SRC)
+all: $(PROJ).elf $(PROJ).hex $(PROJ).lss stats
 
 stats: $(PROJ).elf
 	$(SIZE) $(SIZEFLAGS) $<
