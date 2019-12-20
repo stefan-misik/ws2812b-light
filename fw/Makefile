@@ -1,4 +1,3 @@
-#!/usr/bin/make -f
 # Makefile for embedded part of WS2812B Christmas lights
 
 CC     = avr-gcc
@@ -20,7 +19,7 @@ PORT = usb
 # Project name
 PROJ = ws2812b-x-mass
 # Source files
-SRC  = main.cpp
+SRC  = main.cpp leds.cpp
 
 CPPFLAGS  = -DF_CPU=$(F_CPU)UL
 CFLAGS    = -c -ggdb -Og -mmcu=$(MCU)
@@ -28,8 +27,11 @@ CXXFLAGS  = -c -ggdb -Og -mmcu=$(MCU)
 LDFLAGS   = -ggdb -Og -mmcu=$(MCU)
 SIZEFLAGS = -C --mcu=$(MCU)
 
-#############################################
+################################################################################
 OBJ = $(addsuffix .o, $(basename $(SRC)))
+DEP = $(OBJ:.o=.d)
+
+include $(DEP)
 
 .PHONY: all clean stats prog
 
@@ -42,7 +44,7 @@ prog: $(PROJ).hex
 	$(AD) -c $(PROG) -p $(PART) -P $(PORT) -U flash:w:$<:i
 
 $(PROJ).elf: $(OBJ)
-	$(CC) $(LDFLAGS) $(OBJ) -o $@
+	$(CXX) $(LDFLAGS) $(OBJ) -o $@ $(LOADLIBES) $(LDLIBS)
 
 $(PROJ).hex: $(PROJ).elf
 	$(OBJCPY) -R .eeprom -O ihex $< $@
@@ -50,7 +52,12 @@ $(PROJ).hex: $(PROJ).elf
 $(PROJ).lss: $(PROJ).elf
 	$(OBJDMP) -h -S $<  > $@
 
+%.d: %.c
+	$(CC) -MM $(CPPFLAGS) $(CFLAGS) $< -MF $@
+
+%.d: %.cpp
+	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@
 
 clean:
-	$(RM) $(PROJ).elf $(PROJ).hex $(PROJ).lss $(OBJ)
+	$(RM) $(PROJ).elf $(PROJ).hex $(PROJ).lss $(OBJ) $(DEP)
 

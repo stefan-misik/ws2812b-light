@@ -1,8 +1,0 @@
-# Compilation artifacts
-*.o
-*.elf
-*.hex
-*.lss
-
-# Visual studio code
-.vscode/
