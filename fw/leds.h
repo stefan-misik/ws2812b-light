@@ -16,8 +16,8 @@ class Leds
 public:
     struct LedState
     {
-        uint8_t red;
         uint8_t green;
+        uint8_t red;
         uint8_t blue;
     };
 
@@ -29,6 +29,11 @@ public:
      * @param count Count of the led states in the buffer
      */
     void initialize(LedState * leds, size_t count);
+
+    /**
+     * @brief Transfer the values of the LEDs into the strip
+     */
+    void update() const;
 
     /**
      * @brief Operator for easy access to configured LED states
