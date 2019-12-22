@@ -32,11 +32,11 @@ SIZEFLAGS = -C --mcu=$(MCU)
 OBJ = $(addsuffix .o, $(basename $(SRC)))
 DEP = $(OBJ:.o=.d)
 
-include $(DEP)
-
 .PHONY: all clean stats prog
 
 all: $(PROJ).elf $(PROJ).hex $(PROJ).lss stats
+
+include $(DEP)
 
 stats: $(PROJ).elf
 	$(SIZE) $(SIZEFLAGS) $<
