@@ -87,7 +87,7 @@ int main(void)
         leds[28] = {rb.cc, rb.ca, rb.cb};
         leds[29] = {rb.cb, rb.cc, rb.ca};
         leds.update();
-        _delay_ms(1);
+        _delay_ms(5);
         rb.next();
     }
 }
