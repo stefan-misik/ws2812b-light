@@ -1,4 +1,4 @@
-#include "leds.h"
+#include "led_controller.h"
 
 #include <avr/io.h>
 
@@ -7,21 +7,21 @@ static constexpr uint8_t ZERO_BIT_PULSE_LENGTH = 2;
 static constexpr uint8_t ONE_BIT_PULSE_LENGTH = 4;
 
 
-void Leds::initialize(LedState * leds, size_t count)
+void LedController::initialize(AbstractLedStrip * led_strip)
 {
-    leds_ = leds;
-    count_ = count;
+    strip_ = led_strip;
 
     // Set output direction to OC0B - PD5
     PORTD &= ~((1 << DDD5));
     DDRD |= ((1 << DDD5));
 }
 
-void Leds::update() const
+void LedController::update() const
 {
-    const uint8_t * data = reinterpret_cast<const uint8_t *>(leds_);
-    const uint8_t * data_end = reinterpret_cast<const uint8_t *>(leds_) +
-            (count_ * sizeof(LedState));
+    const uint8_t * data = reinterpret_cast<const uint8_t *>(&strip_->leds);
+    const uint8_t * data_end =
+            reinterpret_cast<const uint8_t *>(&strip_->leds) +
+            (strip_->led_count * sizeof(AbstractLedStrip::LedState));
 
     {
         uint8_t current_byte;

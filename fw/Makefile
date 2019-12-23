@@ -20,12 +20,14 @@ PORT = usb
 # Project name
 PROJ = ws2812b-x-mass
 # Source files
-SRC  = main.cpp leds.cpp
+SRC  = system.cpp main.cpp led_controller.cpp animations/none.cpp         \
+       animations/rainbow.cpp
 
-CPPFLAGS  = -DF_CPU=$(DEF_FREQ)UL -D__$(DEF_MCU)__
+CPPFLAGS  = -I. -DF_CPU=$(DEF_FREQ)UL -D__$(DEF_MCU)__
 CFLAGS    = -c -ggdb -Og -mmcu=$(MCU)
-CXXFLAGS  = -c -ggdb -Og -std=c++14 -mmcu=$(MCU)
+CXXFLAGS  = -c -ggdb -Og -std=c++14 -fno-exceptions -mmcu=$(MCU)
 LDFLAGS   = -ggdb -Og -mmcu=$(MCU)
+LDLIBS    =
 SIZEFLAGS = -C --mcu=$(MCU)
 
 ################################################################################
