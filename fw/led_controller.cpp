@@ -27,6 +27,7 @@ void LedController::update() const
         uint8_t current_byte;
         uint8_t bit_position;
         uint8_t pulse_length;
+        uint8_t old_sreg;
 
         asm volatile (
                 "    rjmp  lu_check_all_sent           \n"
@@ -41,12 +42,15 @@ void LedController::update() const
                 "    ldi   %[pulse_length], %[one_pl]  \n"
 
                 "lu_pulse_start:                       \n"
+                "    in %[old_sreg], __SREG__          \n"
+                "    cli                               \n"
                 "    sbi   %[pinr], %[pinb]            \n"
 
                 "lu_wait_pulse_end:                    \n"
                 "    subi  %[pulse_length], 1          \n"
                 "    brne  lu_wait_pulse_end           \n"
                 "    sbi   %[pinr], %[pinb]            \n"
+                "    out   __SREG__, %[old_sreg]       \n"
 
                 "lu_check_byte_sent:                   \n"
                 "    lsr   %[bit_position]             \n"
@@ -60,6 +64,7 @@ void LedController::update() const
 
                 "lu_end:                               \n"
                 : [current_byte] "=&r" (current_byte),
+                  [old_sreg] "=&r" (old_sreg),
                   [bit_position] "=&d" (bit_position),
                   [pulse_length] "=&d" (pulse_length)
                 : [data] "z" (data),
