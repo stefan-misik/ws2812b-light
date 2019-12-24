@@ -49,8 +49,8 @@ void LedController::update() const
                 "lu_wait_pulse_end:                    \n"
                 "    subi  %[pulse_length], 1          \n"
                 "    brne  lu_wait_pulse_end           \n"
-                "    sbi   %[pinr], %[pinb]            \n"
                 "    out   __SREG__, %[old_sreg]       \n"
+                "    sbi   %[pinr], %[pinb]            \n"
 
                 "lu_check_byte_sent:                   \n"
                 "    lsr   %[bit_position]             \n"
