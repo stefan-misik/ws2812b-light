@@ -34,7 +34,7 @@ SIZEFLAGS = -C --mcu=$(MCU)
 OBJ = $(addsuffix .o, $(basename $(SRC)))
 DEP = $(OBJ:.o=.d)
 
-.PHONY: all clean stats prog
+.PHONY: all clean stats prog fuses
 
 all: $(PROJ).elf $(PROJ).hex $(PROJ).lss stats
 
@@ -45,6 +45,10 @@ stats: $(PROJ).elf
 
 prog: $(PROJ).hex
 	$(AD) -c $(PROG) -p $(PART) -P $(PORT) -U flash:w:$<:i
+
+fuses:
+	$(AD) -c $(PROG) -p $(PART) -P $(PORT) -D -U lfuse:w:0xFF:m	\
+        -U hfuse:w:0xDF:m -U efuse:w:0xFD:m
 
 $(PROJ).elf: $(OBJ)
 	$(CXX) $(LDFLAGS) $(OBJ) -o $@ $(LOADLIBES) $(LDLIBS)
