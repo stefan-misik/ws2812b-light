@@ -16,7 +16,7 @@ int main(void)
 {
     led_controller.initialize(led_strip.abstarctPtr());
 
-    animation = &drip;
+    animation = &rainbow;
     animation->reset(led_strip.abstarctPtr());
     while(1)
     {
