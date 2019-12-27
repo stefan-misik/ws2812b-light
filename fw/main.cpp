@@ -1,4 +1,5 @@
 #include "led_controller.h"
+#include "time_service.h"
 #include "animation.h"
 #include "animations/rainbow.h"
 #include "animations/drip.h"
