@@ -59,10 +59,7 @@ void LedController::update() const
                 "lu_check_all_sent:                    \n"
                 "    cp    %A[data], %A[data_end]      \n"
                 "    cpc   %B[data], %B[data_end]      \n"
-                "    breq  lu_end                      \n"
-                "    rjmp  lu_send_byte                \n"
-
-                "lu_end:                               \n"
+                "    brne  lu_send_byte               \n"
                 : [current_byte] "=&r" (current_byte),
                   [old_sreg] "=&r" (old_sreg),
                   [bit_position] "=&d" (bit_position),
