@@ -18,7 +18,7 @@ PROG = usbasp
 # Avrdude port name
 PORT = usb
 # Project name
-PROJ = ws2812b-x-mass
+PROJ = ws2812b-light
 # Source files
 SRC  = system.cpp main.cpp led_controller.cpp time_service.cpp           \
        animations/none.cpp animations/rainbow.cpp animations/drip.cpp
