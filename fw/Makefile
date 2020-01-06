@@ -8,11 +8,11 @@ SIZE   = avr-size
 AD     = avrdude
 
 # GCC MCU
-MCU      = atmega328p
+MCU      = attiny85
 DEF_FREQ = 16000000
-DEF_MCU  = AVR_ATmega328P
+DEF_MCU  = AVR_ATtiny85
 # Avrdude part name
-PART = m328p
+PART = t85
 # Avrdude programmer name
 PROG = usbasp
 # Avrdude port name
@@ -20,7 +20,7 @@ PORT = usb
 # Project name
 PROJ = ws2812b-light
 # Source files
-SRC  = system.cpp main.cpp led_controller.cpp time_service.cpp           \
+SRC  = system.cpp main.cpp led_controller.cpp                            \
        animations/none.cpp animations/rainbow.cpp animations/drip.cpp
 
 CPPFLAGS  = -I. -DF_CPU=$(DEF_FREQ)UL -D__$(DEF_MCU)__
@@ -47,8 +47,8 @@ prog: $(PROJ).hex
 	$(AD) -c $(PROG) -p $(PART) -P $(PORT) -U flash:w:$<:i
 
 fuses:
-	$(AD) -c $(PROG) -p $(PART) -P $(PORT) -D -U lfuse:w:0xFF:m	\
-        -U hfuse:w:0xDF:m -U efuse:w:0xFD:m
+	$(AD) -c $(PROG) -p $(PART) -P $(PORT) -B 10 -D             \
+	    -U lfuse:w:0xF1:m -U hfuse:w:0xDF:m -U efuse:w:0xFF:m
 
 $(PROJ).elf: $(OBJ)
 	$(CXX) $(LDFLAGS) $(OBJ) -o $@ $(LOADLIBES) $(LDLIBS)

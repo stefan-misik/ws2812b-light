@@ -11,9 +11,9 @@ void LedController::initialize(AbstractLedStrip * led_strip)
 {
     strip_ = led_strip;
 
-    // Set output direction to OC0B - PD5
-    PORTD &= ~((1 << DDD5));
-    DDRD |= ((1 << DDD5));
+    // Set output direction to PB2
+    PORTB &= ~((1 << DDB2));
+    DDRB |= ((1 << DDB2));
 }
 
 void LedController::update() const
@@ -68,8 +68,8 @@ void LedController::update() const
                   [data_end] "e" (data_end),
                   [zero_pl] "M" (ZERO_BIT_PULSE_LENGTH),
                   [one_pl] "M" (ONE_BIT_PULSE_LENGTH),
-                  [pinr] "I" (_SFR_IO_ADDR(PIND)),
-                  [pinb] "I" (PIND5)
+                  [pinr] "I" (_SFR_IO_ADDR(PINB)),
+                  [pinb] "I" (PINB2)
         );
     }
 }
