@@ -3,8 +3,8 @@
 #include <avr/io.h>
 
 
-static constexpr uint8_t ZERO_BIT_PULSE_LENGTH = 2;
-static constexpr uint8_t ONE_BIT_PULSE_LENGTH = 4;
+static constexpr uint8_t ZERO_BIT_PULSE_LENGTH = 1;
+static constexpr uint8_t ONE_BIT_PULSE_LENGTH = 3;
 
 
 void LedController::initialize(AbstractLedStrip * led_strip)
