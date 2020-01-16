@@ -7,21 +7,19 @@ static constexpr uint8_t ZERO_BIT_PULSE_LENGTH = 1;
 static constexpr uint8_t ONE_BIT_PULSE_LENGTH = 3;
 
 
-void LedController::initialize(AbstractLedStrip * led_strip)
+void LedController::initialize()
 {
-    strip_ = led_strip;
-
     // Set output direction to PB2
     PORTB &= ~((1 << DDB2));
     DDRB |= ((1 << DDB2));
 }
 
-void LedController::update() const
+void LedController::update(const AbstractLedStrip * led_strip)
 {
-    const uint8_t * data = reinterpret_cast<const uint8_t *>(&strip_->leds);
+    const uint8_t * data = reinterpret_cast<const uint8_t *>(&led_strip->leds);
     const uint8_t * data_end =
-            reinterpret_cast<const uint8_t *>(&strip_->leds) +
-            (strip_->led_count * sizeof(AbstractLedStrip::LedState));
+            reinterpret_cast<const uint8_t *>(&led_strip->leds) +
+            (led_strip->led_count * sizeof(AbstractLedStrip::LedState));
 
     {
         uint8_t current_byte;

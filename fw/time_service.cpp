@@ -4,43 +4,39 @@
 #include <avr/interrupt.h>
 #include <util/atomic.h>
 
-volatile uint32_t TimeService::current_time_;
+volatile uint8_t TimeService::current_time_;
 
 
 void TimeService::initialize()
 {
+    // Enable interrupts
+    sei();
+
+    // Disable power reduction
+    PRR &= ~((1 << PRTIM1));
+
+    // Firstly, stop the timer
+    TCCR1 &= ~((1 << CS13) | (1 << CS12) | (1 << CS11) | (1 << CS10));
+
+    // Use synchronous mode of Timer 1
+    PLLCSR &= ~((1 << PCKE));
+    // Disable all interrupts, except overflow
+    TIMSK &= ~((1 << OCIE1A) | (1 << OCIE1B));
+    TIMSK |= (1 << TOIE1);
+    // Overflow every 8 milliseconds: 31.25 kHz / 250 = 125 Hz
+    OCR1C = 249;
+    // Disable PWM B
+    GTCCR &= ~((1 << PWM1B) | (1 << COM1B1) | (1 << COM1B0) |
+            (1 << FOC1B) | (1 << FOC1A) | (1 << PSR1));
+    // Reload on OCR1C match, disable PWM A, frequency: 16 MHz / 512 = 31.25 kHz
+    TCCR1 = (1 << CTC1) | (0 << PWM1A) | (0 << COM1A1) | (0 << COM1A0) |
+            (1 << CS13) | (0 << CS12) | (1 << CS11) | (0 << CS10);
+
     current_time_ = 0;
-
-    // Clean flag register and enable overflow interrupt
-    TIFR0 = (1 << OCF0B) | (1 << OCF0A) | (1 << TOV0);
-    TIMSK0 = (0 << OCIE0B) | (0 << OCIE0A) | (1 << TOIE0);
-
-    // CTC Mode, no output signals
-    // F = 16 MHz / 256 = 62.5 kHz
-    TCCR0A = (0 << COM0A1) | (0 << COM0A0) |
-            (0 << COM0B1) | (0 << COM0B0) |
-            (1 << WGM01) | (0 << WGM00);
-    TCCR0B = (0 << FOC0A) | (0 << FOC0B) |
-            (0 << WGM02) |
-            (0 << CS02) | (0 << CS01) | (0 << CS00);
-    // Overflow every 250 timer clock, which @62.5 kHz equals overflow every
-    // 4 ms
-    OCR0A = 249;
-    OCR0B = 0;
 }
 
-uint32_t TimeService::getTime()
+ISR(TIMER1_OVF_vect)
 {
-    uint32_t time;
-    ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-    {
-        time = current_time_;
-    }
-    return time;
-}
-
-ISR(TIMER0_OVF_vect)
-{
-    TimeService::current_time_ += 4;
+    ++TimeService::current_time_;
 }
 

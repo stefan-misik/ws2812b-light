@@ -20,18 +20,15 @@ public:
      * @brief Initialize the LED state storage and hardware necessary to
      *        communicate with LEDs
      *
-     * @param[in,out] led_strip Led strip to be associated with the LED
-     *                controller
      */
-    void initialize(AbstractLedStrip * led_strip);
+    static void initialize();
 
     /**
      * @brief Transfer the values of the LEDs into the strip
+     *
+     * @param[in] led_strip Led strip to be associated with the LED controller
      */
-    void update() const;
-
-private:
-    AbstractLedStrip * strip_;
+    static void update(const AbstractLedStrip * led_strip);
 };
 
 
