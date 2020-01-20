@@ -21,9 +21,10 @@ void TimeService::initialize()
     // Use synchronous mode of Timer 1
     PLLCSR &= ~((1 << PCKE));
     // Disable all interrupts, except overflow
-    TIMSK &= ~((1 << OCIE1A) | (1 << OCIE1B));
-    TIMSK |= (1 << TOIE1);
+    TIMSK &= ~((1 << TOIE1) | (1 << OCIE1B));
+    TIMSK |= (1 << OCIE1A);
     // Overflow every 8 milliseconds: 31.25 kHz / 250 = 125 Hz
+    OCR1A = 0;
     OCR1C = 249;
     // Disable PWM B
     GTCCR &= ~((1 << PWM1B) | (1 << COM1B1) | (1 << COM1B0) |
@@ -35,7 +36,21 @@ void TimeService::initialize()
     current_time_ = 0;
 }
 
-ISR(TIMER1_OVF_vect)
+bool PeriodicRoutine::shouldRunAt(uint8_t time)
+{
+    uint8_t time_since_last_run = time - last_routine_run_;
+    if (time_since_last_run >= period_length_)
+    {
+        last_routine_run_ += period_length_;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+ISR(TIM1_COMPA_vect)
 {
     ++TimeService::current_time_;
 }

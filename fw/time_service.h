@@ -72,18 +72,7 @@ public:
      * @retval false The routine was not called
      * @retval true The routine was called
      */
-    bool shouldRunAt(uint8_t time)
-    {
-        if ((time - last_routine_run_) >= period_length_)
-        {
-            last_routine_run_ += period_length_;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
+    bool shouldRunAt(uint8_t time);
 
 private:
     uint8_t period_length_;
