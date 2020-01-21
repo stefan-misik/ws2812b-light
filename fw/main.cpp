@@ -15,12 +15,46 @@ RainbowAnimation rainbow;
 DripAnimation drip;
 Animation * animation;
 
+uint8_t led;
+
 /**
  * @brief Periodic routine called every 8 milliseconds
  */
 void mainPeriodicRoutine()
 {
-    uint8_t delay = animation->step(led_strip.abstarctPtr());
+    Buttons::update();
+    //uint8_t delay = animation->step(led_strip.abstarctPtr());
+
+    for (auto & led: led_strip)
+    {
+        led = {0x00, 0x00, 0x00};
+    }
+
+
+    if (Buttons::buttons[Buttons::UP].state() & ButtonFilter::PRESS)
+    {
+        ++led;
+        if (led == led_strip.led_count)
+        {
+            led = 0;
+        }
+    }
+
+    if (Buttons::buttons[Buttons::DOWN].state() & ButtonFilter::PRESS)
+    {
+        if (0 == led)
+        {
+            led = led_strip.led_count - 1;
+        }
+        else
+        {
+            --led;
+        }
+    }
+
+
+    led_strip[led] = {0x0f, 0x0f, 0x0f};
+
     LedController::update(led_strip.abstarctPtr());
 }
 
@@ -30,8 +64,10 @@ int main(void)
     Buttons::initialize();
     LedController::initialize();
 
+    led = 0;
+
     animation = &rainbow;
-    animation->reset(led_strip.abstarctPtr());
+    //animation->reset(led_strip.abstarctPtr());
     while(1)
     {
         uint8_t current_time = TimeService::getTime();
