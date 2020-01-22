@@ -12,8 +12,9 @@ void Buttons::initialize()
 
 void Buttons::update()
 {
-    buttons[0].updateButton(!(PINB & (1 << PINB0)));
-    buttons[1].updateButton(!(PINB & (1 << PINB1)));
-    buttons[2].updateButton(!(PINB & (1 << PINB3)));
-    buttons[3].updateButton(!(PINB & (1 << PINB4)));
+    uint8_t pins = ~PINB;
+    buttons[0].updateButton(pins & (1 << PINB0));
+    buttons[1].updateButton(pins & (1 << PINB1));
+    buttons[2].updateButton(pins & (1 << PINB3));
+    buttons[3].updateButton(pins & (1 << PINB4));
 }
