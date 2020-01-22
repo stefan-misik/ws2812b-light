@@ -50,13 +50,14 @@ public:
 
 private:
     static constexpr uint8_t PRESS_THRESHOLD = 5;
-    static constexpr uint8_t FIRST_REPEAT_THRESHOLD = PRESS_THRESHOLD + 50;
-    static constexpr uint8_t NEXT_REPEAT_THRESHOLD =
-            FIRST_REPEAT_THRESHOLD + 8;
+    static constexpr uint8_t REPEAT_THRESHOLD = PRESS_THRESHOLD + 50;
+    static constexpr uint8_t NEXT_REPEAT_THRESHOLD = REPEAT_THRESHOLD + 8;
 
     uint8_t counter_;
     uint8_t state_;
 
+    void countUp();
+    void countDown();
     void updateState();
 };
 
