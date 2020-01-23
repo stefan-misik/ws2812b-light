@@ -12,10 +12,8 @@
 class DripAnimation: public Animation
 {
 public:
-    /** @copydoc Animation::reset() */
-    void reset(AbstractLedStrip * led_strip) override;
-    /** @copydoc Animation::step() */
-    uint8_t step(AbstractLedStrip * led_strip) override;
+    /** @copydoc Animation::handleEvent() */
+    virtual Result handleEvent(Event event, intptr_t parameter) override;
 
 private:
     size_t position_;

@@ -4,31 +4,37 @@
 
 #include "animations/drip.h"
 
-void DripAnimation::reset(AbstractLedStrip * led_strip)
+Animation::Result DripAnimation::handleEvent(Event event, intptr_t parameter)
 {
-    position_ = 0;
-    sub_ = 0;
-    fillLedStrip(led_strip);
-}
-
-uint8_t DripAnimation::step(AbstractLedStrip * led_strip)
-{
-    if (10 == sub_)
+    switch (event)
     {
-        ++position_;
+    case Event::INIT:
+        position_ = 0;
         sub_ = 0;
+        fillLedStrip(reinterpret_cast<AbstractLedStrip *>(parameter));
+        break;
 
-        if (position_ == led_strip->led_count)
+    case Event::STEP:
+        if (10 == sub_)
         {
-            position_ = 0;
+            ++position_;
+            sub_ = 0;
+
+            if (position_ ==
+                    reinterpret_cast<AbstractLedStrip *>(parameter)->led_count)
+            {
+                position_ = 0;
+            }
         }
+        else
+        {
+            ++sub_;
+        }
+        fillLedStrip(reinterpret_cast<AbstractLedStrip *>(parameter));
+    break;
+
     }
-    else
-    {
-        ++sub_;
-    }
-    fillLedStrip(led_strip);
-    return 5;
+    return Result::NONE;
 }
 
 void DripAnimation::fillLedStrip(AbstractLedStrip * led_strip) const

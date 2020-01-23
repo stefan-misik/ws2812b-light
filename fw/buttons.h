@@ -8,10 +8,12 @@
 
 #include "tools/button_filter.h"
 
+#include <stdint.h>
+
 class Buttons
 {
 public:
-    enum ButtonIds
+    enum ButtonId: uint8_t
     {
         UP = 0,
         RIGHT,

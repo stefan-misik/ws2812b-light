@@ -2,26 +2,25 @@
  * @file
  */
 
-#ifndef ANIMATIONS_RAINBOW_H_
-#define ANIMATIONS_RAINBOW_H_
+#ifndef ANIMATIONS_COLD_LIGHT_H_
+#define ANIMATIONS_COLD_LIGHT_H_
 
 #include "animation.h"
 
-class RainbowAnimation: public Animation
+class ColdLightAnimation: public Animation
 {
 public:
+    ColdLightAnimation():
+        intensity_(0xff),
+        redraw_(false)
+    { }
+
     /** @copydoc Animation::handleEvent() */
     virtual Result handleEvent(Event event, intptr_t parameter) override;
 
 private:
-    uint8_t ca_;
-    uint8_t cb_;
-    uint8_t cc_;
-
-    /**
-     * @brief Calculate next rainbow color
-     */
-    void stepRainbowColor();
+    uint8_t intensity_;
+    bool redraw_;
 
     /**
      * @brief Fill the LED strip with rainbow colors
@@ -30,4 +29,4 @@ private:
     void fillLedStrip(AbstractLedStrip * led_strip) const;
 };
 
-#endif  // ANIMATIONS_RAINBOW_H_
+#endif  // ANIMATIONS_COLD_LIGHT_H_

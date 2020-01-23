@@ -4,20 +4,24 @@
 
 #include "animations/rainbow.h"
 
-void RainbowAnimation::reset(AbstractLedStrip * led_strip)
+Animation::Result RainbowAnimation::handleEvent(Event event, intptr_t parameter)
 {
-    ca_ = 255;
-    cb_ = 0;
-    cc_ = 0;
+    switch (event)
+    {
+    case Event::INIT:
+        ca_ = 255;
+        cb_ = 0;
+        cc_ = 0;
+        fillLedStrip(reinterpret_cast<AbstractLedStrip *>(parameter));
+        break;
 
-    fillLedStrip(led_strip);
-}
+    case Event::STEP:
+        stepRainbowColor();
+        fillLedStrip(reinterpret_cast<AbstractLedStrip *>(parameter));
+    break;
 
-uint8_t RainbowAnimation::step(AbstractLedStrip * led_strip)
-{
-    stepRainbowColor();
-    fillLedStrip(led_strip);
-    return 5;
+    }
+    return Result::NONE;
 }
 
 void RainbowAnimation::stepRainbowColor()

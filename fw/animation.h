@@ -16,25 +16,31 @@
 class Animation
 {
 public:
-    /**
-     * @brief Reset the animation
-     *
-     * @param[out] led_strip Pointer to LED strip on which to perform the
-     *             animation
-     */
-    virtual void reset(AbstractLedStrip * led_strip) = 0;
+    enum class Event: uint8_t
+    {
+        INIT,
+        DEINIT,
+        STEP,
+        KEY_PRESS,
+        KEY_DOWN,
+        KEY_UP,
+    };
+
+    enum class Result: uint8_t
+    {
+        NONE,
+        IGNORE_DEFAULT
+    };
 
     /**
-     * @brief Perform a step in the animation
+     * @brief Handle an event of a key being pressed
      *
-     * @param[out] led_strip Pointer to LED strip on which to perform the
-     *             animation
+     * @param event Event to handle
+     * @param parameter Additional data associated with the parameter
      *
-     * @return Number of milliseconds to wait before another animation step is
-     *         performed
-     * @retval 0 The animation has ended, reset the animation in order to loop
+     * @return Result of the action
      */
-    virtual uint8_t step(AbstractLedStrip * led_strip) = 0;
+    virtual Result handleEvent(Event event, intptr_t parameter) = 0;
 
     virtual ~Animation() = default;
 };
