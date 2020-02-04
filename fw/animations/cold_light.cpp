@@ -12,6 +12,11 @@ Animation::Result ColdLightAnimation::handleEvent(
 {
     switch (event)
     {
+    case Event::CREATE:
+        intensity_ = 0xff;
+        redraw_ = false;
+        break;
+
     case Event::INIT:
         fillLedStrip(reinterpret_cast<AbstractLedStrip *>(parameter));
         redraw_ = false;

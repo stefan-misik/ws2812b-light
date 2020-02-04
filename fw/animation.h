@@ -18,6 +18,7 @@ class Animation
 public:
     enum class Event: uint8_t
     {
+        CREATE,
         INIT,
         DEINIT,
         STEP,

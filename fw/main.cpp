@@ -107,6 +107,11 @@ int main(void)
     Buttons::initialize();
     LedController::initialize();
 
+    for (auto & animation: animations)
+    {
+        animation->handleEvent(Animation::Event::CREATE, 0);
+    }
+
     currentLedStripEvent(Animation::Event::INIT);
 
     while(1)

@@ -10,11 +10,6 @@
 class ColdLightAnimation: public Animation
 {
 public:
-    ColdLightAnimation():
-        intensity_(0xff),
-        redraw_(false)
-    { }
-
     /** @copydoc Animation::handleEvent() */
     virtual Result handleEvent(Event event, intptr_t parameter) override;
 
