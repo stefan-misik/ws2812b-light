@@ -21,6 +21,7 @@ public:
         CREATE,
         INIT,
         DEINIT,
+        ANIMATION_ROTATE,
         STEP,
         KEY_PRESS,
         KEY_DOWN,

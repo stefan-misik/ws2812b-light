@@ -23,6 +23,17 @@ Animation::Result LightAnimation::handleEvent(
         redraw_ = false;
         break;
 
+    case Event::ANIMATION_ROTATE:
+        if (Type::COLD == type_)
+        {
+            type_ = Type::WARM;
+        }
+        else
+        {
+            type_ = Type::COLD;
+        }
+        break;
+
     case Event::STEP:
         if (redraw_)
         {

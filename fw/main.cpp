@@ -30,16 +30,26 @@ Animation::Result currentLedStripEvent(Animation::Event event)
             reinterpret_cast<intptr_t>(led_strip.abstarctPtr()));
 }
 
+void broadcastEvent(Animation::Event event, intptr_t parameter)
+{
+    for (auto & animation: animations)
+    {
+        animation->handleEvent(event, parameter);
+    }
+}
+
 void moveAnimation(int8_t offset)
 {
     int8_t new_animation_number = current_animation_number + offset;
 
     if (new_animation_number >= ANIMATION_COUNT)
     {
+        broadcastEvent(Animation::Event::ANIMATION_ROTATE, 1);
         new_animation_number = 0;
     }
     else if (new_animation_number < 0)
     {
+        broadcastEvent(Animation::Event::ANIMATION_ROTATE, -1);
         new_animation_number = ANIMATION_COUNT - 1;
     }
 
@@ -107,10 +117,7 @@ int main(void)
     Buttons::initialize();
     LedController::initialize();
 
-    for (auto & animation: animations)
-    {
-        animation->handleEvent(Animation::Event::CREATE, 0);
-    }
+    broadcastEvent(Animation::Event::CREATE, 0);
 
     currentLedStripEvent(Animation::Event::INIT);
 
