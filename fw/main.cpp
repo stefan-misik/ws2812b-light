@@ -3,7 +3,7 @@
 #include "time_service.h"
 #include "animation.h"
 
-#include "animations/cold_light.h"
+#include "animations/light.h"
 #include "animations/rainbow.h"
 #include "animations/drip.h"
 
@@ -15,9 +15,9 @@ LedStrip<30> led_strip;
 
 RainbowAnimation rainbow;
 DripAnimation drip;
-ColdLightAnimation cold_light;
+LightAnimation light;
 
-Animation * animations[] = {&cold_light, &rainbow, &drip};
+Animation * animations[] = {&light, &rainbow, &drip};
 constexpr int8_t ANIMATION_COUNT = sizeof(animations) / sizeof(animations[0]);
 
 int8_t current_animation_number = 0;
