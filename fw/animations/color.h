@@ -2,30 +2,27 @@
  * @file
  */
 
-#ifndef ANIMATIONS_LIGHT_H_
-#define ANIMATIONS_LIGHT_H_
+#ifndef ANIMATIONS_COLOR_H_
+#define ANIMATIONS_COLOR_H_
 
 #include "animation.h"
-#include "buttons.h"
 
-class LightAnimation: public Animation
+class ColorAnimation: public Animation
 {
 public:
     /** @copydoc Animation::handleEvent() */
     virtual Result handleEvent(Event event, intptr_t parameter) override;
 
 private:
-    enum Type: uint8_t
-    {
-        COLD = 0,
-        WARM,
-    };
-
-    uint8_t type_;
-    uint8_t intensity_;
+    uint8_t cr_;
+    uint8_t cg_;
+    uint8_t cb_;
     bool redraw_;
 
-    Animation::Result handleKeyPress(Buttons::ButtonId button);
+    /**
+     * @brief Calculate next rainbow color
+     */
+    void stepRainbowColor();
 
     /**
      * @brief Fill the LED strip with rainbow colors
@@ -34,4 +31,4 @@ private:
     void fillLedStrip(AbstractLedStrip * led_strip) const;
 };
 
-#endif  // ANIMATIONS_LIGHT_H_
+#endif  // ANIMATIONS_COLOR_H_

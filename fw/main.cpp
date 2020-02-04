@@ -5,6 +5,7 @@
 
 #include "animations/light.h"
 #include "animations/rainbow.h"
+#include "animations/color.h"
 #include "animations/drip.h"
 
 #include <util/delay.h>
@@ -13,11 +14,12 @@ PeriodicRoutine main_routine(1);
 
 LedStrip<30> led_strip;
 
-RainbowAnimation rainbow;
-DripAnimation drip;
 LightAnimation light;
+RainbowAnimation rainbow;
+ColorAnimation color;
+DripAnimation drip;
 
-Animation * animations[] = {&light, &rainbow, &drip};
+Animation * animations[] = {&light, &rainbow, &color, &drip};
 constexpr int8_t ANIMATION_COUNT = sizeof(animations) / sizeof(animations[0]);
 
 int8_t current_animation_number = 0;
