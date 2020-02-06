@@ -13,6 +13,13 @@ struct LedStrip;
 
 using AbstractLedStrip = LedStrip<1>;
 
+struct LedState
+{
+    uint8_t green;
+    uint8_t red;
+    uint8_t blue;
+};
+
 /**
  * @brief State of a LED strip
  */
@@ -24,12 +31,7 @@ struct LedStrip
     { }
 
     const size_t led_count;
-    struct LedState
-    {
-        uint8_t green;
-        uint8_t red;
-        uint8_t blue;
-    } leds[LED_C];
+    LedState leds[LED_C];
 
     /**
      * @brief Operator for easy access to configured LED states

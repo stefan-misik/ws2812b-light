@@ -19,7 +19,7 @@ void LedController::update(const AbstractLedStrip * led_strip)
     const uint8_t * data = reinterpret_cast<const uint8_t *>(&led_strip->leds);
     const uint8_t * data_end =
             reinterpret_cast<const uint8_t *>(&led_strip->leds) +
-            (led_strip->led_count * sizeof(AbstractLedStrip::LedState));
+            (led_strip->led_count * sizeof(LedState));
 
     {
         uint8_t current_byte;

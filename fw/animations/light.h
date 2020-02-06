@@ -17,7 +17,8 @@ public:
 private:
     enum Type: uint8_t
     {
-        COLD = 0,
+        OFF = 0,
+        COLD,
         WARM,
     };
 

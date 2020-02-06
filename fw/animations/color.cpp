@@ -21,6 +21,11 @@ Animation::Result ColorAnimation::handleEvent(Event event, intptr_t parameter)
         {
             fillLedStrip(reinterpret_cast<AbstractLedStrip *>(parameter));
             redraw_ = false;
+            return Result::NONE;
+        }
+        else
+        {
+            return Result::IGNORE_DEFAULT;
         }
     break;
 

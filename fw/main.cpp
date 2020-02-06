@@ -76,7 +76,7 @@ void handleButtons()
             Animation::Result result =
                     current_animation->handleEvent(Animation::Event::KEY_PRESS,
                             button);
-            if (result != Animation::Result::IGNORE_DEFAULT)
+            if (Animation::Result::IGNORE_DEFAULT != result)
             {
                 switch (button)
                 {
@@ -109,8 +109,11 @@ void mainPeriodicRoutine()
 {
     handleButtons();
 
-    currentLedStripEvent(Animation::Event::STEP);
-    LedController::update(led_strip.abstarctPtr());
+    if (Animation::Result::IGNORE_DEFAULT !=
+            currentLedStripEvent(Animation::Event::STEP))
+    {
+        LedController::update(led_strip.abstarctPtr());
+    }
 }
 
 int main(void)
