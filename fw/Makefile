@@ -40,7 +40,7 @@ DEP = $(OBJ:.o=.d)
 
 all: $(PROJ).elf $(PROJ).hex $(PROJ).lss stats
 
-include $(DEP)
+-include $(DEP)
 
 stats: $(PROJ).elf
 	$(SIZE) $(SIZEFLAGS) $<
