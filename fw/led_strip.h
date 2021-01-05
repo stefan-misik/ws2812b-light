@@ -15,8 +15,8 @@ using AbstractLedStrip = LedStrip<1>;
 
 struct LedState
 {
-    uint8_t green;
     uint8_t red;
+    uint8_t green;
     uint8_t blue;
 };
 
