@@ -49,7 +49,7 @@ prog: $(PROJ).hex
 	$(AD) -c $(PROG) -p $(PART) -P $(PORT) -U flash:w:$<:i
 
 fuses:
-	$(AD) -c $(PROG) -p $(PART) -P $(PORT) -B 10 -D             \
+	$(AD) -c $(PROG) -p $(PART) -P $(PORT) -B 1000 -D           \
 	    -U lfuse:w:0xF1:m -U hfuse:w:0xDF:m -U efuse:w:0xFF:m
 
 $(PROJ).elf: $(OBJ)
