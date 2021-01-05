@@ -73,6 +73,8 @@ void ColorAnimation::fillLedStrip(AbstractLedStrip * led_strip) const
     uint8_t led_in_group = 0;
     for (auto & led: *led_strip)
     {
-        led = {cg_, cr_, cb_};
+        led.red = cr_;
+        led.green = cg_;
+        led.blue = cb_;
     }
 }

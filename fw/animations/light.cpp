@@ -130,6 +130,8 @@ void LightAnimation::fillLedStrip(AbstractLedStrip * led_strip) const
 
     for (auto & led : *led_strip)
     {
-        led = {g, r, b};
+        led.red = r;
+        led.green = g;
+        led.blue = b;
     }
 }
