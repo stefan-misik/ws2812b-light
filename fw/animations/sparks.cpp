@@ -2,8 +2,6 @@
 
 #include <stdlib.h>
 
-#include <avr/pgmspace.h>
-
 
 uint8_t SparksAnimation::handleEvent(Event type, Param param)
 {
@@ -15,7 +13,7 @@ uint8_t SparksAnimation::handleEvent(Event type, Param param)
 
     case Event::UPDATE:
         ++step_;
-        if (STEPS != step_)
+        if (10 != step_)
             return Result::IGNORE_DEFAULT;
         step_ = 0;
 

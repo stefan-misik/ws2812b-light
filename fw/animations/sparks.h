@@ -19,8 +19,6 @@ public:
     uint8_t handleEvent(Event type, Param param) override;
 
 private:
-    static constexpr uint8_t STEPS = 10;
-
     uint8_t step_;
     int frequency_;
 };

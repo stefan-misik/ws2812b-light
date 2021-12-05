@@ -30,6 +30,7 @@ SRC  =  \
     $(addprefix animations/,  \
         color.cpp  \
         rainbow.cpp  \
+        retro.cpp  \
         sparks.cpp  \
     )
 
