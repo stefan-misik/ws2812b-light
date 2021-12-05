@@ -20,10 +20,18 @@ PORT = usb
 # Project name
 PROJ = ws2812b-light
 # Source files
-SRC  = system.cpp main.cpp led_controller.cpp time_service.cpp buttons.cpp \
-       tools/button_filter.cpp tools/color.cpp                             \
-       animations/off.cpp animations/color.cpp animations/rainbow.cpp      \
-       animations/sparks.cpp
+SRC  =  \
+    system.cpp  \
+    main.cpp  \
+    led_controller.cpp  \
+    time_service.cpp buttons.cpp  \
+    tools/button_filter.cpp  \
+    tools/color.cpp  \
+    $(addprefix animations/,  \
+        color.cpp  \
+        rainbow.cpp  \
+        sparks.cpp  \
+    )
 
 CPPFLAGS  = -I. -DF_CPU=$(DEF_FREQ)UL -D__$(DEF_MCU)__
 CFLAGS    = -c -ggdb -Os -mmcu=$(MCU)
