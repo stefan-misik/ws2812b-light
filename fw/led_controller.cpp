@@ -1,7 +1,13 @@
 #include "led_controller.h"
 
 #include <avr/io.h>
+#include <avr/pgmspace.h>
 
+static constexpr uint16_t INTENSITY = 0x80;
+static const uint8_t lookup_table[256] PROGMEM =
+{
+#include "led_corrections/none.inc"
+};
 
 static constexpr uint8_t ZERO_BIT_PULSE_LENGTH = 1;
 static constexpr uint8_t ONE_BIT_PULSE_LENGTH = 3;
@@ -22,6 +28,7 @@ void LedController::update(const AbstractLedStrip * led_strip)
             (led_strip->led_count * sizeof(LedState));
 
     {
+        uint16_t tmp_w;
         uint8_t current_byte;
         uint8_t bit_position;
         uint8_t pulse_length;
@@ -31,6 +38,12 @@ void LedController::update(const AbstractLedStrip * led_strip)
                 "    rjmp  lu_check_all_sent           \n"
                 "lu_send_byte:                         \n"
                 "    ld    %[current_byte], %a[data]+  \n"
+                // Do the lookup table correction
+                "    movw  %[tmp_w], %[lookup_table]   \n"
+                "    add   %A[tmp_w], %[current_byte]  \n"
+                "    adc   %B[tmp_w], __zero_reg__     \n"
+                "    lpm   %[current_byte], %a[tmp_w]  \n"
+
                 "    ldi   %[bit_position], 0x80       \n"
 
                 "lu_send_bit:                          \n"
@@ -61,9 +74,11 @@ void LedController::update(const AbstractLedStrip * led_strip)
                 : [current_byte] "=&r" (current_byte),
                   [old_sreg] "=&r" (old_sreg),
                   [bit_position] "=&d" (bit_position),
-                  [pulse_length] "=&d" (pulse_length)
-                : [data] "z" (data),
+                  [pulse_length] "=&d" (pulse_length),
+                  [tmp_w] "=&z" (tmp_w)
+                : [data] "e" (data),
                   [data_end] "e" (data_end),
+                  [lookup_table] "w" (lookup_table),
                   [zero_pl] "M" (ZERO_BIT_PULSE_LENGTH),
                   [one_pl] "M" (ONE_BIT_PULSE_LENGTH),
                   [pinr] "I" (_SFR_IO_ADDR(PINB)),

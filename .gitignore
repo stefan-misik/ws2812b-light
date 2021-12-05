@@ -24,6 +24,7 @@
 .settings/
 .code_review_properties
 *.launch
+RemoteSystemsTempFiles/
 
 # Ignore doxygen outputs
 */doxygen/*.files
