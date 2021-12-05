@@ -3,7 +3,7 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
-static constexpr uint16_t INTENSITY = 0x80;
+static constexpr uint16_t INTENSITY = 0x60;
 static const uint8_t lookup_table[256] PROGMEM =
 {
 #include "led_corrections/none.inc"
