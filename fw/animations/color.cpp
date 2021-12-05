@@ -1,5 +1,21 @@
 #include "animations/color.h"
 
+#include <avr/pgmspace.h>
+
+static const LedState colors[] PROGMEM =
+{
+        {0x9A, 0x9A, 0x9A},
+        {0xFF, 0xa0, 0x30},
+        {0xFF, 0x00, 0x00},
+        {0x7F, 0x7F, 0x00},
+        {0x00, 0xFF, 0x00},
+        {0x00, 0x7F, 0x7F},
+        {0x00, 0x00, 0xFF},
+        {0x7F, 0x00, 0x7F},
+};
+
+static constexpr uint8_t COLOR_CNT = sizeof(colors) / sizeof(colors[0]);
+
 bool ColorAnimation::start(AbstractLedStrip * leds)
 {
     redraw_ = true;
@@ -10,7 +26,16 @@ bool ColorAnimation::update(AbstractLedStrip * leds)
 {
     if (redraw_)
     {
-        fillLedStrip(leds);
+        const LedState * const pgm_color = colors + color_;
+        const LedState color{
+            pgm_read_byte(&pgm_color->red),
+            pgm_read_byte(&pgm_color->green),
+            pgm_read_byte(&pgm_color->blue)
+        };
+
+        for (auto & led: *leds)
+            led = color;
+
         redraw_ = false;
         return true;
     }
@@ -24,51 +49,19 @@ void ColorAnimation::stop(AbstractLedStrip * leds)
 
 bool ColorAnimation::handleButton(ButtonId button, uint8_t state)
 {
-    if (state & ButtonState::PRESSED)
+    if (state & ButtonState::PRESS)
     {
-        if (ButtonId::UP == button || ButtonId::DOWN == button)
+        switch (button)
         {
-            stepRainbowColor();
+        case ButtonId::UP:
+            color_ = ((COLOR_CNT - 1) == color_) ? 0 : color_ + 1;
             redraw_ = true;
+            break;
+        case ButtonId::DOWN:
+            color_ = (0 == color_) ? COLOR_CNT - 1 : color_ - 1;
+            redraw_ = true;
+            break;
         }
     }
     return true;
-}
-
-void ColorAnimation::stepRainbowColor()
-{
-    if (cr_ > 0)
-    {
-        if (cb_ > 0)
-        {
-            ++cr_;
-            --cb_;
-        }
-        else
-        {
-            --cr_;
-            ++cg_;
-        }
-    }
-    else if (cg_ > 0)
-    {
-        --cg_;
-        ++cb_;
-    }
-    else
-    {
-        ++cr_;
-        --cb_;
-    }
-}
-
-void ColorAnimation::fillLedStrip(AbstractLedStrip * led_strip) const
-{
-    uint8_t led_in_group = 0;
-    for (auto & led: *led_strip)
-    {
-        led.red = cr_;
-        led.green = cg_;
-        led.blue = cb_;
-    }
 }
