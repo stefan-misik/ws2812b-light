@@ -6,6 +6,7 @@
 #include "animations/off.h"
 #include "animations/rainbow.h"
 #include "animations/color.h"
+#include "animations/sparks.h"
 
 #include <util/delay.h>
 
@@ -16,11 +17,13 @@ LedStrip<100> led_strip;
 OffAnimation off;
 ColorAnimation color;
 RainbowAnimation rainbow;
+SparksAnimation sparks;
 
 Animation * animations[] = {
     &off,
     &color,
-    &rainbow
+    &rainbow,
+    &sparks
 };
 constexpr int8_t ANIMATION_COUNT = sizeof(animations) / sizeof(animations[0]);
 

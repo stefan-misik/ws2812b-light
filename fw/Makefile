@@ -22,7 +22,8 @@ PROJ = ws2812b-light
 # Source files
 SRC  = system.cpp main.cpp led_controller.cpp time_service.cpp buttons.cpp \
        tools/button_filter.cpp                                             \
-       animations/off.cpp animations/color.cpp animations/rainbow.cpp
+       animations/off.cpp animations/color.cpp animations/rainbow.cpp      \
+       animations/sparks.cpp
 
 CPPFLAGS  = -I. -DF_CPU=$(DEF_FREQ)UL -D__$(DEF_MCU)__
 CFLAGS    = -c -ggdb -Os -mmcu=$(MCU)
