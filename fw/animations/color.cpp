@@ -1,44 +1,38 @@
 #include "animations/color.h"
-#include "buttons.h"
 
-Animation::Result ColorAnimation::handleEvent(Event event, intptr_t parameter)
+bool ColorAnimation::start(AbstractLedStrip * leds)
 {
-    switch (event)
+    redraw_ = true;
+    return false;
+}
+
+bool ColorAnimation::update(AbstractLedStrip * leds)
+{
+    if (redraw_)
     {
-    case Event::CREATE:
-        cr_ = 255;
-        cg_ = 0;
-        cb_ = 0;
+        fillLedStrip(leds);
         redraw_ = false;
-        break;
+        return true;
+    }
+    else
+        return false;
+}
 
-    case Event::INIT:
-        redraw_ = true;
-        break;
+void ColorAnimation::stop(AbstractLedStrip * leds)
+{
+}
 
-    case Event::STEP:
-        if (redraw_)
-        {
-            fillLedStrip(reinterpret_cast<AbstractLedStrip *>(parameter));
-            redraw_ = false;
-            return Result::NONE;
-        }
-        else
-        {
-            return Result::IGNORE_DEFAULT;
-        }
-    break;
-
-    case Event::KEY_PRESS:
-        if (Buttons::ButtonId::UP == parameter ||
-                Buttons::ButtonId::DOWN == parameter)
+bool ColorAnimation::handleButton(ButtonId button, uint8_t state)
+{
+    if (state & ButtonState::PRESSED)
+    {
+        if (ButtonId::UP == button || ButtonId::DOWN == button)
         {
             stepRainbowColor();
             redraw_ = true;
         }
-        break;
     }
-    return Result::NONE;
+    return true;
 }
 
 void ColorAnimation::stepRainbowColor()

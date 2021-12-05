@@ -6,6 +6,7 @@
 #define ANIMATION_H_
 
 #include "led_strip.h"
+#include "buttons.h"
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -16,38 +17,44 @@
 class Animation
 {
 public:
-    enum class Event: uint8_t
-    {
-        CREATE,
-        INIT,
-        DEINIT,
-        ANIMATION_ROTATE,
-        STEP,
-        KEY_PRESS,
-        KEY_DOWN,
-        KEY_UP,
-    };
-
-    enum class Result: uint8_t
-    {
-        NONE,
-        IGNORE_DEFAULT
-    };
+    using ButtonId = Buttons::ButtonId;
+    using ButtonState = ButtonFilter::State;
 
     /**
-     * @brief Handle an event of a key being pressed
+     * @brief Start the animation - initialize the strip
      *
-     * @param event Event to handle
-     * @param parameter Additional data associated with the parameter
-     *
-     * @return Result of the action
+     * @return Re-render the strip as soon as possible
      */
-    virtual Result handleEvent(Event event, intptr_t parameter) = 0;
+    virtual bool start(AbstractLedStrip * leds)
+    {
+        return false;
+    }
+
+    /**
+     * @brief Render animation frame
+     *
+     * @return Re-render the strip
+     */
+    virtual bool update(AbstractLedStrip * leds)
+    {
+        return false;
+    }
+
+    /** @brief Stop the animation - ??? */
+    virtual void stop(AbstractLedStrip * leds) { }
+
+    /**
+     * @brief Handle an event of a button
+     *
+     * @return Perform the default operation
+     */
+    virtual bool handleButton(ButtonId button, uint8_t state)
+    {
+        return true;
+    }
 
     virtual ~Animation() = default;
 };
-
-
 
 
 #endif  // ANIMATION_H_

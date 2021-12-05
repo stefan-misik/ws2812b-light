@@ -10,8 +10,10 @@
 class RainbowAnimation: public Animation
 {
 public:
-    /** @copydoc Animation::handleEvent() */
-    virtual Result handleEvent(Event event, intptr_t parameter) override;
+    bool start(AbstractLedStrip * leds) override;
+    bool update(AbstractLedStrip * leds) override;
+    void stop(AbstractLedStrip * leds) override;
+    bool handleButton(Buttons::ButtonId button, uint8_t state) override;
 
 private:
     uint8_t ca_;

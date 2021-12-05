@@ -1,30 +1,15 @@
-/**
- * @file
- */
-
 #include "animations/rainbow.h"
 
-Animation::Result RainbowAnimation::handleEvent(Event event, intptr_t parameter)
+bool RainbowAnimation::start(AbstractLedStrip * leds)
 {
-    switch (event)
-    {
-    case Event::INIT:
-        ca_ = 255;
-        cb_ = 0;
-        cc_ = 0;
-        fillLedStrip(reinterpret_cast<AbstractLedStrip *>(parameter));
-        break;
-
-    case Event::STEP:
-        stepRainbowColor();
-        fillLedStrip(reinterpret_cast<AbstractLedStrip *>(parameter));
-    break;
-
-    }
-    return Result::NONE;
+    ca_ = 255;
+    cb_ = 0;
+    cc_ = 0;
+    fillLedStrip(leds);
+    return false;
 }
 
-void RainbowAnimation::stepRainbowColor()
+bool RainbowAnimation::update(AbstractLedStrip * leds)
 {
     if (ca_ > 0)
     {
@@ -49,6 +34,18 @@ void RainbowAnimation::stepRainbowColor()
         ++ca_;
         --cc_;
     }
+
+    fillLedStrip(leds);
+    return true;
+}
+
+void RainbowAnimation::stop(AbstractLedStrip * leds)
+{
+}
+
+bool RainbowAnimation::handleButton(ButtonId button, uint8_t state)
+{
+    return true;
 }
 
 void RainbowAnimation::fillLedStrip(AbstractLedStrip * led_strip) const

@@ -10,8 +10,16 @@
 class ColorAnimation: public Animation
 {
 public:
-    /** @copydoc Animation::handleEvent() */
-    virtual Result handleEvent(Event event, intptr_t parameter) override;
+    ColorAnimation():
+        cr_(255), cg_(0), cb_(0),
+        redraw_(false)
+    {
+    }
+
+    bool start(AbstractLedStrip * leds) override;
+    bool update(AbstractLedStrip * leds) override;
+    void stop(AbstractLedStrip * leds) override;
+    bool handleButton(ButtonId button, uint8_t state) override;
 
 private:
     uint8_t cr_;
