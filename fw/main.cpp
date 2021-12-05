@@ -12,7 +12,7 @@
 
 PeriodicRoutine main_routine(1);
 
-LedStrip<80> led_strip;
+LedStrip<100> led_strip;
 
 LightAnimation light;
 RainbowAnimation rainbow;
