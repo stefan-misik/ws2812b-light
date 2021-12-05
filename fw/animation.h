@@ -20,40 +20,97 @@ public:
     using ButtonId = Buttons::ButtonId;
     using ButtonState = ButtonFilter::State;
 
-    /**
-     * @brief Start the animation - initialize the strip
-     *
-     * @return Re-render the strip as soon as possible
-     */
-    virtual bool start(AbstractLedStrip * leds)
+    struct Param;
+
+    enum Result: uint8_t
     {
-        return false;
-    }
+        IS_OK,
+        IGNORE_DEFAULT,
+    };
+
+    enum class Event: uint8_t
+    {
+        /**
+         * @brief Start the animation - initialize the strip
+         */
+        START,
+
+        /**
+         * @brief Render animation frame
+         *
+         * Default action is to update the LED strip.
+         */
+        UPDATE,
+
+        /**
+         * @brief Stop the animation
+         */
+        STOP,
+
+        /**
+         * @brief Handle the button press
+         */
+        BUTTON
+    };
 
     /**
-     * @brief Render animation frame
+     * @brief Handle event of given type
      *
-     * @return Re-render the strip
-     */
-    virtual bool update(AbstractLedStrip * leds)
-    {
-        return false;
-    }
-
-    /** @brief Stop the animation - ??? */
-    virtual void stop(AbstractLedStrip * leds) { }
-
-    /**
-     * @brief Handle an event of a button
+     * @param type Type of the event to be handled
+     * @param param Parameter associated with the event
      *
-     * @return Perform the default operation
+     * @return Result of the handling
      */
-    virtual bool handleButton(ButtonId button, uint8_t state)
-    {
-        return true;
-    }
+    virtual uint8_t handleEvent(Event type, Param param) = 0;
 
     virtual ~Animation() = default;
+};
+
+struct Animation::Param
+{
+    Param(uintptr_t new_value):
+        value(new_value)
+    { }
+
+    Param(uint8_t hi, uint8_t lo):
+        value(static_cast<uintptr_t>(hi) << 8 | static_cast<uintptr_t>(lo))
+    { }
+
+    Param(ButtonId button_id, uint8_t state):
+        Param(static_cast<uint8_t>(button_id), state)
+    { }
+
+    explicit Param(AbstractLedStrip * led_strip):
+            value(reinterpret_cast<uintptr_t>(led_strip))
+    { }
+
+    uint8_t paramHi() const { return value >> 8; }
+    uint8_t paramLo() const { return value & 0xFF; }
+
+    void setParamHi(uint8_t new_hi)
+    {
+        value = (static_cast<uintptr_t>(new_hi) << 8) | (value & 0x00FF);
+    }
+    void setParamLo(uint8_t new_lo)
+    {
+        value = static_cast<uintptr_t>(new_lo) | (value & 0xFF00);
+    }
+
+    ButtonId buttonId() const { return static_cast<ButtonId>(paramHi()); }
+    uint8_t buttonState() const { return paramLo(); }
+    void setButtonId(ButtonId new_id) { setParamHi(new_id); }
+    void setButtonState(uint8_t new_state) { setParamLo(new_state); }
+
+    AbstractLedStrip * ledStrip() const
+    {
+        return reinterpret_cast<AbstractLedStrip *>(value);
+    }
+    void setLedStrip(AbstractLedStrip * new_led_strip)
+    {
+        value = reinterpret_cast<uintptr_t>(new_led_strip);
+    }
+
+    uintptr_t value;
 };
 
 

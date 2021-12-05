@@ -17,10 +17,7 @@ public:
         hue_(0)
     { }
 
-    bool start(AbstractLedStrip * leds) override;
-    bool update(AbstractLedStrip * leds) override;
-    void stop(AbstractLedStrip * leds) override;
-    bool handleButton(Buttons::ButtonId button, uint8_t state) override;
+    uint8_t handleEvent(Event type, Param param) override;
 
 private:
     uint8_t space_increment_: 4;

@@ -2,46 +2,43 @@
 
 #include "tools/color.h"
 
-
-bool RainbowAnimation::start(AbstractLedStrip * leds)
+uint8_t RainbowAnimation::handleEvent(Event type, Param param)
 {
-    step_ = 0;
-    return false;
-}
-
-bool RainbowAnimation::update(AbstractLedStrip * leds)
-{
-    uint16_t hue = hue_;
-    LedState color;
-    for (auto & led: *leds)
+    switch (type)
     {
-        toSaturatedHue(hue, &color);
-        hue = incrementHue(hue, space_increment_);
-        led = color;
-    }
+    case Event::START:
+        step_ = 0;
+        return Result::IS_OK;
 
-    hue_ = incrementHue(hue_, time_increment_);
-
-    return true;
-}
-
-void RainbowAnimation::stop(AbstractLedStrip * leds)
-{
-}
-
-bool RainbowAnimation::handleButton(ButtonId button, uint8_t state)
-{
-    if (ButtonState::PRESS & state)
+    case Event::UPDATE:
     {
-        switch (button)
+        uint16_t hue = hue_;
+        LedState color;
+        for (auto & led: *param.ledStrip())
         {
-        case ButtonId::UP:
-            ++space_increment_;
-            break;
-        case ButtonId::DOWN:
-            ++time_increment_;
-            break;
+            toSaturatedHue(hue, &color);
+            hue = incrementHue(hue, space_increment_);
+            led = color;
         }
+
+        hue_ = incrementHue(hue_, time_increment_);
+
+        return Result::IS_OK;
     }
-    return true;
+
+    case Event::STOP:
+        return Result::IS_OK;
+
+    case Event::BUTTON:
+        if (param.paramLo() & ButtonState::PRESS)
+        {
+            switch (param.buttonId())
+            {
+            case ButtonId::UP: ++space_increment_; break;
+            case ButtonId::DOWN: ++time_increment_; break;
+            }
+        }
+        return Result::IS_OK;
+    }
+    return Result::IS_OK;
 }

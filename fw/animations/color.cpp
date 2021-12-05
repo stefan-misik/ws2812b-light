@@ -16,52 +16,52 @@ static const LedState colors[] PROGMEM =
 
 static constexpr uint8_t COLOR_CNT = sizeof(colors) / sizeof(colors[0]);
 
-bool ColorAnimation::start(AbstractLedStrip * leds)
+uint8_t ColorAnimation::handleEvent(Event type, Param param)
 {
-    redraw_ = true;
-    return false;
-}
-
-bool ColorAnimation::update(AbstractLedStrip * leds)
-{
-    if (redraw_)
+    switch (type)
     {
-        const LedState * const pgm_color = colors + color_;
-        const LedState color{
-            pgm_read_byte(&pgm_color->red),
-            pgm_read_byte(&pgm_color->green),
-            pgm_read_byte(&pgm_color->blue)
-        };
+    case Event::START:
+        redraw_ = true;
+        return Result::IS_OK;
 
-        for (auto & led: *leds)
-            led = color;
-
-        redraw_ = false;
-        return true;
-    }
-    else
-        return false;
-}
-
-void ColorAnimation::stop(AbstractLedStrip * leds)
-{
-}
-
-bool ColorAnimation::handleButton(ButtonId button, uint8_t state)
-{
-    if (state & ButtonState::PRESS)
-    {
-        switch (button)
+    case Event::UPDATE:
+        if (redraw_)
         {
-        case ButtonId::UP:
-            color_ = ((COLOR_CNT - 1) == color_) ? 0 : color_ + 1;
-            redraw_ = true;
-            break;
-        case ButtonId::DOWN:
-            color_ = (0 == color_) ? COLOR_CNT - 1 : color_ - 1;
-            redraw_ = true;
-            break;
+            const LedState * const pgm_color = colors + color_;
+            const LedState color{
+                pgm_read_byte(&pgm_color->red),
+                pgm_read_byte(&pgm_color->green),
+                pgm_read_byte(&pgm_color->blue)
+            };
+
+            for (auto & led: *param.ledStrip())
+                led = color;
+
+            redraw_ = false;
+            return Result::IS_OK;
         }
+        else
+            return Result::IGNORE_DEFAULT;
+
+    case Event::STOP:
+        return Result::IS_OK;
+
+    case Event::BUTTON:
+        if (param.paramLo() & ButtonState::PRESS)
+        {
+            switch (param.buttonId())
+            {
+            case ButtonId::UP:
+                color_ = ((COLOR_CNT - 1) == color_) ? 0 : color_ + 1;
+                redraw_ = true;
+                break;
+            case ButtonId::DOWN:
+                color_ = (0 == color_) ? COLOR_CNT - 1 : color_ - 1;
+                redraw_ = true;
+                break;
+            }
+        }
+        return Result::IS_OK;
     }
-    return true;
+    return Result::IS_OK;
 }
