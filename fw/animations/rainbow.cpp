@@ -1,41 +1,27 @@
 #include "animations/rainbow.h"
 
+#include "tools/color.h"
+
+
 bool RainbowAnimation::start(AbstractLedStrip * leds)
 {
-    ca_ = 255;
-    cb_ = 0;
-    cc_ = 0;
-    fillLedStrip(leds);
+    step_ = 0;
     return false;
 }
 
 bool RainbowAnimation::update(AbstractLedStrip * leds)
 {
-    if (ca_ > 0)
+    uint16_t hue = hue_;
+    LedState color;
+    for (auto & led: *leds)
     {
-        if (cc_ > 0)
-        {
-            ++ca_;
-            --cc_;
-        }
-        else
-        {
-            --ca_;
-            ++cb_;
-        }
-    }
-    else if (cb_ > 0)
-    {
-        --cb_;
-        ++cc_;
-    }
-    else
-    {
-        ++ca_;
-        --cc_;
+        toSaturatedHue(hue, &color);
+        hue = incrementHue(hue, space_increment_);
+        led = color;
     }
 
-    fillLedStrip(leds);
+    hue_ = incrementHue(hue_, time_increment_);
+
     return true;
 }
 
@@ -45,28 +31,17 @@ void RainbowAnimation::stop(AbstractLedStrip * leds)
 
 bool RainbowAnimation::handleButton(ButtonId button, uint8_t state)
 {
-    return true;
-}
-
-void RainbowAnimation::fillLedStrip(AbstractLedStrip * led_strip) const
-{
-    uint8_t led_in_group = 0;
-    for (auto & led: *led_strip)
+    if (ButtonState::PRESS & state)
     {
-        switch (led_in_group)
+        switch (button)
         {
-        case 0:
-            led = {ca_, cb_, cc_};
-            led_in_group = 1;
+        case ButtonId::UP:
+            ++space_increment_;
             break;
-        case 1:
-            led = {cc_, ca_, cb_};
-            led_in_group = 2;
-            break;
-        case 2:
-            led = {cb_, cc_, ca_};
-            led_in_group = 0;
+        case ButtonId::DOWN:
+            ++time_increment_;
             break;
         }
     }
+    return true;
 }

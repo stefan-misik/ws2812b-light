@@ -10,26 +10,24 @@
 class RainbowAnimation: public Animation
 {
 public:
+    RainbowAnimation():
+        space_increment_(5),
+        time_increment_(2),
+        step_(0),
+        hue_(0)
+    { }
+
     bool start(AbstractLedStrip * leds) override;
     bool update(AbstractLedStrip * leds) override;
     void stop(AbstractLedStrip * leds) override;
     bool handleButton(Buttons::ButtonId button, uint8_t state) override;
 
 private:
-    uint8_t ca_;
-    uint8_t cb_;
-    uint8_t cc_;
+    uint8_t space_increment_: 4;
+    uint8_t time_increment_: 4;
 
-    /**
-     * @brief Calculate next rainbow color
-     */
-    void stepRainbowColor();
-
-    /**
-     * @brief Fill the LED strip with rainbow colors
-     * @param led_strip
-     */
-    void fillLedStrip(AbstractLedStrip * led_strip) const;
+    uint8_t step_;
+    uint16_t hue_;
 };
 
 #endif  // ANIMATIONS_RAINBOW_H_
