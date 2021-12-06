@@ -16,6 +16,18 @@ static const LedState colors[] PROGMEM =
 
 static constexpr uint8_t COLOR_CNT = sizeof(colors) / sizeof(colors[0]);
 
+inline void getColor(LedState * led, uint8_t color)
+{
+    if (color >= COLOR_CNT)
+        color = 0;
+    const LedState * const pgm_color = colors + color;
+    *led = {
+        pgm_read_byte(&pgm_color->red),
+        pgm_read_byte(&pgm_color->green),
+        pgm_read_byte(&pgm_color->blue)
+    };
+}
+
 uint8_t ColorAnimation::handleEvent(Event type, Param param)
 {
     switch (type)
@@ -27,12 +39,8 @@ uint8_t ColorAnimation::handleEvent(Event type, Param param)
     case Event::UPDATE:
         if (redraw_)
         {
-            const LedState * const pgm_color = colors + color_;
-            const LedState color{
-                pgm_read_byte(&pgm_color->red),
-                pgm_read_byte(&pgm_color->green),
-                pgm_read_byte(&pgm_color->blue)
-            };
+            LedState color;
+            getColor(&color, color_);
 
             for (auto & led: *param.ledStrip())
                 led = color;

@@ -23,7 +23,7 @@ Animation * animations[] = {
     &color,
     &rainbow,
     &retro,
-    &sparks
+    &sparks,
 };
 constexpr int8_t ANIMATION_COUNT = sizeof(animations) / sizeof(animations[0]);
 
@@ -106,9 +106,15 @@ int main(void)
     ledStripEvent(Animation::Event::START);
     while(1)
     {
-        uint8_t current_time = TimeService::getTime();
-
-        if (main_routine.shouldRunAt(current_time))
+        if (main_routine.shouldRun())
+        {
             mainPeriodicRoutine();
+            if (main_routine.hasElapsed())
+            {
+                // Spent too much time
+                //while (true)
+                //{ }
+            }
+        }
     }
 }

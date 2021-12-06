@@ -36,10 +36,9 @@ void TimeService::initialize()
     current_time_ = 0;
 }
 
-bool PeriodicRoutine::shouldRunAt(uint8_t time)
+bool PeriodicRoutine::shouldRun(uint8_t time)
 {
-    uint8_t time_since_last_run = time - last_routine_run_;
-    if (time_since_last_run >= period_length_)
+    if (hasElapsed(time))
     {
         last_routine_run_ += period_length_;
         return true;

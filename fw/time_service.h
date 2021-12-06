@@ -59,7 +59,7 @@ public:
      *
      * @param time Current time
      */
-    void resetTimerAt(uint8_t time)
+    void resetTimer(uint8_t time = TimeService::getTime())
     {
         last_routine_run_ = time;
     }
@@ -72,7 +72,20 @@ public:
      * @retval false The routine was not called
      * @retval true The routine was called
      */
-    bool shouldRunAt(uint8_t time);
+    bool shouldRun(uint8_t time = TimeService::getTime());
+
+    /**
+     * @brief Has at least one period elapsed since last run
+     *
+     * @param time Current time
+     *
+     * @return At least one period has elapsed
+     */
+    bool hasElapsed(uint8_t time = TimeService::getTime()) const
+    {
+        uint8_t time_since_last_run = time - last_routine_run_;
+        return time_since_last_run >= period_length_;
+    }
 
 private:
     uint8_t period_length_;
