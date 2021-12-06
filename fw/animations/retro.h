@@ -12,16 +12,26 @@ class RetroAnimation: public Animation
 public:
     RetroAnimation():
         delay_(0),
-        variant_(0)
+        variant_(0),
+        state_(0)
     { }
 
     uint8_t handleEvent(Event type, Param param) override;
 
 private:
-    uint8_t delay_;
-    uint8_t variant_;
+    static const uint8_t VARIANT_CNT = 4;
 
-    void render(AbstractLedStrip * leds);
+    uint16_t delay_;
+    uint8_t variant_: 4;
+    uint8_t state_: 4;
+
+    uint8_t render(AbstractLedStrip * leds);
+
+    void reset()
+    {
+        delay_ = 0;
+        state_ = 0;
+    }
 };
 
 #endif  // ANIMATIONS_RETRO_H_

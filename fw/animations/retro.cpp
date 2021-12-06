@@ -2,10 +2,38 @@
 
 #include <stdlib.h>
 
-static const LedState LED_RED =    {0xFF, 0x00, 0x00};
-static const LedState LED_YELLOW = {0xA0, 0x7F, 0x00};
-static const LedState LED_GREEN =  {0x00, 0xFF, 0x00};
-static const LedState LED_BLUE =   {0x00, 0x00, 0xFF};
+#include <avr/pgmspace.h>
+
+enum Color
+{
+    C_RED = 0,
+    C_GREEN,
+    C_YELLOW,
+    C_BLUE,
+
+    C_CNT_
+};
+
+static const LedState colors[C_CNT_] PROGMEM =
+{
+        {0xFF, 0x00, 0x00},
+        {0x00, 0xFF, 0x00},
+        {0xA0, 0x7F, 0x00},
+        {0x00, 0x00, 0xFF},
+};
+
+inline void copyColors(LedState (&led)[C_CNT_])
+{
+    for (uint8_t color = 0; color != C_CNT_; ++color)
+    {
+        const LedState * const pgm_color = colors + color;
+        led[color] = {
+            pgm_read_byte(&pgm_color->red),
+            pgm_read_byte(&pgm_color->green),
+            pgm_read_byte(&pgm_color->blue)
+        };
+    }
+}
 
 
 uint8_t RetroAnimation::handleEvent(Event type, Param param)
@@ -13,7 +41,7 @@ uint8_t RetroAnimation::handleEvent(Event type, Param param)
     switch (type)
     {
     case Event::START:
-        delay_ = 0;
+        reset();
         return Result::IS_OK;
 
     case Event::UPDATE:
@@ -22,12 +50,7 @@ uint8_t RetroAnimation::handleEvent(Event type, Param param)
             --delay_;
             return Result::IGNORE_DEFAULT;
         }
-        delay_ = ((rand() & 0x03) + 1) << 5;
-
-        if (0 == variant_ || 1 == variant_)
-            variant_ = 1 - variant_;
-
-        render(param.ledStrip());
+        delay_ = static_cast<uint16_t>(render(param.ledStrip())) << 5;
         return Result::IS_OK;
 
     case Event::STOP:
@@ -39,14 +62,14 @@ uint8_t RetroAnimation::handleEvent(Event type, Param param)
             switch (param.buttonId())
             {
             case ButtonId::UP:
-                delay_ = 0;
-                if (0 == variant_ || 1 == variant_)
-                    variant_ = 2;
+                reset();
+                if (variant_ != (VARIANT_CNT - 1))
+                    ++variant_;
                 break;
             case ButtonId::DOWN:
-                delay_ = 0;
-                if (2 == variant_)
-                    variant_ = 0;
+                reset();
+                if (variant_ != 0)
+                    --variant_;
                 break;
             }
         }
@@ -55,48 +78,35 @@ uint8_t RetroAnimation::handleEvent(Event type, Param param)
     return Result::IS_OK;
 }
 
-void RetroAnimation::render(AbstractLedStrip * leds)
+uint8_t RetroAnimation::render(AbstractLedStrip * leds)
 {
+    LedState ram_colors[C_CNT_];
+    copyColors(ram_colors);
+
     uint8_t pos = 0;
 
     switch (variant_)
     {
     case 0:
-        for (auto & led: *leds)
-        {
-            switch (pos & 0x01)
-            {
-            case 0: led = LED_RED; break;
-            case 1: led = LED_YELLOW; break;
-            }
-            ++pos;
-        }
-        break;
-
     case 1:
         for (auto & led: *leds)
         {
-            switch (pos & 0x01)
-            {
-            case 0: led = LED_GREEN; break;
-            case 1: led = LED_BLUE; break;
-            }
+            uint8_t color = ((pos & 0x01) << 1) | (state_ & 0x01);
+            if (state_ & 0x02)
+                color ^= 0x02;
+            led = ram_colors[color];
             ++pos;
         }
-        break;
+        ++state_;
+        return (0 == variant_) ? (rand() & 0x03) + 1 : 5;
 
     case 2:
+    case 3:
+        pos = state_++;
         for (auto & led: *leds)
-        {
-            switch (pos & 0x03)
-            {
-            case 0: led = LED_RED; break;
-            case 1: led = LED_GREEN; break;
-            case 2: led = LED_YELLOW; break;
-            case 3: led = LED_BLUE; break;
-            }
-            ++pos;
-        }
-        break;
+            led = ram_colors[(pos++) & 0x03];
+        return (2 == variant_) ? 5 : 255;
     }
+
+    return 1;
 }
