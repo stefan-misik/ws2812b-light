@@ -12,18 +12,22 @@ uint8_t SparksAnimation::handleEvent(Event type, Param param)
         return Result::IS_OK;
 
     case Event::UPDATE:
+    {
         ++step_;
-        if (10 != step_)
+        if (7 != step_)
             return Result::IGNORE_DEFAULT;
         step_ = 0;
 
         for (auto & led: *param.ledStrip())
-            if ((rand() & 0x7ff) <= frequency_)
-                led = {0xFF, 0xFF, 0xFF};
-            else
-                led = {0x47, 0x30, 0x0D};
+            led = {0x47, 0x30, 0x0D};
+
+        const uint16_t mask = 0x7FFF >> frequency_;
+        const int num = (rand() & mask);
+        if (num < param.ledStrip()->led_count)
+            param.ledStrip()->leds[num] = {0xFF, 0xFF, 0xFF};
 
         return Result::IS_OK;
+    }
 
     case Event::STOP:
         return Result::IS_OK;
@@ -34,11 +38,11 @@ uint8_t SparksAnimation::handleEvent(Event type, Param param)
             switch (param.buttonId())
             {
             case ButtonId::UP:
-                if (0x7ff != frequency_)
+                if (7 != frequency_)
                     ++frequency_;
                 break;
             case ButtonId::DOWN:
-                if (-1 != frequency_)
+                if (0 != frequency_)
                     --frequency_;
                 break;
             }

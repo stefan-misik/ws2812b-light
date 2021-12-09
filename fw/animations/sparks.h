@@ -12,7 +12,7 @@ class SparksAnimation: public Animation
 public:
     SparksAnimation():
         step_(0),
-        frequency_(8)
+        frequency_(3)
     {
     }
 
@@ -20,7 +20,7 @@ public:
 
 private:
     uint8_t step_;
-    int frequency_;
+    uint8_t frequency_;
 };
 
 #endif  // ANIMATIONS_SPARKS_H_
