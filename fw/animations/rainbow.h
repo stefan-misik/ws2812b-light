@@ -11,8 +11,8 @@ class RainbowAnimation: public Animation
 {
 public:
     RainbowAnimation():
-        space_increment_(5),
-        time_increment_(2),
+        space_increment_(8),
+        time_increment_(4),
         step_(0),
         hue_(0)
     { }

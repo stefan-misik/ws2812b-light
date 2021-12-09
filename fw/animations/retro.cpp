@@ -98,14 +98,14 @@ uint8_t RetroAnimation::render(AbstractLedStrip * leds)
             ++pos;
         }
         ++state_;
-        return (0 == variant_) ? (rand() & 0x03) + 1 : 5;
+        return (0 == variant_) ? (rand() & 0x03) + 1 : 4;
 
     case 2:
     case 3:
         pos = state_++;
         for (auto & led: *leds)
             led = ram_colors[(pos++) & 0x03];
-        return (2 == variant_) ? 5 : 255;
+        return (2 == variant_) ? 4 : 255;
     }
 
     return 1;

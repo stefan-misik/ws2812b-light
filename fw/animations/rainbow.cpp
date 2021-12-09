@@ -12,6 +12,11 @@ uint8_t RainbowAnimation::handleEvent(Event type, Param param)
 
     case Event::UPDATE:
     {
+        ++step_;
+        if (2 != step_)
+            return Result::IGNORE_DEFAULT;
+        step_ = 0;
+
         uint16_t hue = hue_;
         LedState color;
         for (auto & led: *param.ledStrip())
