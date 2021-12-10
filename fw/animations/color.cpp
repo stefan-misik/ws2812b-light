@@ -28,16 +28,19 @@ inline void getColor(LedState * led, uint8_t color)
     };
 }
 
-uint8_t ColorAnimation::handleEvent(Event type, Param param)
+uint8_t ColorAnimation::handleEvent(Event type, Param param, SharedStorage * storage)
 {
+    auto s = [=]() -> auto & { return *storage->get<Shared>(); };
+
     switch (type)
     {
     case Event::START:
-        redraw_ = true;
+        storage->create<Shared>();
+        s().redraw = true;
         return Result::IS_OK;
 
     case Event::UPDATE:
-        if (redraw_)
+        if (s().redraw)
         {
             LedState color;
             getColor(&color, color_);
@@ -45,7 +48,7 @@ uint8_t ColorAnimation::handleEvent(Event type, Param param)
             for (auto & led: *param.ledStrip())
                 led = color;
 
-            redraw_ = false;
+            s().redraw = false;
             return Result::IS_OK;
         }
         else
@@ -61,11 +64,11 @@ uint8_t ColorAnimation::handleEvent(Event type, Param param)
             {
             case ButtonId::UP:
                 color_ = ((COLOR_CNT - 1) == color_) ? 0 : color_ + 1;
-                redraw_ = true;
+                s().redraw = true;
                 break;
             case ButtonId::DOWN:
                 color_ = (0 == color_) ? COLOR_CNT - 1 : color_ - 1;
-                redraw_ = true;
+                s().redraw = true;
                 break;
             }
         }

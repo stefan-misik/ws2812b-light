@@ -7,6 +7,7 @@
 
 #include "led_strip.h"
 #include "buttons.h"
+#include "shared_storage.h"
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -58,10 +59,11 @@ public:
      *
      * @param type Type of the event to be handled
      * @param param Parameter associated with the event
+     * @param[in,out] storage Shared storage object
      *
      * @return Result of the handling
      */
-    virtual uint8_t handleEvent(Event type, Param param) = 0;
+    virtual uint8_t handleEvent(Event type, Param param, SharedStorage * storage) = 0;
 
     virtual ~Animation() = default;
 };

@@ -2,6 +2,7 @@
 #include "buttons.h"
 #include "time_service.h"
 #include "animation.h"
+#include "shared_storage.h"
 
 #include "animations/rainbow.h"
 #include "animations/color.h"
@@ -13,6 +14,8 @@
 PeriodicRoutine main_routine(1);
 
 LedStrip<100> led_strip;
+
+SharedStorage shared_storage;
 
 ColorAnimation color;
 RainbowAnimation rainbow;
@@ -35,7 +38,8 @@ inline uint8_t ledStripEvent(Animation::Event type)
 {
     return current_animation->handleEvent(
             type,
-            Animation::Param(led_strip.abstarctPtr()));
+            Animation::Param(led_strip.abstarctPtr()),
+            &shared_storage);
 }
 
 void moveAnimation(int8_t offset)
@@ -50,6 +54,7 @@ void moveAnimation(int8_t offset)
     if (current_animation_number != new_animation_number)
     {
         ledStripEvent(Animation::Event::STOP);
+        shared_storage.destroy();
         current_animation_number = new_animation_number;
         current_animation = animations[new_animation_number];
         ledStripEvent(Animation::Event::START);
@@ -66,7 +71,8 @@ void handleButtons()
                 Animation::Event::BUTTON,
                 Animation::Param(
                         static_cast<Buttons::ButtonId>(button),
-                        state));
+                        state),
+                &shared_storage);
 
         if (state & ButtonFilter::PRESS)
         {

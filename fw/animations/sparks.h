@@ -11,16 +11,18 @@ class SparksAnimation: public Animation
 {
 public:
     SparksAnimation():
-        step_(0),
         frequency_(3)
-    {
-    }
+    { }
 
-    uint8_t handleEvent(Event type, Param param) override;
+    uint8_t handleEvent(Event type, Param param, SharedStorage * storage) override;
 
 private:
-    uint8_t step_;
     uint8_t frequency_;
+
+    struct Shared
+    {
+        uint8_t step = 0;
+    };
 };
 
 #endif  // ANIMATIONS_SPARKS_H_

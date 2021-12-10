@@ -10,17 +10,15 @@
 class ColorAnimation: public Animation
 {
 public:
-    ColorAnimation():
-        color_(0),
-        redraw_(false)
-    {
-    }
-
-    uint8_t handleEvent(Event type, Param param) override;
+    uint8_t handleEvent(Event type, Param param, SharedStorage * storage) override;
 
 private:
-    uint8_t color_;
-    bool redraw_;
+    uint8_t color_ = 0;
+
+    struct Shared
+    {
+        bool redraw = false;
+    };
 };
 
 #endif  // ANIMATIONS_COLOR_H_

@@ -12,19 +12,20 @@ class RainbowAnimation: public Animation
 public:
     RainbowAnimation():
         space_increment_(8),
-        time_increment_(4),
-        step_(0),
-        hue_(0)
+        time_increment_(4)
     { }
 
-    uint8_t handleEvent(Event type, Param param) override;
+    uint8_t handleEvent(Event type, Param param, SharedStorage * storage) override;
 
 private:
     uint8_t space_increment_: 4;
     uint8_t time_increment_: 4;
 
-    uint8_t step_;
-    uint16_t hue_;
+    struct Shared
+    {
+        uint8_t step = 0;
+        uint16_t hue = 0;
+    };
 };
 
 #endif  // ANIMATIONS_RAINBOW_H_

@@ -3,20 +3,22 @@
 #include <stdlib.h>
 
 
-uint8_t SparksAnimation::handleEvent(Event type, Param param)
+uint8_t SparksAnimation::handleEvent(Event type, Param param, SharedStorage * storage)
 {
+    auto s = [=]() -> auto & { return *storage->get<Shared>(); };
+
     switch (type)
     {
     case Event::START:
-        step_ = 0;
+        storage->create<Shared>();
         return Result::IS_OK;
 
     case Event::UPDATE:
     {
-        ++step_;
-        if (7 != step_)
+        ++(s().step);
+        if (7 != s().step)
             return Result::IGNORE_DEFAULT;
-        step_ = 0;
+        s().step = 0;
 
         for (auto & led: *param.ledStrip())
             led = {0x47, 0x30, 0x0D};

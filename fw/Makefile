@@ -36,7 +36,7 @@ SRC  =  \
 
 CPPFLAGS  = -I. -DF_CPU=$(DEF_FREQ)UL -D__$(DEF_MCU)__
 CFLAGS    = -c -ggdb -Os -mmcu=$(MCU)
-CXXFLAGS  = -c -ggdb -Os -std=c++14 -fno-exceptions -mmcu=$(MCU)
+CXXFLAGS  = -std=c++14 -c -ggdb -Os -std=c++14 -fno-exceptions -mmcu=$(MCU)
 LDFLAGS   = -ggdb -Og -mmcu=$(MCU)
 LDLIBS    =
 SIZEFLAGS = -C --mcu=$(MCU)

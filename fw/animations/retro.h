@@ -11,27 +11,30 @@ class RetroAnimation: public Animation
 {
 public:
     RetroAnimation():
-        delay_(0),
-        variant_(0),
-        state_(0)
+        variant_(0)
     { }
 
-    uint8_t handleEvent(Event type, Param param) override;
+    uint8_t handleEvent(Event type, Param param, SharedStorage * storage) override;
 
 private:
     static const uint8_t VARIANT_CNT = 4;
 
-    uint16_t delay_;
     uint8_t variant_: 4;
-    uint8_t state_: 4;
 
-    uint8_t render(AbstractLedStrip * leds);
-
-    void reset()
+    struct Shared
     {
-        delay_ = 0;
-        state_ = 0;
-    }
+        uint16_t delay = 0;
+        uint8_t state = 0;
+
+        void reset()
+        {
+            delay = 0;
+            state = 0;
+        }
+    };
+
+    uint8_t render(AbstractLedStrip * leds, Shared * shared);
+
 };
 
 #endif  // ANIMATIONS_RETRO_H_

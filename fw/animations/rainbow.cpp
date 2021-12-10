@@ -2,22 +2,24 @@
 
 #include "tools/color.h"
 
-uint8_t RainbowAnimation::handleEvent(Event type, Param param)
+uint8_t RainbowAnimation::handleEvent(Event type, Param param, SharedStorage * storage)
 {
+    auto s = [=]() -> auto & { return *storage->get<Shared>(); };
+
     switch (type)
     {
     case Event::START:
-        step_ = 0;
+        storage->create<Shared>();
         return Result::IS_OK;
 
     case Event::UPDATE:
     {
-        ++step_;
-        if (2 != step_)
+        ++(s().step);
+        if (2 != s().step)
             return Result::IGNORE_DEFAULT;
-        step_ = 0;
+        s().step = 0;
 
-        uint16_t hue = hue_;
+        uint16_t hue = s().hue;
         LedState color;
         for (auto & led: *param.ledStrip())
         {
@@ -26,7 +28,7 @@ uint8_t RainbowAnimation::handleEvent(Event type, Param param)
             led = color;
         }
 
-        hue_ = incrementHue(hue_, time_increment_);
+        s().hue = incrementHue(s().hue, time_increment_);
 
         return Result::IS_OK;
     }

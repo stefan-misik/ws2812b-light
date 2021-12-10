@@ -36,21 +36,24 @@ inline void copyColors(LedState (&led)[C_CNT_])
 }
 
 
-uint8_t RetroAnimation::handleEvent(Event type, Param param)
+uint8_t RetroAnimation::handleEvent(Event type, Param param, SharedStorage * storage)
 {
+    auto s = [=]() -> auto & { return *storage->get<Shared>(); };
+
     switch (type)
     {
     case Event::START:
-        reset();
+        storage->create<Shared>();
         return Result::IS_OK;
 
     case Event::UPDATE:
-        if (0 != delay_)
+        if (0 != s().delay)
         {
-            --delay_;
+            --(s().delay);
             return Result::IGNORE_DEFAULT;
         }
-        delay_ = static_cast<uint16_t>(render(param.ledStrip())) << 5;
+        s().delay =
+                static_cast<uint16_t>(render(param.ledStrip(), &s())) << 5;
         return Result::IS_OK;
 
     case Event::STOP:
@@ -62,12 +65,12 @@ uint8_t RetroAnimation::handleEvent(Event type, Param param)
             switch (param.buttonId())
             {
             case ButtonId::UP:
-                reset();
+                s().reset();
                 if (variant_ != (VARIANT_CNT - 1))
                     ++variant_;
                 break;
             case ButtonId::DOWN:
-                reset();
+                s().reset();
                 if (variant_ != 0)
                     --variant_;
                 break;
@@ -78,7 +81,7 @@ uint8_t RetroAnimation::handleEvent(Event type, Param param)
     return Result::IS_OK;
 }
 
-uint8_t RetroAnimation::render(AbstractLedStrip * leds)
+uint8_t RetroAnimation::render(AbstractLedStrip * leds, Shared * shared)
 {
     LedState ram_colors[C_CNT_];
     copyColors(ram_colors);
@@ -91,18 +94,18 @@ uint8_t RetroAnimation::render(AbstractLedStrip * leds)
     case 1:
         for (auto & led: *leds)
         {
-            uint8_t color = ((pos & 0x01) << 1) | (state_ & 0x01);
-            if (state_ & 0x02)
+            uint8_t color = ((pos & 0x01) << 1) | (shared->state & 0x01);
+            if (shared->state & 0x02)
                 color ^= 0x02;
             led = ram_colors[color];
             ++pos;
         }
-        ++state_;
+        ++shared->state;
         return (0 == variant_) ? (rand() & 0x03) + 1 : 4;
 
     case 2:
     case 3:
-        pos = state_++;
+        pos = shared->state++;
         for (auto & led: *leds)
             led = ram_colors[(pos++) & 0x03];
         return (2 == variant_) ? 4 : 255;
