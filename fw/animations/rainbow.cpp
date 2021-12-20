@@ -21,14 +21,14 @@ uint8_t RainbowAnimation::handleEvent(Event type, Param param, SharedStorage * s
 
         uint16_t hue = s().hue;
         LedState color;
-        for (auto & led: *param.ledStrip())
+        for (auto & led: param.ledStrip())
         {
             toSaturatedHue(hue, &color);
             hue = incrementHue(hue, space_increment_);
             led = color;
         }
 
-        s().hue = incrementHue(s().hue, time_increment_);
+        s().hue = incrementHue(s().hue, -time_increment_);
 
         return Result::IS_OK;
     }

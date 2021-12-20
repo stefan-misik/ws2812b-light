@@ -20,13 +20,13 @@ uint8_t SparksAnimation::handleEvent(Event type, Param param, SharedStorage * st
             return Result::IGNORE_DEFAULT;
         s().step = 0;
 
-        for (auto & led: *param.ledStrip())
+        for (auto & led: param.ledStrip())
             led = {0x47, 0x30, 0x0D};
 
         const uint16_t mask = 0x7FFF >> frequency_;
         const int num = (rand() & mask);
-        if (num < param.ledStrip()->led_count)
-            param.ledStrip()->leds[num] = {0xFF, 0xFF, 0xFF};
+        if (num < param.ledStrip().led_count)
+            param.ledStrip().leds[num] = {0xFF, 0xFF, 0xFF};
 
         return Result::IS_OK;
     }

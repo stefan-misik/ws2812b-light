@@ -103,9 +103,9 @@ struct Animation::Param
     void setButtonId(ButtonId new_id) { setParamHi(new_id); }
     void setButtonState(uint8_t new_state) { setParamLo(new_state); }
 
-    AbstractLedStrip * ledStrip() const
+    AbstractLedStrip & ledStrip() const
     {
-        return reinterpret_cast<AbstractLedStrip *>(value);
+        return *reinterpret_cast<AbstractLedStrip *>(value);
     }
     void setLedStrip(AbstractLedStrip * new_led_strip)
     {

@@ -53,7 +53,7 @@ uint8_t RetroAnimation::handleEvent(Event type, Param param, SharedStorage * sto
             return Result::IGNORE_DEFAULT;
         }
         s().delay =
-                static_cast<uint16_t>(render(param.ledStrip(), &s())) << 5;
+                static_cast<uint16_t>(render(&(param.ledStrip()), &s())) << 5;
         return Result::IS_OK;
 
     case Event::STOP:

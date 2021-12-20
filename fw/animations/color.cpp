@@ -45,7 +45,7 @@ uint8_t ColorAnimation::handleEvent(Event type, Param param, SharedStorage * sto
             LedState color;
             getColor(&color, color_);
 
-            for (auto & led: *param.ledStrip())
+            for (auto & led: param.ledStrip())
                 led = color;
 
             s().redraw = false;
