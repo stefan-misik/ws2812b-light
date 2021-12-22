@@ -7,9 +7,37 @@
 #include "animations/rainbow.h"
 #include "animations/color.h"
 #include "animations/retro.h"
-#include "animations/sparks.h"
+#include "animations/twinkle.h"
 
 #include <util/delay.h>
+#include <avr/pgmspace.h>
+
+static const LedState twinkle_sparks_seq[] PROGMEM =
+{
+        LedState{0x47300D},
+        LedState{0xFFFFFF},
+        LedState{0xEDCC9C},
+        LedState{0xDEA34A},
+        LedState{0xA8711F},
+        LedState{0x704B15},
+        {0x00, 0x00, 0x00},
+};
+
+static const LedState twinkle_shimmer_seq[] PROGMEM =
+{
+        LedState{0x47300D},
+
+        LedState{0x2F2009},
+        LedState{0x1A1105},
+
+        LedState{0x040301},
+
+        LedState{0x1A1105},
+        LedState{0x2F2009},
+
+        {0x00, 0x00, 0x00},
+};
+
 
 PeriodicRoutine main_routine(1);
 
@@ -20,13 +48,15 @@ SharedStorage shared_storage;
 ColorAnimation color;
 RainbowAnimation rainbow;
 RetroAnimation retro;
-SparksAnimation sparks;
+TwinkleAnimation twinkle_sparks{twinkle_sparks_seq};
+TwinkleAnimation twinkle_shimmer{twinkle_shimmer_seq};
 
 Animation * animations[] = {
     &color,
     &rainbow,
     &retro,
-    &sparks,
+    &twinkle_sparks,
+    &twinkle_shimmer,
 };
 constexpr int8_t ANIMATION_COUNT = sizeof(animations) / sizeof(animations[0]);
 

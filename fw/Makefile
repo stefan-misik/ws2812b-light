@@ -31,7 +31,7 @@ SRC  =  \
         color.cpp  \
         rainbow.cpp  \
         retro.cpp  \
-        sparks.cpp  \
+        twinkle.cpp  \
     )
 
 CPPFLAGS  = -I. -DF_CPU=$(DEF_FREQ)UL -D__$(DEF_MCU)__

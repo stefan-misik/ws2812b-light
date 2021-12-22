@@ -15,6 +15,17 @@ using AbstractLedStrip = LedStrip<1>;
 
 struct LedState
 {
+    LedState() = default;
+    constexpr LedState(const LedState &) = default;
+
+    explicit constexpr LedState(uint32_t color):
+            red(color >> 16), green(color >> 8), blue(color >> 0)
+    {}
+
+    constexpr LedState(uint8_t red, uint8_t green, uint8_t blue):
+            red(red), green(green), blue(blue)
+    { }
+
     uint8_t red;
     uint8_t green;
     uint8_t blue;
