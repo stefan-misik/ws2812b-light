@@ -32,6 +32,7 @@ SRC  =  \
         rainbow.cpp  \
         retro.cpp  \
         twinkle.cpp  \
+        shifting_color.cpp  \
     )  \
     animation_list.cpp
 

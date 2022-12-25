@@ -2,6 +2,8 @@
 
 #include <avr/pgmspace.h>
 
+#include "led_strip.h"
+
 
 static const LedState twinkle_sparks_seq[] PROGMEM =
 {
@@ -29,11 +31,19 @@ static const LedState twinkle_shimmer_seq[] PROGMEM =
         {0x00, 0x00, 0x00},
 };
 
+static const ShiftingColorAnimation::Segment shifting_color_seq[] PROGMEM =
+{
+        {LedState{0xFF, 0x00, 0x00}, 50},
+        {LedState{0xFF, 0xFF, 0xFF}, 50},
+        {LedState{0x00, 0x00, 0x00}, 0},
+};
+
 AnimationList::AnimationList():
         current_{&color_},
         current_id_{0},
         twinkle_sparks_{twinkle_sparks_seq},
-        twinkle_shimmer_{twinkle_shimmer_seq}
+        twinkle_shimmer_{twinkle_shimmer_seq},
+        shifting_color_{shifting_color_seq}
 {
 }
 
@@ -47,5 +57,6 @@ Animation * AnimationList::getById(uint8_t id)
     case 2: return &retro_;
     case 3: return &twinkle_sparks_;
     case 4: return &twinkle_shimmer_;
+    case 5: return &shifting_color_;
     }
 }

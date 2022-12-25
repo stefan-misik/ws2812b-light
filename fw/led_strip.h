@@ -5,10 +5,11 @@
 #ifndef LED_STRIP_H_
 #define LED_STRIP_H_
 
-#include <stdlib.h>
 #include <stdint.h>
 
-template <size_t LED_C>
+using LedSize = uint8_t;
+
+template <LedSize LED_C>
 struct LedStrip;
 
 using AbstractLedStrip = LedStrip<1>;
@@ -34,15 +35,44 @@ struct LedState
 /**
  * @brief State of a LED strip
  */
-template <size_t LED_C>
+template <LedSize LED_C>
 struct LedStrip
 {
     LedStrip():
         led_count(LED_C)
     { }
 
-    const size_t led_count;
+    const LedSize led_count;
     LedState leds[LED_C];
+
+    /**
+     * @brief Get the ID of the next LED
+     *
+     * Wrap to the begin at the end.
+     *
+     * @param id LED ID
+     * @return Next LED ID
+     */
+    LedSize nextId(LedSize id) const
+    {
+        ++id;
+        if (id == led_count)
+            id = 0;
+        return id;
+    }
+
+    /**
+     * @brief Get the id of previous LED
+     *
+     * Wrap to the end at the begin.
+     *
+     * @param id LED ID
+     * @return Previous LED ID
+     */
+    LedSize prevId(LedSize id) const
+    {
+        return 0 == id ? (led_count - 1) : (id - 1);
+    }
 
     /**
      * @brief Operator for easy access to configured LED states
@@ -50,7 +80,7 @@ struct LedStrip
      * @param led Led number
      * @return Reference to the LED state
      */
-    LedState & operator[] (size_t led)
+    LedState & operator[] (LedSize led)
     {
         return leds[led];
     }

@@ -12,6 +12,7 @@
 #include "animations/color.h"
 #include "animations/retro.h"
 #include "animations/twinkle.h"
+#include "animations/shifting_color.h"
 
 
 class AnimationList
@@ -24,7 +25,7 @@ public:
 
     uint8_t size() const
     {
-        return 5;
+        return 6;
     }
 
     void setCurrentId(uint8_t id)
@@ -44,6 +45,7 @@ private:
     RetroAnimation retro_;
     TwinkleAnimation twinkle_sparks_;
     TwinkleAnimation twinkle_shimmer_;
+    ShiftingColorAnimation shifting_color_;
 };
 
 
