@@ -65,7 +65,9 @@ public:
      */
     virtual uint8_t handleEvent(Event type, Param param, SharedStorage * storage) = 0;
 
-    virtual ~Animation() = default;
+    // Theses objects are never destroyed, and we can save significant amount of
+    // memory in v-tables, since they are copied in RAM
+    //virtual ~Animation() = default;
 };
 
 struct Animation::Param
