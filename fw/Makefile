@@ -32,7 +32,8 @@ SRC  =  \
         rainbow.cpp  \
         retro.cpp  \
         twinkle.cpp  \
-    )
+    )  \
+    animation_list.cpp
 
 CPPFLAGS  = -I. -DF_CPU=$(DEF_FREQ)UL -D__$(DEF_MCU)__
 CFLAGS    = -c -ggdb -Os -mmcu=$(MCU)
