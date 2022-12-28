@@ -1,10 +1,11 @@
 #include "tools/color.h"
 
 
-void blendColors(LedState * color, const LedState & secondary, uint8_t blend)
+void blendColors(LedState * color, const LedState & secondary, uint8_t num, uint8_t den)
 {
-    const uint16_t primary_blend = 256 - blend;
-    const uint16_t secondary_blend = blend;
+    const uint16_t secondary_blend = (static_cast<uint16_t>(num) * static_cast<uint16_t>(256)) /
+            static_cast<uint16_t>(den);
+    const uint16_t primary_blend = 256 - secondary_blend;
 
     uint16_t acc;
 

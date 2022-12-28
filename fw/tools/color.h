@@ -13,9 +13,10 @@ static const uint16_t MAX_HUE = 0x02FF;
  *
  * @param[in,out] color
  * @param[in] secondary
- * @param blend Amount of the secondary color to blend
+ * @param num Numerator
+ * @param den Denominator
  */
-void blendColors(LedState * color, const LedState & secondary, uint8_t blend);
+void blendColors(LedState * color, const LedState & secondary, uint8_t num, uint8_t den);
 
 /**
  * @brief Generate color with given hue value

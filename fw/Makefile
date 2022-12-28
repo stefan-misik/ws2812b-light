@@ -27,7 +27,6 @@ SRC  =  \
     time_service.cpp buttons.cpp  \
     tools/button_filter.cpp  \
     tools/color.cpp  \
-    tools/transition_sequence.cpp  \
     $(addprefix animations/,  \
         color.cpp  \
         rainbow.cpp  \

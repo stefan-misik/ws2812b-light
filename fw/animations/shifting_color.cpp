@@ -3,7 +3,6 @@
 #include <avr/pgmspace.h>
 
 #include "tools/color.h"
-#include "tools/transition_sequence.h"
 
 using Segment = ShiftingColorAnimation::Segment;
 
@@ -90,7 +89,7 @@ void ShiftingColorAnimation::render(AbstractLedStrip * leds, LedSize offset)
         LedState color = seg.color;
         if (seg.length < seg.transition)
         {
-            blendColors(&color, seg.secondary, makeTransitionSequence(seg.transition - seg.length, seg.transition));
+            blendColors(&color, seg.secondary, seg.transition - seg.length, seg.transition);
         }
         (*leds)[pos] = color;
         pos = leds->nextId(pos);
