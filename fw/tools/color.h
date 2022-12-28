@@ -8,9 +8,22 @@
 
 static const uint16_t MAX_HUE = 0x02FF;
 
+/**
+ * @brief Blend two colors
+ *
+ * @param[in,out] color
+ * @param[in] secondary
+ * @param blend Amount of the secondary color to blend
+ */
+void blendColors(LedState * color, const LedState & secondary, uint8_t blend);
 
+/**
+ * @brief Generate color with given hue value
+ *
+ * @param hue
+ * @param[out] color Generated color
+ */
 void toSaturatedHue(uint16_t hue, LedState * color);
-
 
 inline uint16_t incrementHue(uint16_t hue, int8_t value = 1)
 {

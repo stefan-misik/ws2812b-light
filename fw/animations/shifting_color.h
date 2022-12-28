@@ -14,16 +14,20 @@ public:
     {
         LedState color;
         LedSize length;
+        LedState secondary;
+        LedSize transition;
     };
 
-    ShiftingColorAnimation(const Segment * segments):
+    ShiftingColorAnimation(const Segment * const * segments):
         segments_(segments)
     { }
 
     uint8_t handleEvent(Event type, Param param, SharedStorage * storage) override;
 
 private:
-    const Segment * segments_;
+    const Segment * const * segments_;
+    uint8_t delay_ = 4;
+    uint8_t type_ = 0;
 
     struct Shared
     {

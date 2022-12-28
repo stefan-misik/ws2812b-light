@@ -1,6 +1,27 @@
 #include "tools/color.h"
 
 
+void blendColors(LedState * color, const LedState & secondary, uint8_t blend)
+{
+    const uint16_t primary_blend = 256 - blend;
+    const uint16_t secondary_blend = blend;
+
+    uint16_t acc;
+
+    // Red
+    acc = color->red * primary_blend;
+    acc += secondary.red * secondary_blend;
+    color->red = acc >> 8;
+    // Green
+    acc = color->green * primary_blend;
+    acc += secondary.green * secondary_blend;
+    color->green = acc >> 8;
+    // Blue
+    acc = color->blue * primary_blend;
+    acc += secondary.blue * secondary_blend;
+    color->blue = acc >> 8;
+}
+
 void toSaturatedHue(uint16_t hue, LedState * color)
 {
     const uint8_t secondary_value = static_cast<uint8_t>(hue & 0xFF);
