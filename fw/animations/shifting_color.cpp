@@ -6,18 +6,69 @@
 
 using Segment = ShiftingColorAnimation::Segment;
 
-inline void readPgmSegment(Segment * segment, const Segment * pgm_segment)
+class SegmentWalker
 {
-    segment->color.red = pgm_read_byte(&pgm_segment->color.red);
-    segment->color.green = pgm_read_byte(&pgm_segment->color.green);
-    segment->color.blue = pgm_read_byte(&pgm_segment->color.blue);
-    segment->length = pgm_read_byte(&pgm_segment->length);
+public:
+    SegmentWalker(const Segment * const * all, uint8_t type):
+        start_(reinterpret_cast<const Segment *>(pgm_read_ptr(all + type))),
+        next_ptr_(start_ + 1)
+    {
+        readPgm(&current_, start_);
+        readPgm(&next_, next_ptr_);
+    }
 
-    segment->secondary.red = pgm_read_byte(&pgm_segment->secondary.red);
-    segment->secondary.green = pgm_read_byte(&pgm_segment->secondary.green);
-    segment->secondary.blue = pgm_read_byte(&pgm_segment->secondary.blue);
-    segment->transition = pgm_read_byte(&pgm_segment->transition);
-}
+    void next()
+    {
+        if (0 == current_.length)
+        {
+            current_ = next_;
+            ++next_ptr_;
+            if (!readPgm(&next_, next_ptr_));
+            {
+                next_ptr_ = start_;
+                readPgm(&next_, next_ptr_);
+            }
+        }
+        else
+            --current_.length;
+    }
+
+    const LedState & color() const { return current_.color; }
+    LedSize transitionLength() const { return current_.transition_length; }
+
+    bool isTransitioning() const
+    {
+        return current_.length < current_.transition_length;
+    }
+
+    LedSize transitionPosition() const
+    {
+        return current_.transition_length - current_.length;
+    }
+
+    const LedState & nextColor() const { return next_.color; }
+
+private:
+    const Segment * const start_;
+    const Segment * next_ptr_;
+    Segment current_;
+    Segment next_;
+
+    static bool readPgm(Segment * segment, const Segment * pgm_segment)
+    {
+        const LedSize length = pgm_read_byte(&pgm_segment->length);
+        if (0 == length)
+            return false;
+
+        segment->color.red = pgm_read_byte(&pgm_segment->color.red);
+        segment->color.green = pgm_read_byte(&pgm_segment->color.green);
+        segment->color.blue = pgm_read_byte(&pgm_segment->color.blue);
+        segment->length = length;
+        segment->transition_length = pgm_read_byte(&pgm_segment->transition_length);
+
+        return true;
+    }
+};
 
 inline uint8_t nextType(const Segment * const * segments, uint8_t current)
 {
@@ -67,29 +118,16 @@ void ShiftingColorAnimation::render(AbstractLedStrip * leds, LedSize offset)
 {
     const LedSize last = leds->prevId(offset);
     LedSize pos = offset;
-    const Segment * const type_seg = reinterpret_cast<const Segment *>(pgm_read_ptr(segments_ + type_));
-    const Segment * cur_seg = type_seg;
-    Segment seg;
-    readPgmSegment(&seg, cur_seg);
+    SegmentWalker segw{segments_, type_};
+
     do
     {
-        if (0 == seg.length)
-        {
-            ++cur_seg;
-            readPgmSegment(&seg, cur_seg);
-            if (0 == seg.length)
-            {
-                cur_seg = type_seg;
-                readPgmSegment(&seg, cur_seg);
-            }
-        }
-        else
-            --seg.length;
+        segw.next();
 
-        LedState color = seg.color;
-        if (seg.length < seg.transition)
+        LedState color = segw.color();
+        if (segw.isTransitioning())
         {
-            blendColors(&color, seg.secondary, seg.transition - seg.length, seg.transition);
+            blendColors(&color, segw.nextColor(), segw.transitionPosition(), segw.transitionLength());
         }
         (*leds)[pos] = color;
         pos = leds->nextId(pos);

@@ -33,15 +33,15 @@ static const LedState twinkle_shimmer_seq[] PROGMEM =
 
 static const ShiftingColorAnimation::Segment shifting_color_0_seq[] PROGMEM =
 {
-        {LedState{0xFF, 0x00, 0x00}, 30, LedState{85, 85, 85}, 30},
-        {LedState{85, 85, 85}, 70, LedState{0xFF, 0x00, 0x00}, 30},
+        {LedState{0xFF, 0x00, 0x00}, 30, 30},
+        {LedState{85, 85, 85}, 70, 30},
         {LedState{0x00, 0x00, 0x00}, 0},
 };
 
 static const ShiftingColorAnimation::Segment shifting_color_1_seq[] PROGMEM =
 {
-        {LedState{0x00, 0x00, 0xFF}, 30, LedState{85, 85, 85}, 30},
-        {LedState{85, 85, 85}, 70, LedState{0x00, 0x00, 0xFF}, 30},
+        {LedState{0x00, 0x00, 0xFF}, 30, 30},
+        {LedState{85, 85, 85}, 70, 30},
         {LedState{0x00, 0x00, 0x00}, 0},
 };
 

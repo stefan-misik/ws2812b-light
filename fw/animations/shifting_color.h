@@ -14,8 +14,7 @@ public:
     {
         LedState color;
         LedSize length;
-        LedState secondary;
-        LedSize transition;
+        LedSize transition_length;
     };
 
     ShiftingColorAnimation(const Segment * const * segments):
