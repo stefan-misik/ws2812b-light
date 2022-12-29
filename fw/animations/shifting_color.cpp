@@ -106,7 +106,7 @@ uint8_t ShiftingColorAnimation::handleEvent(Event type, Param param, SharedStora
             switch (param.buttonId())
             {
             case ButtonId::UP: type_ = nextType(segments_, type_); break;
-            case ButtonId::DOWN: delay_ = 15 == delay_ ? 0 : delay_ + 1; break;
+            case ButtonId::DOWN: delay_ = 15 == delay_ ? 1 : delay_ + 1; s().step = 0; break;
             }
         }
         return Result::IS_OK;
