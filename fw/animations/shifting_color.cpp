@@ -120,16 +120,17 @@ void ShiftingColorAnimation::render(AbstractLedStrip * leds, LedSize offset)
     LedSize pos = offset;
     SegmentWalker segw{segments_, type_};
 
-    do
+    while (true)
     {
         segw.next();
 
         LedState color = segw.color();
         if (segw.isTransitioning())
-        {
             blendColors(&color, segw.nextColor(), segw.transitionPosition(), segw.transitionLength());
-        }
         (*leds)[pos] = color;
+
+        if (pos == last)
+            break;
         pos = leds->nextId(pos);
-    } while (pos != last);
+    }
 }
