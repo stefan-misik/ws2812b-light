@@ -23,14 +23,13 @@ public:
         {
             current_ = next_;
             ++next_ptr_;
-            if (!readPgm(&next_, next_ptr_));
+            if (!readPgm(&next_, next_ptr_))
             {
                 next_ptr_ = start_;
                 readPgm(&next_, next_ptr_);
             }
         }
-        else
-            --current_.length;
+        --current_.length;
     }
 
     const LedState & color() const { return current_.color; }
