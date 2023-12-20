@@ -5,6 +5,10 @@
 #ifndef LED_STRIP_H_
 #define LED_STRIP_H_
 
+#ifndef LED_ORDER
+#define LED_ORDER red,green,blue
+#endif  // LED_ORDER
+
 #include <stdint.h>
 
 using LedSize = uint8_t;
@@ -27,9 +31,7 @@ struct LedState
             red(red), green(green), blue(blue)
     { }
 
-    uint8_t red;
-    uint8_t green;
-    uint8_t blue;
+    uint8_t LED_ORDER;
 };
 
 /**

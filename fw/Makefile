@@ -1,5 +1,7 @@
 # Makefile for embedded part of WS2812B Christmas lights
 
+LED_ORDER = red,green,blue
+
 CC     = avr-gcc
 CXX    = avr-g++
 OBJCPY = avr-objcopy
@@ -36,7 +38,7 @@ SRC  =  \
     )  \
     animation_list.cpp
 
-CPPFLAGS  = -I. -DF_CPU=$(DEF_FREQ)UL -D__$(DEF_MCU)__
+CPPFLAGS  = -I. -DF_CPU=$(DEF_FREQ)UL -D__$(DEF_MCU)__ -DLED_ORDER=$(LED_ORDER)
 CFLAGS    = -c -ggdb -O2 -mmcu=$(MCU)
 CXXFLAGS  = -std=c++14 -c -ggdb -O2 -std=c++14 -fno-exceptions -mmcu=$(MCU)
 LDFLAGS   = -ggdb -O2 -mmcu=$(MCU) -Wl,-Map=$(PROJ).map
