@@ -61,12 +61,20 @@ static const ShiftingColorAnimation::Segment shifting_color_3_seq[] PROGMEM =
         {LedState{0x00, 0x00, 0x00}, 0, 0},
 };
 
+static const ShiftingColorAnimation::Segment shifting_color_4_seq[] PROGMEM =
+{
+        {LedState{0xC0, 0x5F, 0x00}, 25, 10},
+        {LedState{0x00, 0x00, 0xFF}, 25, 10},
+        {LedState{0x00, 0x00, 0x00}, 0, 0},
+};
+
 static const ShiftingColorAnimation::Segment * const shifting_color_seqs[] PROGMEM =
 {
         shifting_color_0_seq,
         shifting_color_1_seq,
         shifting_color_2_seq,
         shifting_color_3_seq,
+        shifting_color_4_seq,
         nullptr
 };
 
