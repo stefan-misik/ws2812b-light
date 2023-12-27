@@ -26,6 +26,7 @@ SRC  =  \
     system.cpp  \
     main.cpp  \
     led_controller.cpp  \
+    nvm_storage.cpp  \
     time_service.cpp buttons.cpp  \
     tools/button_filter.cpp  \
     tools/color.cpp  \

@@ -109,6 +109,23 @@ uint8_t ShiftingColorAnimation::handleEvent(Event type, Param param, SharedStora
             }
         }
         return Result::IS_OK;
+
+    case Event::SAVE_CONFIG:
+    {
+        auto & data = param.saveConfigurationData();
+        data.data[0] = delay_;
+        data.data[1] = type_;
+        return Result::IS_OK;
+
+    }
+
+    case Event::LOAD_CONFIG:
+    {
+        const auto & data = param.loadConfigurationData();
+        delay_ = data.data[0];
+        type_ = data.data[1];
+        return Result::IS_OK;
+    }
     }
     return Result::IS_OK;
 }

@@ -8,6 +8,7 @@
 #include "led_strip.h"
 #include "buttons.h"
 #include "shared_storage.h"
+#include "nvm_storage.h"
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -51,7 +52,17 @@ public:
         /**
          * @brief Handle the button press
          */
-        BUTTON
+        BUTTON,
+
+        /**
+         * @brief Save the current configuration of the animation
+         */
+        SAVE_CONFIG,
+
+        /**
+         * @brief Load the configuration of the animation
+         */
+        LOAD_CONFIG
     };
 
     /**
@@ -88,6 +99,10 @@ struct Animation::Param
             value(reinterpret_cast<uintptr_t>(led_strip))
     { }
 
+    explicit Param(AnimationConfigurationData * config):
+            value(reinterpret_cast<uintptr_t>(config))
+    { }
+
     uint8_t paramHi() const { return value >> 8; }
     uint8_t paramLo() const { return value & 0xFF; }
 
@@ -112,6 +127,19 @@ struct Animation::Param
     void setLedStrip(AbstractLedStrip * new_led_strip)
     {
         value = reinterpret_cast<uintptr_t>(new_led_strip);
+    }
+
+    const AnimationConfigurationData & loadConfigurationData() const
+    {
+        return *reinterpret_cast<const AnimationConfigurationData *>(value);
+    }
+    AnimationConfigurationData & saveConfigurationData() const
+    {
+        return *reinterpret_cast<AnimationConfigurationData *>(value);
+    }
+    void setConfigurationData(AnimationConfigurationData * config)
+    {
+        value = reinterpret_cast<uintptr_t>(config);
     }
 
     uintptr_t value;

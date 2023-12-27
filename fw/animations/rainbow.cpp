@@ -46,6 +46,23 @@ uint8_t RainbowAnimation::handleEvent(Event type, Param param, SharedStorage * s
             }
         }
         return Result::IS_OK;
+
+    case Event::SAVE_CONFIG:
+    {
+        auto & data = param.saveConfigurationData();
+        data.data[0] = space_increment_;
+        data.data[1] = time_increment_;
+        return Result::IS_OK;
+
+    }
+
+    case Event::LOAD_CONFIG:
+    {
+        const auto & data = param.loadConfigurationData();
+        space_increment_ = data.data[0];
+        time_increment_ = data.data[1];
+        return Result::IS_OK;
+    }
     }
     return Result::IS_OK;
 }

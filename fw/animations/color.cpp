@@ -73,6 +73,14 @@ uint8_t ColorAnimation::handleEvent(Event type, Param param, SharedStorage * sto
             }
         }
         return Result::IS_OK;
+
+    case Event::SAVE_CONFIG:
+        param.saveConfigurationData().data[0] = static_cast<char>(color_);
+        return Result::IS_OK;
+
+    case Event::LOAD_CONFIG:
+        color_ = static_cast<uint8_t>(param.loadConfigurationData().data[0]);
+        return Result::IS_OK;
     }
     return Result::IS_OK;
 }

@@ -53,6 +53,21 @@ uint8_t TwinkleAnimation::handleEvent(Event type, Param param, SharedStorage * s
             }
         }
         return Result::IS_OK;
+
+    case Event::SAVE_CONFIG:
+    {
+        auto & data = param.saveConfigurationData();
+        data.data[0] = frequency_;
+        return Result::IS_OK;
+
+    }
+
+    case Event::LOAD_CONFIG:
+    {
+        const auto & data = param.loadConfigurationData();
+        frequency_ = data.data[0];
+        return Result::IS_OK;
+    }
     }
     return Result::IS_OK;
 }
