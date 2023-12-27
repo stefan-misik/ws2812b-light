@@ -41,7 +41,7 @@ SRC  =  \
 
 CPPFLAGS  = -I. -DF_CPU=$(DEF_FREQ)UL -D__$(DEF_MCU)__ -DLED_ORDER=$(LED_ORDER)
 CFLAGS    = -c -ggdb -O2 -mmcu=$(MCU)
-CXXFLAGS  = -std=c++14 -c -ggdb -O2 -std=c++14 -fno-exceptions -mmcu=$(MCU)
+CXXFLAGS  = -c -ggdb -O2 -mmcu=$(MCU) -std=c++14 -fno-exceptions
 LDFLAGS   = -ggdb -O2 -mmcu=$(MCU) -Wl,-Map=$(PROJ).map
 LDLIBS    =
 SIZEFLAGS = -C --mcu=$(MCU)
