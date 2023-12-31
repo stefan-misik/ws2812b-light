@@ -101,4 +101,6 @@ private:
     uint8_t period_length_;
     uint8_t last_routine_run_;
 };
+
+
 #endif  // TIME_SERVICE_H_

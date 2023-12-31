@@ -67,3 +67,8 @@ bool EepromBuffer::continueRead()
 }
 
 
+auto NvmStorage::run() -> Operation
+{
+    return Operation::NONE;
+}
+

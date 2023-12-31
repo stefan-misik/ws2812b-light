@@ -1,6 +1,7 @@
 #include "led_controller.h"
 #include "buttons.h"
 #include "time_service.h"
+#include "nvm_storage.h"
 #include "animation.h"
 #include "shared_storage.h"
 #include "animation_list.h"
@@ -12,6 +13,7 @@ PeriodicRoutine main_routine(1);
 
 LedStrip<100> led_strip;
 SharedStorage shared_storage;
+NvmStorage nvm_storage;
 AnimationList animations;
 
 
@@ -38,7 +40,7 @@ void moveAnimation(int8_t offset)
     }
 }
 
-void handleButtons()
+inline void handleButtons()
 {
     Buttons::update();
     for (uint8_t button = 0; button < Buttons::BUTTON_COUNT; ++button)
@@ -69,6 +71,41 @@ void handleButtons()
     }
 }
 
+inline void handleNvmStorage()
+{
+    switch (nvm_storage.run())
+    {
+    case NvmStorage::Operation::NONE:
+        break;
+
+    case NvmStorage::Operation::WRITE_GLOBAL:
+    {
+        auto * global_config = nvm_storage.writeGlobalConfiguration();
+        global_config->animatio_id = animations.currentId();
+        break;
+    }
+
+    case NvmStorage::Operation::WRITE_ANIMATION:
+    {
+        // auto * animation_config = nvm_storage.writeAnimationConfigurationData();
+        break;
+    }
+
+    case NvmStorage::Operation::READ_GLOBAL:
+    {
+        const auto * global_config = nvm_storage.readGlobalConfiguration();
+        animations.setCurrentId(global_config->animatio_id);
+        break;
+    }
+
+    case NvmStorage::Operation::READ_ANIMATION:
+    {
+        // const auto * animation_config = nvm_storage.readAnimationConfigurationData();
+        break;
+    }
+    }
+}
+
 /**
  * @brief Periodic routine called every 8 milliseconds
  */
@@ -89,6 +126,7 @@ int main(void)
     ledStripEvent(Animation::Event::START);
     while(1)
     {
+        handleNvmStorage();
         if (main_routine.shouldRun())
         {
             mainPeriodicRoutine();
