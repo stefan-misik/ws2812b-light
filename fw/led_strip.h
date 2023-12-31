@@ -20,7 +20,7 @@ using AbstractLedStrip = LedStrip<1>;
 
 struct LedState
 {
-    LedState() = default;
+    LedState() = default; // @suppress("Class members should be properly initialized") leave uninitialized by default
     constexpr LedState(const LedState &) = default;
 
     explicit constexpr LedState(uint32_t color):

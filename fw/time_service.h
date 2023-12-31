@@ -26,9 +26,19 @@ public:
     }
 
     /**
+     * @brief Get the long form of current time
+     *
+     * @return Time in 8 milliseconds
+     */
+    static uint16_t getLongTime()
+    {
+        return current_time_;
+    }
+
+    /**
      * @brief Current time in 8 milliseconds
      */
-    static volatile uint8_t current_time_;
+    static volatile uint16_t current_time_;
 };
 
 

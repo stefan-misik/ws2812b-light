@@ -4,7 +4,7 @@
 #include <avr/interrupt.h>
 #include <util/atomic.h>
 
-volatile uint8_t TimeService::current_time_;
+volatile uint16_t TimeService::current_time_;
 
 
 void TimeService::initialize()
@@ -51,6 +51,6 @@ bool PeriodicRoutine::shouldRun(uint8_t time)
 
 ISR(TIM1_COMPA_vect)
 {
-    ++TimeService::current_time_;
+    TimeService::current_time_ = TimeService::current_time_ + 1;
 }
 
