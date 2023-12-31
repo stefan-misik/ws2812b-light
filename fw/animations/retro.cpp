@@ -74,6 +74,7 @@ uint8_t RetroAnimation::handleEvent(Event type, Param param, SharedStorage * sto
                 if (variant_ != 0)
                     --variant_;
                 break;
+            default: break;
             }
         }
         return Result::IS_OK;

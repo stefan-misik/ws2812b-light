@@ -43,6 +43,7 @@ uint8_t RainbowAnimation::handleEvent(Event type, Param param, SharedStorage * s
             {
             case ButtonId::UP: ++space_increment_; break;
             case ButtonId::DOWN: ++time_increment_; break;
+            default: break;
             }
         }
         return Result::IS_OK;

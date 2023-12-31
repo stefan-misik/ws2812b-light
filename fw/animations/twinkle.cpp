@@ -50,6 +50,7 @@ uint8_t TwinkleAnimation::handleEvent(Event type, Param param, SharedStorage * s
                 if (0 != frequency_)
                     --frequency_;
                 break;
+            default: break;
             }
         }
         return Result::IS_OK;

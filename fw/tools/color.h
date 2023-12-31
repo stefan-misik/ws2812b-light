@@ -31,7 +31,7 @@ inline uint16_t incrementHue(uint16_t hue, int8_t value = 1)
     int16_t new_value = value + static_cast<int16_t>(hue);
     if (new_value < 0)
         return (MAX_HUE + 1) + new_value;
-    else if (new_value > MAX_HUE)
+    else if (new_value > static_cast<int16_t>(MAX_HUE))
         return new_value - (MAX_HUE + 1);
     else
         return new_value;

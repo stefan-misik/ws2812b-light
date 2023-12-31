@@ -70,6 +70,7 @@ uint8_t ColorAnimation::handleEvent(Event type, Param param, SharedStorage * sto
                 color_ = (0 == color_) ? COLOR_CNT - 1 : color_ - 1;
                 s().redraw = true;
                 break;
+            default: break;
             }
         }
         return Result::IS_OK;

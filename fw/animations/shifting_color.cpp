@@ -11,7 +11,8 @@ class SegmentWalker
 public:
     SegmentWalker(const Segment * const * all, uint8_t type):
         start_(reinterpret_cast<const Segment *>(pgm_read_ptr(all + type))),
-        next_ptr_(start_ + 1)
+        next_ptr_(start_ + 1),
+        current_()
     {
         readPgm(&current_, start_);
         readPgm(&next_, next_ptr_);
@@ -106,6 +107,7 @@ uint8_t ShiftingColorAnimation::handleEvent(Event type, Param param, SharedStora
             {
             case ButtonId::UP: type_ = nextType(segments_, type_); break;
             case ButtonId::DOWN: delay_ = 15 == delay_ ? 1 : delay_ + 1; s().step = 0; break;
+            default: break;
             }
         }
         return Result::IS_OK;
