@@ -2976,7 +2976,7 @@
     (property "Value" "Buzzer" (at 154.305 128.905 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "Buzzer_Beeper:Buzzer_12x9.5RM7.6" (at 149.86 125.095 90)
+    (property "Footprint" "project-specific:Buzzer_Stacked" (at 149.86 125.095 90)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 149.86 125.095 90)
