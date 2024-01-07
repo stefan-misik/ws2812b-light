@@ -409,7 +409,9 @@
     "pinned_footprint_libs": [
       "project-specific"
     ],
-    "pinned_symbol_libs": []
+    "pinned_symbol_libs": [
+      "project-specific"
+    ]
   },
   "meta": {
     "filename": "att85.kicad_pro",
