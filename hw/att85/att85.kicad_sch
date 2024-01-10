@@ -3019,7 +3019,7 @@
     (property "Value" "ATtiny85-20P" (at 138.049 70.231 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
-    (property "Footprint" "Package_DIP:DIP-8_W7.62mm" (at 142.875 84.455 0)
+    (property "Footprint" "Package_DIP:DIP-8_W7.62mm_Socket" (at 142.875 84.455 0)
       (effects (font (size 1.27 1.27) italic) hide)
     )
     (property "Datasheet" "http://ww1.microchip.com/downloads/en/DeviceDoc/atmel-2586-avr-8-bit-microcontroller-attiny25-attiny45-attiny85_datasheet.pdf" (at 142.875 84.455 0)
