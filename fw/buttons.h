@@ -15,19 +15,25 @@ class Buttons
 public:
     enum ButtonId: uint8_t
     {
-        UP = 0,
+        NONE = 0,
+        UP,
         RIGHT,
         LEFT,
         DOWN,
+        O_BTN,
+        X_BTN,
 
         BUTTON_COUNT
     };
 
-    static ButtonFilter buttons[Buttons::BUTTON_COUNT];
+    ButtonId button() const { return current_button_; }
 
-    static void initialize();
+    void initialize();
+    uint8_t run();
 
-    static void update();
+private:
+    ButtonId current_button_ = ButtonId::NONE;
+    ButtonFilter filter_;
 };
 
 #endif  // BUTTONS_H_

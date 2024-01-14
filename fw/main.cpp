@@ -12,6 +12,7 @@
 PeriodicRoutine main_routine(1);
 
 LedStrip<100> led_strip;
+Buttons buttons;
 SharedStorage shared_storage;
 NvmStorage nvm_storage;
 AnimationList animations;
@@ -42,28 +43,27 @@ void moveAnimation(int8_t offset)
 
 inline void handleButtons()
 {
-    Buttons::update();
-    for (uint8_t button = 0; button < Buttons::BUTTON_COUNT; ++button)
+    const uint8_t state = buttons.run();
+    if (0 != state)
     {
-        uint8_t state = Buttons::buttons[button].state();
         const auto result = animations.current()->handleEvent(
                 Animation::Event::BUTTON,
-                Animation::Param(
-                        static_cast<Buttons::ButtonId>(button),
-                        state),
+                Animation::Param(buttons.button(), state),
                 &shared_storage);
 
         if (state & ButtonFilter::PRESS)
         {
             if (result == Animation::Result::IS_OK)
             {
-                switch (button)
+                switch (buttons.button())
                 {
                 case Buttons::RIGHT:
                     moveAnimation(1);
                     break;
                 case Buttons::LEFT:
                     moveAnimation(-1);
+                    break;
+                default:
                     break;
                 }
             }
@@ -120,8 +120,9 @@ void mainPeriodicRoutine()
 int main(void)
 {
     TimeService::initialize();
-    Buttons::initialize();
     LedController::initialize();
+
+    buttons.initialize();
 
     ledStripEvent(Animation::Event::START);
     while(1)
