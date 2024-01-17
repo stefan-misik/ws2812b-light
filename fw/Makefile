@@ -23,6 +23,7 @@ PORT = usb
 PROJ = ws2812b-light
 # Source files
 SRC  =  \
+    analog_in.cpp  \
     system.cpp  \
     main.cpp  \
     led_controller.cpp  \

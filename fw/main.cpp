@@ -1,4 +1,5 @@
 #include "led_controller.h"
+#include "analog_in.h"
 #include "buttons.h"
 #include "time_service.h"
 #include "nvm_storage.h"
@@ -12,6 +13,7 @@
 PeriodicRoutine main_routine(1);
 
 LedStrip<100> led_strip;
+AnalogIn analog_in;
 Buttons buttons;
 SharedStorage shared_storage;
 NvmStorage nvm_storage;
@@ -122,6 +124,7 @@ int main(void)
     TimeService::initialize();
     LedController::initialize();
 
+    analog_in.initialize();
     buttons.initialize();
 
     ledStripEvent(Animation::Event::START);
