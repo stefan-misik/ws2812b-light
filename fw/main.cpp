@@ -45,7 +45,7 @@ void moveAnimation(int8_t offset)
 
 inline void handleButtons()
 {
-    const uint8_t state = buttons.run();
+    const uint8_t state = buttons.run(analog_in.keypad());
     if (0 != state)
     {
         const auto result = animations.current()->handleEvent(
@@ -113,6 +113,7 @@ inline void handleNvmStorage()
  */
 void mainPeriodicRoutine()
 {
+    analog_in.convert(AnalogIn::Channel::KEYPAD);
     handleButtons();
 
     if (Animation::Result::IS_OK == ledStripEvent(Animation::Event::UPDATE))

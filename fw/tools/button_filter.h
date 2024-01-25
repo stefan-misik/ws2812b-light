@@ -27,6 +27,12 @@ public:
         state_(0)
     { }
 
+    void reset()
+    {
+        counter_ = 0;
+        state_ = 0;
+    }
+
     /**
      * @brief Update the state of the button filter with current state of the
      *        button

@@ -14,6 +14,11 @@ inline void changeChannel(uint8_t channel)
     ADMUX = (0 << REFS2) | (0 << REFS1) | (0 << REFS2) | (0 << ADLAR) | channel;
 }
 
+inline uint8_t getChannel()
+{
+    return ADMUX & ((1 << MUX3) | (1 << MUX2) | (1 << MUX1) | (1 << MUX0));
+}
+
 }  // namespace
 
 
@@ -33,10 +38,30 @@ void AnalogIn::initialize()
     DIDR0 = (0 << ADC0D) | (0 << ADC1D) | (1 << ADC2D) | (0 << ADC3D) |
             (0 << AIN1D) | (0 << AIN0D);
 
-    // Enable the ADC
-    ADCSRA |= (1 << ADEN);
+    // Enable the ADC, start the conversion
+    ADCSRA |= (1 << ADEN) | (1 << ADSC);
 }
 
-void AnalogIn::update()
+auto AnalogIn::convert(Channel next_channel) -> Channel
 {
+    if (ADCSRA & (1 << ADSC))
+        return Channel::NONE;
+
+    auto channel = Channel::NONE;
+    switch (getChannel())
+    {
+    case KEYPAD_CH: keypad_ = ADC; channel = Channel::KEYPAD; break;
+    case BAT_VMON_CH: bat_vmon_ = ADC; channel = Channel::BATTERY_VMON; break;
+    }
+
+    switch (next_channel)
+    {
+    case Channel::NONE: return channel;
+    case Channel::KEYPAD: changeChannel(KEYPAD_CH); break;
+    case Channel::BATTERY_VMON: changeChannel(BAT_VMON_CH); break;
+    }
+
+    // Start the conversion
+    ADCSRA |= (1 << ADSC);
+    return channel;
 }

@@ -29,7 +29,7 @@ public:
     ButtonId button() const { return current_button_; }
 
     void initialize();
-    uint8_t run();
+    uint8_t run(uint16_t keypad_value);
 
 private:
     ButtonId current_button_ = ButtonId::NONE;

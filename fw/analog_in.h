@@ -13,8 +13,22 @@ class AnalogIn
 public:
     static const uint16_t INVALID_VALUE = 0xFFFF;
 
+    enum class Channel: uint8_t
+    {
+        NONE, KEYPAD, BATTERY_VMON
+    };
+
     void initialize();
-    void update();
+
+    /**
+     * @brief Try to finish AD conversion
+     *
+     * @param next_channel Channel to change to when current conversion finishes
+     *
+     * @return Currently finished conversion
+     * @retval Channel::NONE conversion is underway
+     */
+    Channel convert(Channel next_channel);
 
     uint16_t keypad() const { return keypad_; }
     uint16_t batteryVmon() const { return bat_vmon_; }
