@@ -2,36 +2,13 @@
 
 #include <stdlib.h>
 
-#include <avr/pgmspace.h>
+#include "tools/color.h"
 
-enum Color
+inline void copyColors(LedState (&led)[4])
 {
-    C_RED = 0,
-    C_GREEN,
-    C_YELLOW,
-    C_BLUE,
-
-    C_CNT_
-};
-
-static const LedState colors[C_CNT_] PROGMEM =
-{
-        {0xFF, 0x00, 0x00},
-        {0x00, 0xFF, 0x00},
-        {0xC0, 0x5F, 0x00},
-        {0x00, 0x00, 0xFF},
-};
-
-inline void copyColors(LedState (&led)[C_CNT_])
-{
-    for (uint8_t color = 0; color != C_CNT_; ++color)
+    for (uint8_t color = 0; color != 4; ++color)
     {
-        const LedState * const pgm_color = colors + color;
-        led[color] = {
-            pgm_read_byte(&pgm_color->red),
-            pgm_read_byte(&pgm_color->green),
-            pgm_read_byte(&pgm_color->blue)
-        };
+        getColor(&(led[color]), static_cast<ColorId>(static_cast<uint8_t>(ColorId::RED) + color));
     }
 }
 
@@ -92,7 +69,7 @@ uint8_t RetroAnimation::handleEvent(Event type, Param param, SharedStorage * sto
 
 uint8_t RetroAnimation::render(AbstractLedStrip * leds, Shared * shared)
 {
-    LedState ram_colors[C_CNT_];
+    LedState ram_colors[4];
     copyColors(ram_colors);
 
     uint8_t pos = 0;

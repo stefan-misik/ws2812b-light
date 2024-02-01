@@ -1,6 +1,22 @@
 #include "tools/color.h"
 
 
+const LedState standard_colors[] PROGMEM =
+{
+        {0x00, 0x00, 0x00},
+        {0x9A, 0x9A, 0x9A},
+        {0xFF, 0xa0, 0x30},
+
+        {0xFF, 0x00, 0x00},
+        {0x00, 0xFF, 0x00},
+        {0xC0, 0x5F, 0x00},
+        {0x00, 0x00, 0xFF},
+
+        {0x00, 0x7F, 0x7F},
+        {0x7F, 0x00, 0x7F},
+};
+
+
 void blendColors(LedState * color, const LedState & secondary, uint8_t num, uint8_t den)
 {
     const uint16_t secondary_blend = (static_cast<uint16_t>(num) * static_cast<uint16_t>(256)) /

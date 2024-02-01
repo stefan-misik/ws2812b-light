@@ -4,9 +4,47 @@
 
 #include <stdint.h>
 
+#include <avr/pgmspace.h>
+
 #include "led_strip.h"
 
 static const uint16_t MAX_HUE = 0x02FF;
+
+enum class ColorId: uint8_t
+{
+    BLACK = 0,
+    WHITE,
+    WARM_WHITE,
+
+    RED,
+    GREEN,
+    YELLOW,
+    BLUE,
+
+    TEAL,
+    PINK,
+
+    COUNT_
+};
+static const uint8_t COLOR_COUNT = static_cast<uint8_t>(ColorId::COUNT_);
+
+extern const LedState standard_colors[] PROGMEM;
+
+/**
+ * @brief Get the standard color value
+ *
+ * @param[out] value Variable to obtain color with given ID
+ * @param id ID of the color to get
+ */
+inline void getColor(LedState * value, ColorId id)
+{
+    const LedState & pgm_color = standard_colors[static_cast<uint8_t>(id)];
+    *value = {
+        pgm_read_byte(&pgm_color.red),
+        pgm_read_byte(&pgm_color.green),
+        pgm_read_byte(&pgm_color.blue)
+    };
+}
 
 /**
  * @brief Blend two colors
