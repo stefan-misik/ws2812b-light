@@ -131,7 +131,7 @@ int main(void)
     ledStripEvent(Animation::Event::START);
     while(1)
     {
-        handleNvmStorage();
+        //handleNvmStorage();
         if (main_routine.shouldRun())
         {
             mainPeriodicRoutine();
