@@ -3,6 +3,9 @@
 #include "tools/color.h"
 
 
+static const uint8_t FIRST_COLOR = static_cast<uint8_t>(ColorId::WHITE);
+static const uint8_t LAST_COLOR = static_cast<uint8_t>(ColorId::PINK);
+
 inline void getColorByNumber(LedState * led, uint8_t color)
 {
     if (color >= COLOR_COUNT)
@@ -18,6 +21,7 @@ uint8_t ColorAnimation::handleEvent(Event type, Param param, SharedStorage * sto
     {
     case Event::START:
         storage->create<Shared>();
+        color_ =  FIRST_COLOR;
         s().redraw = true;
         return Result::IS_OK;
 
@@ -45,11 +49,11 @@ uint8_t ColorAnimation::handleEvent(Event type, Param param, SharedStorage * sto
             switch (param.buttonId())
             {
             case ButtonId::UP:
-                color_ = ((COLOR_COUNT - 1) == color_) ? 0 : color_ + 1;
+                color_ = (LAST_COLOR == color_) ? FIRST_COLOR : color_ + 1;
                 s().redraw = true;
                 break;
             case ButtonId::DOWN:
-                color_ = (0 == color_) ? COLOR_COUNT - 1 : color_ - 1;
+                color_ = (FIRST_COLOR == color_) ? LAST_COLOR : color_ - 1;
                 s().redraw = true;
                 break;
             default: break;
