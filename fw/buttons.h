@@ -16,11 +16,11 @@ public:
     enum ButtonId: uint8_t
     {
         NONE = 0,
-        UP,
-        RIGHT,
-        LEFT,
-        DOWN,
         O_BTN,
+        LEFT,
+        UP,
+        DOWN,
+        RIGHT,
         X_BTN,
 
         BUTTON_COUNT
