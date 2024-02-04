@@ -117,7 +117,9 @@ void mainPeriodicRoutine()
     handleButtons();
 
     if (Animation::Result::IS_OK == ledStripEvent(Animation::Event::UPDATE))
-        LedController::update(led_strip.abstarctPtr());
+        LedController::update(led_strip.abstarctPtr(), ColorId::BLACK);
+    else
+        LedController::updateStatus(ColorId::BLACK);
 }
 
 int main(void)
