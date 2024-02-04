@@ -2,6 +2,7 @@
 #include "analog_in.h"
 #include "buttons.h"
 #include "time_service.h"
+#include "status_led.h"
 #include "nvm_storage.h"
 #include "animation.h"
 #include "shared_storage.h"
@@ -15,6 +16,7 @@ PeriodicRoutine main_routine(1);
 LedStrip<100> led_strip;
 AnalogIn analog_in;
 Buttons buttons;
+StatusLed status_led;
 SharedStorage shared_storage;
 NvmStorage nvm_storage;
 AnimationList animations;
@@ -117,9 +119,9 @@ void mainPeriodicRoutine()
     handleButtons();
 
     if (Animation::Result::IS_OK == ledStripEvent(Animation::Event::UPDATE))
-        LedController::update(led_strip.abstarctPtr(), ColorId::BLACK);
+        LedController::update(led_strip.abstarctPtr(), status_led.color());
     else
-        LedController::updateStatus(ColorId::BLACK);
+        LedController::updateStatus(status_led.color());
 }
 
 int main(void)
