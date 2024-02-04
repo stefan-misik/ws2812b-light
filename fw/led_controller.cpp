@@ -52,7 +52,7 @@ void LedController::updateStatus(ColorId status)
                 "lus_send_byte:                        \n"
                 "    ld    %[current_byte], %a[data]+  \n"
 
-                "    ldi   %[bit_position], 0x80       \n"
+                "    ldi   %[bit_position], 8          \n"
 
                 "lus_send_bit:                         \n"
                 "    ldi   %[pulse_length], %[zero_pl] \n"
@@ -72,7 +72,7 @@ void LedController::updateStatus(ColorId status)
                 "    out   __SREG__, %[old_sreg]       \n"
 
                 "lus_check_byte_sent:                  \n"
-                "    lsr   %[bit_position]             \n"
+                "    dec   %[bit_position]             \n"
                 "    brne  lus_send_bit                \n"
 
                 "lus_check_all_sent:                   \n"
@@ -117,7 +117,7 @@ void LedController::update(const AbstractLedStrip * led_strip, ColorId status)
                 "    adc   %B[tmp_w], __zero_reg__     \n"
                 "    lpm   %[current_byte], %a[tmp_w]  \n"
 
-                "    ldi   %[bit_position], 0x80       \n"
+                "    ldi   %[bit_position], 8          \n"
 
                 "lu_send_bit:                          \n"
                 "    ldi   %[pulse_length], %[zero_pl] \n"
@@ -137,7 +137,7 @@ void LedController::update(const AbstractLedStrip * led_strip, ColorId status)
                 "    out   __SREG__, %[old_sreg]       \n"
 
                 "lu_check_byte_sent:                   \n"
-                "    lsr   %[bit_position]             \n"
+                "    dec   %[bit_position]             \n"
                 "    brne  lu_send_bit                 \n"
 
                 "lu_check_all_sent:                    \n"
