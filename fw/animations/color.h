@@ -10,10 +10,12 @@
 class ColorAnimation: public Animation
 {
 public:
+    static const uint8_t FIRST_COLOR = 1;
+
     uint8_t handleEvent(Event type, Param param, SharedStorage * storage) override;
 
 private:
-    uint8_t color_ = 0;
+    uint8_t color_ = FIRST_COLOR;
 
     struct Shared
     {

@@ -6,6 +6,8 @@
 static const uint8_t FIRST_COLOR = static_cast<uint8_t>(ColorId::WHITE);
 static const uint8_t LAST_COLOR = static_cast<uint8_t>(ColorId::PINK);
 
+static_assert(ColorAnimation::FIRST_COLOR == FIRST_COLOR, "Check first color");
+
 inline void getColorByNumber(LedState * led, uint8_t color)
 {
     if (color >= COLOR_COUNT)
@@ -21,7 +23,6 @@ uint8_t ColorAnimation::handleEvent(Event type, Param param, SharedStorage * sto
     {
     case Event::START:
         storage->create<Shared>();
-        color_ =  FIRST_COLOR;
         s().redraw = true;
         return Result::IS_OK;
 
