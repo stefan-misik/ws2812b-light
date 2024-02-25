@@ -9,31 +9,29 @@ volatile uint16_t TimeService::current_time_;
 
 void TimeService::initialize()
 {
+    current_time_ = 0;
+
     // Enable interrupts
     sei();
 
     // Disable power reduction
-    PRR &= ~((1 << PRTIM1));
+    PRR &= ~((1 << PRTIM0));
 
     // Firstly, stop the timer
-    TCCR1 &= ~((1 << CS13) | (1 << CS12) | (1 << CS11) | (1 << CS10));
+    TCCR0B &= ~((1 << CS02) | (1 << CS01) | (1 << CS00));
 
-    // Use synchronous mode of Timer 1
-    PLLCSR &= ~((1 << PCKE));
     // Disable all interrupts, except overflow
-    TIMSK &= ~((1 << TOIE1) | (1 << OCIE1B));
-    TIMSK |= (1 << OCIE1A);
-    // Overflow every 8 milliseconds: 31.25 kHz / 250 = 125 Hz
-    OCR1A = 0;
-    OCR1C = 249;
-    // Disable PWM B
-    GTCCR &= ~((1 << PWM1B) | (1 << COM1B1) | (1 << COM1B0) |
-            (1 << FOC1B) | (1 << FOC1A) | (1 << PSR1));
-    // Reload on OCR1C match, disable PWM A, frequency: 16 MHz / 512 = 31.25 kHz
-    TCCR1 = (1 << CTC1) | (0 << PWM1A) | (0 << COM1A1) | (0 << COM1A0) |
-            (1 << CS13) | (0 << CS12) | (1 << CS11) | (0 << CS10);
-
-    current_time_ = 0;
+    TIMSK &= ~((1 << TOIE0) | (1 << OCIE0B));
+    TIMSK |= (1 << OCIE0A);
+    // Overflow every 8 milliseconds: 15.625 kHz / 125 = 125 Hz
+    OCR0A = 124;
+    // Clear timer on Compare match (CTC) mode, disable compare outputs, frequency: 16 MHz / 1024 = 15.625 kHz
+    TCCR0A = (0 << COM0A1) | (0 << COM0A0) |
+            (0 << COM0B1) | (0 << COM0B0) |
+            (1 << WGM01) | (0 << WGM00);
+    TCCR0B = (0 << FOC0A) | (0 << FOC0B) |
+            (0 << WGM02) |
+            (1 << CS02) | (0 << CS01) | (1 << CS00);
 }
 
 bool PeriodicRoutine::shouldRun(uint8_t time)
@@ -49,7 +47,7 @@ bool PeriodicRoutine::shouldRun(uint8_t time)
     }
 }
 
-ISR(TIM1_COMPA_vect)
+ISR(TIM0_COMPA_vect)
 {
     TimeService::current_time_ = TimeService::current_time_ + 1;
 }
