@@ -3,6 +3,7 @@
 #include "buttons.h"
 #include "time_service.h"
 #include "status_led.h"
+#include "music.h"
 #include "nvm_storage.h"
 #include "animation.h"
 #include "shared_storage.h"
@@ -20,6 +21,7 @@ StatusLed status_led;
 SharedStorage shared_storage;
 NvmStorage nvm_storage;
 AnimationList animations;
+Music music;
 
 
 inline uint8_t ledStripEvent(Animation::Event type)
@@ -57,6 +59,7 @@ inline void handleButtons()
 
         if (state & ButtonFilter::PRESS)
         {
+            music.play(buttons.button());
             if (result == Animation::Result::IS_OK)
             {
                 switch (buttons.button())
@@ -128,6 +131,7 @@ int main(void)
 {
     TimeService::initialize();
     LedController::initialize();
+    Music::initialize();
 
     analog_in.initialize();
     buttons.initialize();

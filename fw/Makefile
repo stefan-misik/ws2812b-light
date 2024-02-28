@@ -27,6 +27,7 @@ SRC  =  \
     system.cpp  \
     main.cpp  \
     led_controller.cpp  \
+    music.cpp  \
     status_led.cpp  \
     nvm_storage.cpp  \
     time_service.cpp buttons.cpp  \
