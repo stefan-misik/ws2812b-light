@@ -27,6 +27,7 @@ public:
         TONE_B
     };
 
+    constexpr MusicNote() = default;
     constexpr MusicNote(const MusicNote &) = default;
     constexpr MusicNote & operator =(const MusicNote &) = default;
     constexpr MusicNote(uint8_t octave, Tone tone):
@@ -36,7 +37,7 @@ public:
     constexpr uint8_t octave() const { return code_ >> 4; }
     constexpr Tone tone() const { return static_cast<Tone>(code_ & 0x0F); }
 
-    MusicNote & operator +(int8_t diff)
+    MusicNote & operator +=(int8_t diff)
     {
         int8_t new_tone = static_cast<int8_t>(tone()) + diff;
         uint8_t new_octave = octave();
@@ -63,7 +64,7 @@ public:
     }
 
 private:
-    uint8_t code_;
+    uint8_t code_ = 0;
 };
 
 
@@ -75,8 +76,16 @@ public:
     void play(Buttons::ButtonId btn);
 
 private:
-    uint8_t octave_ = 0;
-    uint8_t note_ = 0;
+    uint8_t bpm_counter_ = 0;
+
+    uint8_t current_song_id_ = 0;
+    const uint8_t * current_song_ = nullptr;
+
+    MusicNote current_note_;
+    uint8_t remaining_ = 0;
+    uint8_t position_ = 0;
+
+    static const uint8_t DIVIDE_FACTOR = 8;
 };
 
 
