@@ -91,44 +91,38 @@ void Music::initialize()
     PLLCSR &= ~((1 << PCKE));
 }
 
-void Music::play(Buttons::ButtonId btn)
+void Music::play()
 {
+    if (nullptr == position_)
     {
-        bool change_song = false;
-        switch (btn)
+        switch (current_song_id_)
         {
-        case Buttons::X_BTN:
-            current_song_id_ = nextId(current_song_id_, SONG_COUNT);
-            change_song = true;
-            break;
-
-        case Buttons::O_BTN:
-            current_song_id_ = previousId(current_song_id_, SONG_COUNT);
-            change_song = true;
-            break;
-
-        default:
-            break;
+        case -1: current_song_id_ = SONG_COUNT - 1; break;
+        case SONG_COUNT: current_song_id_ = 0; break;
         }
 
-        if (change_song)
+        if (0 == current_song_id_)
         {
-            remaining_ = 0;
-            position_ = 0;
-            current_song_ = getSongById(current_song_id_);
+            stopNote();
+            return;
+        }
+        else
+        {
+            position_ = getSongById(current_song_id_);
+            remaining_duration_ = 0;
         }
     }
 
     // Check BPM counter
-    switch (DIVIDE_FACTOR - bpm_counter_)
+    switch (bpm_counter_)
     {
-    case 1:
+    case DIVIDE_FACTOR - 1:
         bpm_counter_ = 0;
         break;
 
-    case 2:
+    case DIVIDE_FACTOR - 2:
         // Stop the note just before end of last section
-        if (1 == remaining_)
+        if (1 == remaining_duration_)
             stopNote();
         // no break
 
@@ -137,51 +131,47 @@ void Music::play(Buttons::ButtonId btn)
         return;
     }
 
-    if (remaining_ > 1)
+    if (remaining_duration_ > 1)
     {
-        --remaining_;
+        --remaining_duration_;
         // Wait for the current note to end
-        return;
-    }
-
-    if (0 == current_song_id_)
-    {
-        stopNote();
         return;
     }
 
     while (true)
     {
-        bool done = true;
+        uint8_t duration = 0;
 
-        const MusicElement el(pgm_read_byte(current_song_ + position_));
+        const MusicElement el(pgm_read_byte(position_));
 
         const MusicElement::ControlType control = el.controlType();
         switch (control)
         {
         case MusicElement::ControlType::TERMINATE:
-            remaining_ = 64;
-            position_ = -1;
+            duration = 64;
+            position_ = getSongById(current_song_id_) - 1;
             break;
 
         case MusicElement::ControlType::SET_OCTAVE:
             current_note_ = MusicNote(el.param(), MusicNote::TONE_C);
-            done = false;
             break;
 
         case MusicElement::ControlType::SILENCE:
-            remaining_ = getNoteDuration(static_cast<NoteLength>(el.param()));
+            duration = getNoteDuration(static_cast<NoteLength>(el.param()));
             break;
 
         default:
             current_note_ += el.noteDiff();
-            remaining_ = getNoteDuration(MusicElement::toNoteLength(control));
+            duration = getNoteDuration(MusicElement::toNoteLength(control));
             playNote(current_note_.octave(), current_note_.tone());
             break;
         }
 
         ++position_;
-        if (done)
+        if (0 != duration)
+        {
+            remaining_duration_ = duration;
             break;
+        }
     }
 }

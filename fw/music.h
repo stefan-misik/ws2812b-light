@@ -7,8 +7,6 @@
 
 #include <stdint.h>
 
-#include "buttons.h"
-
 
 /**
  * @brief Object representing single note by its octave and note
@@ -68,22 +66,30 @@ private:
 };
 
 
+/**
+ * @brief Music player object
+ */
 class Music
 {
 public:
     static void initialize();
 
-    void play(Buttons::ButtonId btn);
+    void play();
+
+    void change(int8_t diff)
+    {
+        current_song_id_ += diff;
+        position_ = nullptr;
+    }
 
 private:
     uint8_t bpm_counter_ = 0;
 
-    uint8_t current_song_id_ = 0;
-    const uint8_t * current_song_ = nullptr;
+    int8_t current_song_id_ = 0;
+    const uint8_t * position_ = nullptr;
 
     MusicNote current_note_;
-    uint8_t remaining_ = 0;
-    uint8_t position_ = 0;
+    uint8_t remaining_duration_ = 0;
 
     static const uint8_t DIVIDE_FACTOR = 8;
 };

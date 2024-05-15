@@ -59,7 +59,6 @@ inline void handleButtons()
 
         if (state & ButtonFilter::PRESS)
         {
-            music.play(buttons.button());
             if (result == Animation::Result::IS_OK)
             {
                 switch (buttons.button())
@@ -69,6 +68,12 @@ inline void handleButtons()
                     break;
                 case Buttons::LEFT:
                     moveAnimation(-1);
+                    break;
+                case Buttons::O_BTN:
+                    music.change(-1);
+                    break;
+                case Buttons::X_BTN:
+                    music.change(1);
                     break;
                 default:
                     break;
@@ -120,6 +125,8 @@ void mainPeriodicRoutine()
 {
     analog_in.convert(AnalogIn::Channel::KEYPAD);
     handleButtons();
+
+    music.play();
 
     if (Animation::Result::IS_OK == ledStripEvent(Animation::Event::UPDATE))
         LedController::update(led_strip.abstarctPtr(), status_led.color());
