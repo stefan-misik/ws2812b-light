@@ -41,7 +41,8 @@ SRC  =  \
         twinkle.cpp  \
         shifting_color.cpp  \
     )  \
-    animation_list.cpp
+    animation_list.cpp  \
+    animation_storage.cpp
 
 CPPFLAGS  = -I. -DF_CPU=$(DEF_FREQ)UL -D__$(DEF_MCU)__ -DLED_ORDER=$(LED_ORDER)
 CFLAGS    = -c -ggdb -O2 -Wall -Wno-array-bounds -mmcu=$(MCU)

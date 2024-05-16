@@ -62,7 +62,12 @@ public:
         /**
          * @brief Load the configuration of the animation
          */
-        LOAD_CONFIG
+        LOAD_CONFIG,
+
+        /**
+         * @brief Call object's destructor
+         */
+        DESTROY,
     };
 
     /**
@@ -76,13 +81,17 @@ public:
      */
     virtual uint8_t handleEvent(Event type, Param param, SharedStorage * storage) = 0;
 
-    // Theses objects are never destroyed, and we can save significant amount of
+    // Objects are destroyed by DESTROY event, we can save significant amount of
     // memory in v-tables, since they are copied in RAM
     //virtual ~Animation() = default;
 };
 
 struct Animation::Param
 {
+    Param():
+        value(0)
+    { }
+
     Param(uintptr_t new_value):
         value(new_value)
     { }
