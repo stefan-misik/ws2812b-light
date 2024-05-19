@@ -90,7 +90,7 @@ void TwinkleAnimation::paintTwinkles(AbstractLedStrip * leds, Shared * shared)
         auto & blink = shared->blinks[pos];
         if (blink.isDone())
         {
-            const int num = (rand() & mask);
+            const uint16_t num = (static_cast<uint16_t>(rand()) & mask);
             if (num < leds->led_count)
                 blink.start(num);
             else

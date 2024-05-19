@@ -29,12 +29,12 @@ private:
         void next() { ++state_; }
         void done() { state_ = 0; }
 
-        void start(size_t led) { led_ = led; state_ = 1; }
+        void start(LedSize led) { led_ = led; state_ = 1; }
 
-        size_t led() const { return led_; }
+        LedSize led() const { return led_; }
 
     private:
-        size_t led_;
+        LedSize led_;
         uint8_t state_;
     };
 

@@ -13,7 +13,7 @@ inline void * operator new (size_t n, void * ptr)
 class SharedStorage
 {
 public:
-    static const size_t SIZE = 24;
+    static const size_t SIZE = 16;
 
     template <typename T>
     void create()
