@@ -91,7 +91,7 @@ void Music::initialize()
     PLLCSR &= ~((1 << PCKE));
 }
 
-void Music::play()
+auto Music::play() -> Result
 {
     if (nullptr == position_)
     {
@@ -104,7 +104,8 @@ void Music::play()
         if (0 == current_song_id_)
         {
             stopNote();
-            return;
+            position_ = reinterpret_cast<const uint8_t *>(0xFFFF);  // Non-zero value
+            return Result::STOPPED;
         }
         else
         {
@@ -112,6 +113,9 @@ void Music::play()
             remaining_duration_ = 0;
         }
     }
+
+    if (0 == current_song_id_)
+        return Result::NONE;
 
     // Check BPM counter
     switch (bpm_counter_)
@@ -128,19 +132,20 @@ void Music::play()
 
     default:
         ++bpm_counter_;
-        return;
+        return Result::PLAYING;
     }
 
     if (remaining_duration_ > 1)
     {
         --remaining_duration_;
         // Wait for the current note to end
-        return;
+        return Result::PLAYING;
     }
 
     while (true)
     {
         uint8_t duration = 0;
+        Result result = Result::PLAYING;
 
         const MusicElement el(pgm_read_byte(position_));
 
@@ -164,6 +169,7 @@ void Music::play()
             current_note_ += el.noteDiff();
             duration = getNoteDuration(MusicElement::toNoteLength(control));
             playNote(current_note_.octave(), current_note_.tone());
+            result = Result::CHANGE;
             break;
         }
 
@@ -171,7 +177,7 @@ void Music::play()
         if (0 != duration)
         {
             remaining_duration_ = duration;
-            break;
+            return result;
         }
     }
 }

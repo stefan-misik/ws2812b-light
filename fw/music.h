@@ -72,9 +72,27 @@ private:
 class Music
 {
 public:
+    enum class Result: uint8_t
+    {
+        NONE,
+        STOPPED,
+        PLAYING,
+        CHANGE
+    };
+
     static void initialize();
 
-    void play();
+    /**
+     * @brief (Continue to) play a song
+     *
+     * @return Result of the music playing
+     */
+    Result play();
+
+    bool isPlaying() const
+    {
+        return 0 != current_song_id_;
+    }
 
     void change(int8_t diff)
     {

@@ -125,7 +125,15 @@ void mainPeriodicRoutine()
     analog_in.convert(AnalogIn::Channel::KEYPAD);
     handleButtons(&events);
 
-    music.play();
+    {
+        const auto music_result = music.play();
+        switch (music_result)
+        {
+        case Music::Result::STOPPED: events.setFlag(Animation::Events::MUSIC_STOPPED); break;
+        case Music::Result::CHANGE: events.setFlag(Animation::Events::NOTE_CHANGED); break;
+        default: break;
+        }
+    }
 
     if (0 != events)
         animations.current()->handleEvent(Animation::Event::EVENTS, Animation::Param{events}, &shared_storage);
