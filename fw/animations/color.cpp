@@ -44,20 +44,18 @@ uint8_t ColorAnimation::handleEvent(Event type, Param param, SharedStorage * sto
     case Event::STOP:
         return Result::IS_OK;
 
-    case Event::BUTTON:
-        if (param.paramLo() & ButtonState::PRESS)
+    case Event::EVENTS:
         {
-            switch (param.buttonId())
+            const auto events = param.events();
+            if (events.isFlagSet(Animation::Events::SETTINGS_UP))
             {
-            case ButtonId::UP:
                 color_ = (LAST_COLOR == color_) ? FIRST_COLOR : color_ + 1;
                 s().redraw = true;
-                break;
-            case ButtonId::DOWN:
+            }
+            if (events.isFlagSet(Animation::Events::SETTINGS_DOWN))
+            {
                 color_ = (FIRST_COLOR == color_) ? LAST_COLOR : color_ - 1;
                 s().redraw = true;
-                break;
-            default: break;
             }
         }
         return Result::IS_OK;

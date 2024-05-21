@@ -22,6 +22,7 @@ public:
     using ButtonId = Buttons::ButtonId;
     using ButtonState = ButtonFilter::State;
 
+    class Events;
     struct Param;
 
     enum Result: uint8_t
@@ -50,9 +51,9 @@ public:
         STOP,
 
         /**
-         * @brief Handle the button press
+         * @brief Handle the external events
          */
-        BUTTON,
+        EVENTS,
 
         /**
          * @brief Save the current configuration of the animation
@@ -81,6 +82,38 @@ public:
     //virtual ~Animation() = default;
 };
 
+
+class Animation::Events
+{
+public:
+    enum Type: uint8_t
+    {
+        SETTINGS_UP,
+        SETTINGS_DOWN,
+        MUSIC_STOPPED,
+        NOTE_CHANGED,
+    };
+
+    explicit Events(uint8_t flags = 0):
+        flags_(flags)
+    { }
+
+    void setFlag(Type type) { flags_ |= (1 << static_cast<uint8_t>(type)); }
+    bool isFlagSet(Type type) const { return flags_ & (1 << static_cast<uint8_t>(type)); }
+
+    void setFlagIf(bool cond, Type type)
+    {
+        if (cond)
+            setFlag(type);
+    }
+
+    operator uint8_t() const { return flags_; }
+
+private:
+    uint8_t flags_ = 0;
+};
+
+
 struct Animation::Param
 {
     Param(uintptr_t new_value):
@@ -89,6 +122,10 @@ struct Animation::Param
 
     Param(uint8_t hi, uint8_t lo):
         value(static_cast<uintptr_t>(hi) << 8 | static_cast<uintptr_t>(lo))
+    { }
+
+    Param(const Events & flags):
+        value(flags)
     { }
 
     Param(ButtonId button_id, uint8_t state):
@@ -115,10 +152,15 @@ struct Animation::Param
         value = static_cast<uintptr_t>(new_lo) | (value & 0xFF00);
     }
 
-    ButtonId buttonId() const { return static_cast<ButtonId>(paramHi()); }
-    uint8_t buttonState() const { return paramLo(); }
-    void setButtonId(ButtonId new_id) { setParamHi(new_id); }
-    void setButtonState(uint8_t new_state) { setParamLo(new_state); }
+    Events events() const
+    {
+        return Events{static_cast<uint8_t>(value)};
+    }
+
+    void setEvents(const Events & events)
+    {
+        value = events;
+    }
 
     AbstractLedStrip & ledStrip() const
     {

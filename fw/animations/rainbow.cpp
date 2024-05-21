@@ -36,15 +36,13 @@ uint8_t RainbowAnimation::handleEvent(Event type, Param param, SharedStorage * s
     case Event::STOP:
         return Result::IS_OK;
 
-    case Event::BUTTON:
-        if (param.paramLo() & ButtonState::PRESS)
+    case Event::EVENTS:
         {
-            switch (param.buttonId())
-            {
-            case ButtonId::UP: ++space_increment_; break;
-            case ButtonId::DOWN: ++time_increment_; break;
-            default: break;
-            }
+            const auto events = param.events();
+            if (events.isFlagSet(Animation::Events::SETTINGS_UP))
+                ++space_increment_;
+            if (events.isFlagSet(Animation::Events::SETTINGS_DOWN))
+                ++time_increment_;
         }
         return Result::IS_OK;
 

@@ -36,22 +36,20 @@ uint8_t RetroAnimation::handleEvent(Event type, Param param, SharedStorage * sto
     case Event::STOP:
         return Result::IS_OK;
 
-    case Event::BUTTON:
-        if (param.paramLo() & ButtonState::PRESS)
+    case Event::EVENTS:
         {
-            switch (param.buttonId())
+            const auto events = param.events();
+            if (events.isFlagSet(Animation::Events::SETTINGS_UP))
             {
-            case ButtonId::UP:
                 s().reset();
                 if (variant_ != (VARIANT_CNT - 1))
                     ++variant_;
-                break;
-            case ButtonId::DOWN:
+            }
+            if (events.isFlagSet(Animation::Events::SETTINGS_DOWN))
+            {
                 s().reset();
                 if (variant_ != 0)
                     --variant_;
-                break;
-            default: break;
             }
         }
         return Result::IS_OK;

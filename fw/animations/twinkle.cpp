@@ -37,20 +37,18 @@ uint8_t TwinkleAnimation::handleEvent(Event type, Param param, SharedStorage * s
     case Event::STOP:
         return Result::IS_OK;
 
-    case Event::BUTTON:
-        if (param.paramLo() & ButtonState::PRESS)
+    case Event::EVENTS:
         {
-            switch (param.buttonId())
+            const auto events = param.events();
+            if (events.isFlagSet(Animation::Events::SETTINGS_UP))
             {
-            case ButtonId::UP:
                 if (7 != frequency_)
                     ++frequency_;
-                break;
-            case ButtonId::DOWN:
+            }
+            if (events.isFlagSet(Animation::Events::SETTINGS_DOWN))
+            {
                 if (0 != frequency_)
                     --frequency_;
-                break;
-            default: break;
             }
         }
         return Result::IS_OK;

@@ -100,14 +100,17 @@ uint8_t ShiftingColorAnimation::handleEvent(Event type, Param param, SharedStora
     case Event::STOP:
         return Result::IS_OK;
 
-    case Event::BUTTON:
-        if (param.paramLo() & ButtonState::PRESS)
+    case Event::EVENTS:
         {
-            switch (param.buttonId())
+            const auto events = param.events();
+            if (events.isFlagSet(Animation::Events::SETTINGS_UP))
             {
-            case ButtonId::UP: type_ = nextType(segments_, type_); break;
-            case ButtonId::DOWN: delay_ = 15 == delay_ ? 1 : delay_ + 1; s().step = 0; break;
-            default: break;
+                type_ = nextType(segments_, type_);
+            }
+            if (events.isFlagSet(Animation::Events::SETTINGS_DOWN))
+            {
+                delay_ = 15 == delay_ ? 1 : delay_ + 1;
+                s().step = 0;
             }
         }
         return Result::IS_OK;

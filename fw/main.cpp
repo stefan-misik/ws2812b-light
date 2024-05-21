@@ -47,37 +47,35 @@ void moveAnimation(int8_t offset)
     }
 }
 
-inline void handleButtons()
+inline void handleButtons(Animation::Events * events)
 {
     const uint8_t state = buttons.run(analog_in.keypad());
     if (0 != state)
     {
-        const auto result = animations.current()->handleEvent(
-                Animation::Event::BUTTON,
-                Animation::Param(buttons.button(), state),
-                &shared_storage);
-
         if (state & ButtonFilter::PRESS)
         {
-            if (result == Animation::Result::IS_OK)
+            switch (buttons.button())
             {
-                switch (buttons.button())
-                {
-                case Buttons::RIGHT:
-                    moveAnimation(1);
-                    break;
-                case Buttons::LEFT:
-                    moveAnimation(-1);
-                    break;
-                case Buttons::O_BTN:
-                    music.change(-1);
-                    break;
-                case Buttons::X_BTN:
-                    music.change(1);
-                    break;
-                default:
-                    break;
-                }
+            case Buttons::UP:
+                events->setFlag(Animation::Events::SETTINGS_UP);
+                break;
+            case Buttons::DOWN:
+                events->setFlag(Animation::Events::SETTINGS_DOWN);
+                break;
+            case Buttons::RIGHT:
+                moveAnimation(1);
+                break;
+            case Buttons::LEFT:
+                moveAnimation(-1);
+                break;
+            case Buttons::O_BTN:
+                music.change(-1);
+                break;
+            case Buttons::X_BTN:
+                music.change(1);
+                break;
+            default:
+                break;
             }
         }
     }
@@ -123,10 +121,14 @@ inline void handleNvmStorage()
  */
 void mainPeriodicRoutine()
 {
+    Animation::Events events;
     analog_in.convert(AnalogIn::Channel::KEYPAD);
-    handleButtons();
+    handleButtons(&events);
 
     music.play();
+
+    if (0 != events)
+        animations.current()->handleEvent(Animation::Event::EVENTS, Animation::Param{events}, &shared_storage);
 
     if (Animation::Result::IS_OK == ledStripEvent(Animation::Event::UPDATE))
         LedController::update(led_strip.abstarctPtr(), status_led.color());
