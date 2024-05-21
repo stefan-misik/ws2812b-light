@@ -29,8 +29,7 @@ uint8_t RetroAnimation::handleEvent(Event type, Param param, SharedStorage * sto
             --(s().delay);
             return Result::IGNORE_DEFAULT;
         }
-        s().delay =
-                static_cast<uint16_t>(render(&(param.ledStrip()), &s())) << 5;
+        s().delay = static_cast<uint16_t>(render(&(param.ledStrip()), &s())) << 5;
         return Result::IS_OK;
 
     case Event::STOP:
@@ -50,6 +49,18 @@ uint8_t RetroAnimation::handleEvent(Event type, Param param, SharedStorage * sto
                 s().reset();
                 if (variant_ != 0)
                     --variant_;
+            }
+            if (events.isFlagSet(Animation::Events::NOTE_CHANGED))
+            {
+                if (0 == variant_)
+                    s().delay = 0;
+                s().is_playing = true;
+            }
+            if (events.isFlagSet(Animation::Events::MUSIC_STOPPED))
+            {
+                if (0 == variant_)
+                    s().delay = 0;
+                s().is_playing = false;
             }
         }
         return Result::IS_OK;
@@ -85,7 +96,10 @@ uint8_t RetroAnimation::render(AbstractLedStrip * leds, Shared * shared)
             ++pos;
         }
         ++shared->state;
-        return (0 == variant_) ? (rand() & 0x03) + 1 : 4;
+        if (0 == variant_)
+            return shared->is_playing ? 255 : (static_cast<uint8_t>(rand()) & static_cast<uint8_t>(0x03)) + 1;
+        else
+            return 4;
 
     case 2:
     case 3:

@@ -25,11 +25,13 @@ private:
     {
         uint16_t delay = 0;
         uint8_t state = 0;
+        bool is_playing = false;
 
         void reset()
         {
             delay = 0;
             state = 0;
+            is_playing = false;
         }
     };
 
