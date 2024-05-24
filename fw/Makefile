@@ -43,6 +43,8 @@ SRC  =  \
     )  \
     animation_list.cpp
 
+SONGS = silent_night
+
 CPPFLAGS  = -I. -DF_CPU=$(DEF_FREQ)UL -D__$(DEF_MCU)__ -DLED_ORDER=$(LED_ORDER)
 CFLAGS    = -c -ggdb -O2 -Wall -Wno-array-bounds -mmcu=$(MCU)
 CXXFLAGS  = -c -ggdb -O2 -Wall -Wno-array-bounds -mmcu=$(MCU) -std=c++14 -fno-exceptions
@@ -59,6 +61,8 @@ DEP = $(OBJ:.o=.d)
 all: $(PROJ).elf $(PROJ).hex $(PROJ).lss stats
 
 -include $(DEP)
+
+music.cpp: $(addprefix songs/,$(addsuffix .inc,$(SONGS)))
 
 stats: $(PROJ).elf
 	$(SIZE) $(SIZEFLAGS) $<
@@ -86,5 +90,7 @@ $(PROJ).lss: $(PROJ).elf
 	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -MF $@
 
 clean:
-	$(RM) $(PROJ).elf $(PROJ).hex $(PROJ).lss $(OBJ) $(DEP)
+	$(RM) $(PROJ).elf $(PROJ).hex $(PROJ).lss $(OBJ) $(DEP) songs/*.inc
 
+%.inc: %.tune
+	python songs/compose.py $< -o $@
