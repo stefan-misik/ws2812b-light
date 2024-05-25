@@ -110,7 +110,7 @@ auto Music::play() -> Result
         else
         {
             position_ = getSongById(current_song_id_);
-            remaining_duration_ = 0;
+            reset();
         }
     }
 
@@ -152,9 +152,45 @@ auto Music::play() -> Result
         const MusicElement::ControlType control = el.controlType();
         switch (control)
         {
-        case MusicElement::ControlType::TERMINATE:
-            duration = 64;
-            position_ = getSongById(current_song_id_) - 1;
+        case MusicElement::ControlType::FLOW:
+        {
+            const uint8_t * const song_start = getSongById(current_song_id_);
+            switch (el.param())
+            {
+            case MusicElement::CONTROL_FLOW_TERMINATE:
+                duration = 64;
+                position_ = song_start - 1;
+                loop_id_ = INVALID_LOOP_ID;
+                break;
+
+            case MusicElement::CONTROL_FLOW_LOOP_END:
+                if (loop_id_ != INVALID_LOOP_ID)
+                {
+                    auto & current_loop = loops_[loop_id_];
+                    if (0 == current_loop.remaining)
+                    {
+                        loop_id_ -= 1;
+                    }
+                    else
+                    {
+                        current_loop.remaining -= 1;
+                        // Recall the position to the loop start element, it will be skipped by `++position_;` later
+                        position_ = song_start + current_loop.start_offset;
+                    }
+                }
+                break;
+
+            default:  // Loop Start
+                if (loop_id_ != (MAX_NESTED_LOOPS - 1))
+                {
+                    loop_id_ += 1;
+                    auto & current_loop = loops_[loop_id_];
+                    current_loop.remaining = el.param();
+                    current_loop.start_offset = position_ - song_start;
+                }
+                break;
+            }
+        }
             break;
 
         case MusicElement::ControlType::SET_OCTAVE:

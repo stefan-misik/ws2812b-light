@@ -48,11 +48,17 @@ class MusicElement
 public:
     enum class ControlType: uint8_t
     {
-        TERMINATE = 0,
+        FLOW = 0,
         SET_OCTAVE,
         SILENCE,
 
         CONTROL_COUNT_,
+    };
+
+    enum ControlFlowParam: uint8_t
+    {
+        CONTROL_FLOW_TERMINATE = 0,
+        CONTROL_FLOW_LOOP_END = 0x0F,
     };
 
     static const uint8_t NOTE_START = static_cast<uint8_t>(ControlType::CONTROL_COUNT_);
@@ -81,7 +87,9 @@ public:
             code_((static_cast<uint8_t>(control) << 4) | param)
     { }
 
-    static constexpr MusicElement Terminate() { return MusicElement{ControlType::TERMINATE, 0}; }
+    static constexpr MusicElement Terminate() { return MusicElement{ControlType::FLOW, 0}; }
+    static constexpr MusicElement BeginLoop(uint8_t count) { return MusicElement{ControlType::FLOW, count}; }
+    static constexpr MusicElement EndLoop() { return MusicElement{ControlType::FLOW, CONTROL_FLOW_LOOP_END}; }
     static constexpr MusicElement SetOctave(uint8_t octave) { return MusicElement{ControlType::SET_OCTAVE, octave}; }
     static constexpr MusicElement Silence(NoteLength length)
     {

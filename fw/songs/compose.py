@@ -45,6 +45,9 @@ class Note(NamedTuple):
         return f"{self._SHORT_TONES[self.tone.value]}{self.octave}"
 
 
+INVALID_NOTE = Note(-1, Tone.TONE_C)
+
+
 class NoteWithLength(NamedTuple):
     length: NoteLength
     note: Note
@@ -54,11 +57,18 @@ class Silence(NamedTuple):
     length: NoteLength
 
 
+class LoopControl(NamedTuple):
+    count: int
+
+    def is_end(self) -> bool:
+        return self.count < 0
+
+
 class Comment(NamedTuple):
     value: str
 
 
-SongElementType = Union[NoteWithLength, Silence, Comment]
+SongElementType = Union[NoteWithLength, Silence, LoopControl, Comment]
 
 
 class ParsingError(RuntimeError):
@@ -100,7 +110,7 @@ class SongParser:
     }
 
     _ELEMENT_RE = re.compile(
-        r"\s*(?:(//[^\n]*)\n|((?:1|2|4|8|16)\.?)(#?[cdefgab][0-9]|-))",
+        r"\s*((//[^\n]*)\n|((?:1|2|4|8|16)\.?)(#?[cdefgab][0-9]|-)|([0-9]{1,2})\[|])",
         re.MULTILINE
     )
 
@@ -123,23 +133,28 @@ class SongParser:
             raise StopIteration()
         parsed_length = len(found.group(0))
         present_groups = sum((1 << pos if group is not None else 0) for pos, group in enumerate(found.groups()))
-        if 1 == present_groups:
-            return self._parse_comment(found.group(1)), parsed_length
-        elif 6 == present_groups:
-            note_length = self._parse_note_length(found.group(2))
-            param = found.group(3)
+        if 3 == present_groups:
+            return self._parse_comment(found.group(2)), parsed_length
+        elif 13 == present_groups:
+            note_length = self._parse_note_length(found.group(3))
+            param = found.group(4)
             if '-' == param:
                 return Silence(note_length), parsed_length
             else:
                 return (
                     NoteWithLength(
                         note_length,
-                        Note(self._parse_octave(param[-1:]), self._parse_note_tone(param[:-1]))
+                        Note(self._parse_int(param[-1:]), self._parse_note_tone(param[:-1]))
                     ),
                     parsed_length
                 )
-        else:
-            raise ParsingError(self._pos)
+        elif 17 == present_groups:
+            return LoopControl(self._parse_int(found.group(5))), parsed_length
+        elif 1 == present_groups:
+            if ']' == found.group(1):
+                return LoopControl(-1), parsed_length
+        # If not parsed, raise error
+        raise ParsingError(self._pos)
 
     def _parse_note_length(self, s: str) -> NoteLength:
         nl = self._LENGTHS.get(s)
@@ -153,7 +168,7 @@ class SongParser:
             raise ParsingError(self._pos)
         return tone
 
-    def _parse_octave(self, s: str) -> int:
+    def _parse_int(self, s: str) -> int:
         try:
             return int(s)
         except ValueError:
@@ -181,7 +196,7 @@ NativeSongElementType = Union[NativeNote, NativeSetOctave, Silence, Comment]
 
 def convert_to_native(parser: SongParser) -> List[NativeSongElementType]:
     elements = []
-    current_note = Note(-1, Tone.TONE_C)  # Ensure set octave at start
+    current_note = INVALID_NOTE  # Ensure set octave at start
     for el in parser:
         if isinstance(el, NoteWithLength):
             diff = el.note.note_id() - current_note.note_id()
@@ -191,6 +206,10 @@ def convert_to_native(parser: SongParser) -> List[NativeSongElementType]:
                 diff = el.note.note_id() - current_note.note_id()
             elements.append(NativeNote(el.length, diff, el.note))
             current_note = el.note
+        elif isinstance(el, LoopControl):
+            elements.append(el)
+            if not el.is_end():
+                current_note = INVALID_NOTE  # Force Set Octave after loop start
         elif isinstance(el, Silence) or isinstance(el, Comment):
             elements.append(el)
     return elements
@@ -207,6 +226,11 @@ def native_to_lines(native: List[NativeSongElementType]) -> List[str]:
             lines.append(f"    MusicElement::SetOctave({el.octave}),\n")
         elif isinstance(el, Silence):
             lines.append(f"    MusicElement::Silence(NoteLength::{el.length.name}),\n")
+        elif isinstance(el, LoopControl):
+            if el.is_end():
+                lines.append(f"    MusicElement::EndLoop(),\n")
+            else:
+                lines.append(f"    MusicElement::BeginLoop({el.count}),\n")
         elif isinstance(el, Comment):
             lines.append(f"    {el.value}\n")
     lines.append("\n    MusicElement::Terminate()\n")

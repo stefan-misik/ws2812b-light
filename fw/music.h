@@ -80,6 +80,8 @@ public:
         CHANGE
     };
 
+    static const uint8_t MAX_NESTED_LOOPS = 3;
+
     static void initialize();
 
     /**
@@ -101,15 +103,32 @@ public:
     }
 
 private:
+    struct LoopState
+    {
+        uint8_t start_offset;
+        uint8_t remaining;
+    };
+
+    static const uint8_t INVALID_LOOP_ID = 0xFF;
+
     uint8_t bpm_counter_ = 0;
 
     int8_t current_song_id_ = 0;
     const uint8_t * position_ = nullptr;
 
+    uint8_t loop_id_ = INVALID_LOOP_ID;
+    LoopState loops_[MAX_NESTED_LOOPS];
+
     MusicNote current_note_;
     uint8_t remaining_duration_ = 0;
 
     static const uint8_t DIVIDE_FACTOR = 8;
+
+    void reset()
+    {
+        remaining_duration_ = 0;
+        loop_id_ = INVALID_LOOP_ID;
+    }
 };
 
 
