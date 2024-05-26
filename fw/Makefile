@@ -43,7 +43,9 @@ SRC  =  \
     )  \
     animation_list.cpp
 
-SONGS = silent_night
+SONGS =  \
+    silent_night  \
+    jingle_bells
 
 CPPFLAGS  = -I. -DF_CPU=$(DEF_FREQ)UL -D__$(DEF_MCU)__ -DLED_ORDER=$(LED_ORDER)
 CFLAGS    = -c -ggdb -O2 -Wall -Wno-array-bounds -mmcu=$(MCU)

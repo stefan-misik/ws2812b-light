@@ -57,10 +57,11 @@ namespace songs
 {
 
 #include "songs/silent_night.inc"
+#include "songs/jingle_bells.inc"
 
 }  // namespace songs
 
-static const uint8_t SONG_COUNT = 2;
+static const uint8_t SONG_COUNT = 3;
 const uint8_t * getSongById(uint8_t id)
 {
     switch (id)
@@ -68,6 +69,7 @@ const uint8_t * getSongById(uint8_t id)
     default:
     case 0: return nullptr;
     case 1: return songs::SILENT_NIGHT;
+    case 2: return songs::JINGLE_BELLS;
     }
 }
 
