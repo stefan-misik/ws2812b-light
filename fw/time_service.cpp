@@ -4,12 +4,12 @@
 #include <avr/interrupt.h>
 #include <util/atomic.h>
 
-volatile uint16_t TimeService::current_time_;
+volatile bool TimeService::should_run_;
 
 
 void TimeService::initialize()
 {
-    current_time_ = 0;
+    should_run_ = false;
 
     // Enable interrupts
     sei();
@@ -34,21 +34,13 @@ void TimeService::initialize()
             (1 << CS02) | (0 << CS01) | (1 << CS00);
 }
 
-bool PeriodicRoutine::shouldRun(uint8_t time)
+void TimeService::restartCounter()
 {
-    if (hasElapsed(time))
-    {
-        last_routine_run_ += period_length_;
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    TCNT0 = 0;
 }
 
 ISR(TIM0_COMPA_vect)
 {
-    TimeService::current_time_ = TimeService::current_time_ + 1;
+    TimeService::should_run_ = true;
 }
 

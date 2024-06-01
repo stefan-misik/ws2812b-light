@@ -13,8 +13,6 @@
 
 #include <util/delay.h>
 
-PeriodicRoutine main_routine(1);
-
 LedStrip<100> led_strip;
 AnalogIn analog_in;
 Buttons buttons;
@@ -57,6 +55,10 @@ inline void handleButtons(Animation::Events * events)
     {
         if (state & ButtonFilter::PRESS)
             button = buttons.button();
+    }
+    else
+    {
+        TimeService::restartCounter();
     }
 
     switch (button)
@@ -161,15 +163,9 @@ int main(void)
     while(1)
     {
         //handleNvmStorage();
-        if (main_routine.shouldRun())
+        if (TimeService::shouldRun())
         {
             mainPeriodicRoutine();
-            if (main_routine.hasElapsed())
-            {
-                // Spent too much time
-                //while (true)
-                //{ }
-            }
         }
     }
 }
