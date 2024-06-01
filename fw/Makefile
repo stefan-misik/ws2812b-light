@@ -48,9 +48,9 @@ SONGS =  \
     jingle_bells
 
 CPPFLAGS  = -I. -DF_CPU=$(DEF_FREQ)UL -D__$(DEF_MCU)__ -DLED_ORDER=$(LED_ORDER)
-CFLAGS    = -c -ggdb -O2 -Wall -Wno-array-bounds -mmcu=$(MCU)
-CXXFLAGS  = -c -ggdb -O2 -Wall -Wno-array-bounds -mmcu=$(MCU) -std=c++14 -fno-exceptions
-LDFLAGS   = -ggdb -O2 -mmcu=$(MCU) -Wl,-Map=$(PROJ).map
+CFLAGS    = -c -ggdb -Os -Wall -Wno-array-bounds -mmcu=$(MCU)
+CXXFLAGS  = -c -ggdb -Os -Wall -Wno-array-bounds -mmcu=$(MCU) -std=c++14 -fno-exceptions
+LDFLAGS   = -ggdb -Os -mmcu=$(MCU) -Wl,-Map=$(PROJ).map
 LDLIBS    =
 SIZEFLAGS = -C --mcu=$(MCU)
 
