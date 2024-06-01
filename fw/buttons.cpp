@@ -54,12 +54,10 @@ private:
 
 using ButtonId = Buttons::ButtonId;
 
-const ButtonId IR_COMMAND = static_cast<ButtonId>(static_cast<uint8_t>(ButtonId::BUTTON_COUNT) + 1);
-
 inline ButtonId classifyButton(uint16_t keypad_value)
 {
     if (keypad_value < 73u)
-        return IR_COMMAND;
+        return ButtonId::NONE;
     else if (keypad_value <= 219u)
         return ButtonId::O_BTN;
     else if (keypad_value <= 364u)
@@ -112,14 +110,22 @@ uint8_t waitForIRLevel(bool level, uint8_t timeout)
         ".ir_wait_exit:\n"
         : [duration] "+r" (duration), [pin_value] "=&r" (pin_value)
         : [level] "r" (level), [timeout] "r" (timeout),
-          [pinr] "I" (_SFR_IO_ADDR(PINB)), [pinb] "I" (PINB3)
+          [pinr] "I" (_SFR_IO_ADDR(PINB)), [pinb] "I" (PINB0)
     );
 
     return duration >> 8;
 }
 
+inline bool readIr()
+{
+    return 0 != (PINB & (1 << PINB0));
+}
+
 inline ButtonId receiveIrCmd()
 {
+    if (true == readIr())
+        return ButtonId::NONE;
+
     // Initial burst
     if (0xFF == waitForIRLevel(true, 53))
         return ButtonId::NONE;
@@ -172,13 +178,16 @@ inline ButtonId receiveIrCmd()
 void Buttons::initialize()
 {
     current_button_ = ButtonId::NONE;
+
+    // Use PB0 exclusively as IR input
+    DDRB &= ~((1 << DDB0));
+    PORTB |= ((1 << DDB0));  // Enable pull-up
 }
 
 uint8_t Buttons::run(uint16_t keypad_value)
 {
     const auto button = classifyButton(keypad_value);
 
-    if (IR_COMMAND == button)
     {
         const auto ir_btn = receiveIrCmd();
         if (ButtonId::NONE != ir_btn)
