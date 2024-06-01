@@ -30,7 +30,9 @@ SRC  =  \
     music.cpp  \
     status_led.cpp  \
     nvm_storage.cpp  \
-    time_service.cpp buttons.cpp  \
+    time_service.cpp  \
+    buttons.cpp  \
+    ir_receiver.cpp  \
     tools/button_filter.cpp  \
     tools/color.cpp  \
     tools/id_selector.cpp  \

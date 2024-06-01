@@ -1,6 +1,7 @@
 #include "led_controller.h"
 #include "analog_in.h"
 #include "buttons.h"
+#include "ir_receiver.h"
 #include "time_service.h"
 #include "status_led.h"
 #include "music.h"
@@ -17,6 +18,7 @@ PeriodicRoutine main_routine(1);
 LedStrip<100> led_strip;
 AnalogIn analog_in;
 Buttons buttons;
+IrReceiver ir_receiver;
 StatusLed status_led;
 SharedStorage shared_storage;
 NvmStorage nvm_storage;
@@ -49,35 +51,36 @@ void moveAnimation(int8_t offset)
 
 inline void handleButtons(Animation::Events * events)
 {
-    const uint8_t state = buttons.run(analog_in.keypad());
-    if (0 != state)
+    const auto state = buttons.run(analog_in.keypad());
+    Buttons::ButtonId button = ir_receiver.run();
+    if (Buttons::NONE == button)
     {
         if (state & ButtonFilter::PRESS)
-        {
-            switch (buttons.button())
-            {
-            case Buttons::UP:
-                events->setFlag(Animation::Events::SETTINGS_UP);
-                break;
-            case Buttons::DOWN:
-                events->setFlag(Animation::Events::SETTINGS_DOWN);
-                break;
-            case Buttons::RIGHT:
-                moveAnimation(1);
-                break;
-            case Buttons::LEFT:
-                moveAnimation(-1);
-                break;
-            case Buttons::O_BTN:
-                music.change(-1);
-                break;
-            case Buttons::X_BTN:
-                music.change(1);
-                break;
-            default:
-                break;
-            }
-        }
+            button = buttons.button();
+    }
+
+    switch (button)
+    {
+    case Buttons::UP:
+        events->setFlag(Animation::Events::SETTINGS_UP);
+        break;
+    case Buttons::DOWN:
+        events->setFlag(Animation::Events::SETTINGS_DOWN);
+        break;
+    case Buttons::RIGHT:
+        moveAnimation(1);
+        break;
+    case Buttons::LEFT:
+        moveAnimation(-1);
+        break;
+    case Buttons::O_BTN:
+        music.change(-1);
+        break;
+    case Buttons::X_BTN:
+        music.change(1);
+        break;
+    default:
+        break;
     }
 }
 
@@ -152,6 +155,7 @@ int main(void)
 
     analog_in.initialize();
     buttons.initialize();
+    ir_receiver.initialize();
 
     ledStripEvent(Animation::Event::START);
     while(1)
