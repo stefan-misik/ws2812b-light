@@ -98,6 +98,22 @@ inline bool readIr()
     return 0 != (PINB & (1 << PINB0));
 }
 
+inline IrReceiver::ButtonId decodeButton(uint8_t command)
+{
+    using ButtonId = IrReceiver::ButtonId;
+
+    switch (command)
+    {
+    case 0b00011000: return ButtonId::UP;
+    case 0b01011010: return ButtonId::RIGHT;
+    case 0b01010010: return ButtonId::DOWN;
+    case 0b00001000: return ButtonId::LEFT;
+    case 0b00010110: return ButtonId::O_BTN;
+    case 0b00001101: return ButtonId::X_BTN;
+    }
+    return ButtonId::NONE;
+}
+
 }  // namespace
 
 void IrReceiver::initialize()
@@ -125,6 +141,13 @@ auto IrReceiver::run() -> ButtonId
         {
             // Repeated button
             waitForIRLevel(true, 4);
+
+            if (repeat_count_ == REPEAT_SKIP)
+            {
+                repeat_count_ = 0;
+                return current_button_;
+            }
+            ++repeat_count_;
             return ButtonId::NONE;
         }
     }
@@ -146,15 +169,8 @@ auto IrReceiver::run() -> ButtonId
     if (!data.isValid())
         return ButtonId::NONE;
 
-    switch (data.command())
-    {
-    case 0b00011000: return ButtonId::UP;
-    case 0b01011010: return ButtonId::RIGHT;
-    case 0b01010010: return ButtonId::DOWN;
-    case 0b00001000: return ButtonId::LEFT;
-    case 0b00010110: return ButtonId::O_BTN;
-    case 0b00001101: return ButtonId::X_BTN;
-    }
+    current_button_ = decodeButton(data.command());
+    repeat_count_ = 0;
 
-    return ButtonId::NONE;
+    return current_button_;
 }
