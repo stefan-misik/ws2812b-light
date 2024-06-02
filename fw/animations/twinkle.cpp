@@ -50,6 +50,8 @@ uint8_t TwinkleAnimation::handleEvent(Event type, Param param, SharedStorage * s
                 if (0 != frequency_)
                     --frequency_;
             }
+            if (events.isFlagSet(Animation::Events::NOTE_CHANGED))
+                s().beat = true;
         }
         return Result::IS_OK;
 
@@ -81,7 +83,7 @@ void TwinkleAnimation::paintBackground(AbstractLedStrip * leds)
 
 void TwinkleAnimation::paintTwinkles(AbstractLedStrip * leds, Shared * shared)
 {
-    const uint16_t mask = 0x7FFF >> frequency_;
+    const uint16_t mask = shared->processBeat() ? 0x7F : (0x7FFF >> frequency_);
 
     for (uint8_t pos = 0; pos != Shared::BLINK_CNT; ++pos)
     {

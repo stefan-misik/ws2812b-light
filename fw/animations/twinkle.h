@@ -43,6 +43,14 @@ private:
         static const uint8_t BLINK_CNT = 7;
         Blink blinks[BLINK_CNT];
         uint8_t step = 0;
+        bool beat = false;
+
+        bool processBeat()
+        {
+            const bool b = beat;
+            beat = false;
+            return b;
+        }
     };
 
     static bool isSentinel(const LedState & led)
