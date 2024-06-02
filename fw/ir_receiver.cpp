@@ -5,6 +5,10 @@
 namespace
 {
 
+const constexpr uint8_t INVALID_COMMAND = 0x00;
+const constexpr uint8_t REPEAT_COMMAND = 0xFF;
+
+
 class IrData
 {
 public:
@@ -98,6 +102,45 @@ inline bool readIr()
     return 0 != (PINB & (1 << PINB0));
 }
 
+inline uint8_t receiveCommand()
+{
+    // Initial burst
+    if (0xFF == waitForIRLevel(true, 53))
+        return INVALID_COMMAND;
+
+    // Initial pause
+    {
+        const uint8_t duration = waitForIRLevel(false, 27);
+        if (0xFF == duration || duration < 10)
+            return INVALID_COMMAND;
+        if (duration < 18)
+        {
+            // Repeated button
+            waitForIRLevel(true, 4);
+            return REPEAT_COMMAND;
+        }
+    }
+
+    IrData data;
+    while (!data.isDone())
+    {
+        if (0xFF == waitForIRLevel(true, 4))
+            return INVALID_COMMAND;
+
+        const uint8_t duration = waitForIRLevel(false, 11);
+        if (0xFF == duration)
+            return INVALID_COMMAND;
+
+        data.append(duration > 7);
+    }
+    waitForIRLevel(true, 4);
+
+    if (!data.isValid())
+        return INVALID_COMMAND;
+
+    return data.command();
+}
+
 inline IrReceiver::ButtonId decodeButton(uint8_t command)
 {
     using ButtonId = IrReceiver::ButtonId;
@@ -128,48 +171,22 @@ uint8_t IrReceiver::run()
     if (true == readIr())
         return 0;
 
-    // Initial burst
-    if (0xFF == waitForIRLevel(true, 53))
-        return Status::RECEIVED;
+    const uint8_t command = receiveCommand();
 
-    // Initial pause
+    if (INVALID_COMMAND == command)
+        return Status::RECEIVED;
+    else if (REPEAT_COMMAND == command)
     {
-        const uint8_t duration = waitForIRLevel(false, 27);
-        if (0xFF == duration || duration < 10)
-            return Status::RECEIVED;
-        if (duration < 18)
+        if (repeat_count_ == REPEAT_SKIP)
         {
-            // Repeated button
-            waitForIRLevel(true, 4);
-
-            if (repeat_count_ == REPEAT_SKIP)
-            {
-                repeat_count_ = 0;
-                return Status::RECEIVED | Status::PRESS;
-            }
-            ++repeat_count_;
-            return Status::RECEIVED;
+            repeat_count_ = 0;
+            return Status::RECEIVED | Status::PRESS;
         }
-    }
-
-    IrData data;
-    while (!data.isDone())
-    {
-        if (0xFF == waitForIRLevel(true, 4))
-            return Status::RECEIVED;
-
-        const uint8_t duration = waitForIRLevel(false, 11);
-        if (0xFF == duration)
-            return Status::RECEIVED;
-
-        data.append(duration > 7);
-    }
-    waitForIRLevel(true, 4);
-
-    if (!data.isValid())
+        ++repeat_count_;
         return Status::RECEIVED;
+    }
 
-    current_button_ = decodeButton(data.command());
+    current_button_ = decodeButton(command);
     repeat_count_ = 0;
 
     return Status::RECEIVED | Status::PRESS;
