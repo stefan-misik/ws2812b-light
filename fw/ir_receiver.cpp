@@ -1,6 +1,7 @@
 #include "ir_receiver.h"
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 
 namespace
 {
@@ -171,7 +172,13 @@ uint8_t IrReceiver::run()
     if (true == readIr())
         return 0;
 
-    const uint8_t command = receiveCommand();
+    uint8_t command;
+    {
+        volatile uint8_t old_sreg = SREG;
+        cli();
+        command = receiveCommand();
+        SREG = old_sreg;
+    }
 
     if (INVALID_COMMAND == command)
         return Status::RECEIVED;
