@@ -15,13 +15,27 @@ class IrReceiver
 public:
     using ButtonId = Buttons::ButtonId;
 
+    enum Status
+    {
+        /**
+         * @brief Successfully registered a button press
+         */
+        PRESS = (1 << 0),
+
+        /**
+         * @brief Received something, thus the run function blocked and timing
+         *        is going to be broken
+         */
+        RECEIVED = (1 << 1),
+    };
+
     static const uint8_t REPEAT_SKIP = 1;
 
 
     ButtonId button() const { return current_button_; }
 
     void initialize();
-    ButtonId run();
+    uint8_t run();
 
 private:
     ButtonId current_button_ = ButtonId::NONE;

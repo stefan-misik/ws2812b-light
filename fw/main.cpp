@@ -50,14 +50,19 @@ void moveAnimation(int8_t offset)
 inline void handleButtons(Animation::Events * events)
 {
     const auto state = buttons.run(analog_in.keypad());
-    Buttons::ButtonId button = ir_receiver.run();
-    if (Buttons::NONE == button)
+    const auto ir_state = ir_receiver.run();
+    Buttons::ButtonId button = Buttons::ButtonId::NONE;
+    if (ir_state & IrReceiver::PRESS)
+        button = ir_receiver.button();
+    else
     {
         if (state & ButtonFilter::PRESS)
             button = buttons.button();
     }
-    else
+    if (ir_state & IrReceiver::RECEIVED)
     {
+        // IR receiver has broken timing of the application, recover from it by
+        // reseting time counter
         TimeService::restartCounter();
     }
 

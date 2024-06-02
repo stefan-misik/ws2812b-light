@@ -123,20 +123,20 @@ void IrReceiver::initialize()
     PORTB |= ((1 << DDB0));  // Enable pull-up
 }
 
-auto IrReceiver::run() -> ButtonId
+uint8_t IrReceiver::run()
 {
     if (true == readIr())
-        return ButtonId::NONE;
+        return 0;
 
     // Initial burst
     if (0xFF == waitForIRLevel(true, 53))
-        return ButtonId::NONE;
+        return Status::RECEIVED;
 
     // Initial pause
     {
         const uint8_t duration = waitForIRLevel(false, 27);
         if (0xFF == duration || duration < 10)
-            return ButtonId::NONE;
+            return Status::RECEIVED;
         if (duration < 18)
         {
             // Repeated button
@@ -145,10 +145,10 @@ auto IrReceiver::run() -> ButtonId
             if (repeat_count_ == REPEAT_SKIP)
             {
                 repeat_count_ = 0;
-                return current_button_;
+                return Status::RECEIVED | Status::PRESS;
             }
             ++repeat_count_;
-            return ButtonId::NONE;
+            return Status::RECEIVED;
         }
     }
 
@@ -156,21 +156,21 @@ auto IrReceiver::run() -> ButtonId
     while (!data.isDone())
     {
         if (0xFF == waitForIRLevel(true, 4))
-            return ButtonId::NONE;
+            return Status::RECEIVED;
 
         const uint8_t duration = waitForIRLevel(false, 11);
         if (0xFF == duration)
-            return ButtonId::NONE;
+            return Status::RECEIVED;
 
         data.append(duration > 7);
     }
     waitForIRLevel(true, 4);
 
     if (!data.isValid())
-        return ButtonId::NONE;
+        return Status::RECEIVED;
 
     current_button_ = decodeButton(data.command());
     repeat_count_ = 0;
 
-    return current_button_;
+    return Status::RECEIVED | Status::PRESS;
 }
