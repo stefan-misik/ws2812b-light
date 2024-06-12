@@ -64,7 +64,9 @@ DEP = $(OBJ:.o=.d)
 
 all: $(PROJ).elf $(PROJ).hex $(PROJ).lss stats
 
+ifeq (,$(filter clean,$(MAKECMDGOALS)))
 -include $(DEP)
+endif
 
 music.cpp: $(addprefix songs/,$(addsuffix .inc,$(SONGS)))
 
