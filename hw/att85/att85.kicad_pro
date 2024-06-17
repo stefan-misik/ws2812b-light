@@ -467,6 +467,7 @@
   },
   "schematic": {
     "annotate_start_num": 0,
+    "bom_export_filename": "",
     "bom_fmt_presets": [],
     "bom_fmt_settings": {
       "field_delimiter": ",",
@@ -567,6 +568,10 @@
     [
       "fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770",
       "Root"
+    ],
+    [
+      "32819f2b-3e26-4dff-931e-dc604d389a45",
+      "CPU"
     ]
   ],
   "text_variables": {}
