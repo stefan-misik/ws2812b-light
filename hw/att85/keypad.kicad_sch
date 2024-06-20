@@ -463,6 +463,78 @@
 		)
 		(uuid "e829db74-0f71-4eff-839b-0035a4f39aa6")
 	)
+	(hierarchical_label "BTN_UP"
+		(shape output)
+		(at 203.2 81.28 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "374ebcd3-bac7-4e99-971f-934920e8e700")
+	)
+	(hierarchical_label "BTN_RIGHT"
+		(shape output)
+		(at 203.2 86.36 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "46237f8e-a4ad-4620-bd0a-794cb2478c3e")
+	)
+	(hierarchical_label "BTN_LEFT"
+		(shape output)
+		(at 203.2 78.74 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "4f6c5b61-79d8-4f6e-8bd5-3d954ff7e809")
+	)
+	(hierarchical_label "BTN_DOWN"
+		(shape output)
+		(at 203.2 83.82 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "6b96ca0c-f471-4b7a-b4d8-f9de371a4120")
+	)
+	(hierarchical_label "BTN_X"
+		(shape output)
+		(at 203.2 88.9 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "b8419a2e-ce08-468b-92c0-fbf8169bd352")
+	)
+	(hierarchical_label "BTN_O"
+		(shape output)
+		(at 203.2 76.2 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "daa552cf-fff9-4cb8-aba0-e2626afecc89")
+	)
 	(symbol
 		(lib_id "power:GND")
 		(at 129.54 123.19 0)
