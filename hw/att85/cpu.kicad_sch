@@ -2429,6 +2429,16 @@
 	)
 	(wire
 		(pts
+			(xy 106.68 91.44) (xy 129.54 91.44)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3f966533-6a22-4b17-8d9f-9bfa2968630b")
+	)
+	(wire
+		(pts
 			(xy 67.31 158.75) (xy 67.31 160.02)
 		)
 		(stroke
@@ -2569,6 +2579,16 @@
 	)
 	(wire
 		(pts
+			(xy 66.04 76.2) (xy 78.74 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7d7fd9c3-187c-4537-a245-1c9337b1b00a")
+	)
+	(wire
+		(pts
 			(xy 39.37 30.48) (xy 31.75 30.48)
 		)
 		(stroke
@@ -2659,7 +2679,7 @@
 	)
 	(wire
 		(pts
-			(xy 106.68 93.98) (xy 123.19 93.98)
+			(xy 106.68 93.98) (xy 129.54 93.98)
 		)
 		(stroke
 			(width 0)
@@ -2885,7 +2905,7 @@
 		(uuid "6f4b534e-01c6-4fbc-9b5d-0601b61ebda6")
 	)
 	(label "LED_DATA_3V3"
-		(at 123.19 93.98 180)
+		(at 129.54 93.98 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -2894,6 +2914,17 @@
 			(justify right bottom)
 		)
 		(uuid "87d2757b-dbb5-40af-9cd5-a790883188d3")
+	)
+	(label "IR_DATA_3V3"
+		(at 66.04 76.2 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "9d3e7115-3e1a-4a53-8b0d-ec771f82d1b6")
 	)
 	(label "~{RESET}"
 		(at 71.12 71.12 0)
@@ -2949,6 +2980,17 @@
 			(justify left bottom)
 		)
 		(uuid "e7af2bb6-70c1-4119-833b-3b0a848c52dc")
+	)
+	(label "STATUS_LED_DATA_3V3"
+		(at 129.54 91.44 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "ef2ea69d-bc6c-4ddc-b353-aa39081a129d")
 	)
 	(hierarchical_label "BTN_X"
 		(shape input)
