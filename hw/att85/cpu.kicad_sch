@@ -2883,12 +2883,56 @@
 		(uuid "e8aa11b1-b85c-4eb1-a197-bfdcea0bcbf9")
 	)
 	(no_connect
+		(at 106.68 83.82)
+		(uuid "04b8a57c-031a-4828-a7af-945eed488691")
+	)
+	(no_connect
+		(at 78.74 86.36)
+		(uuid "06c5bbda-04a0-4c2b-8cb5-34bba4021436")
+	)
+	(no_connect
+		(at 66.04 78.74)
+		(uuid "09f9f117-0f79-4d49-a1fb-91035bd942ed")
+	)
+	(no_connect
+		(at 106.68 101.6)
+		(uuid "31da0bf9-39b9-4d25-84d0-4b851ec5d3ed")
+	)
+	(no_connect
+		(at 106.68 73.66)
+		(uuid "3385692a-7a1c-4965-847d-b3922b17ccaa")
+	)
+	(no_connect
+		(at 106.68 99.06)
+		(uuid "5a478d61-6721-4499-bee8-ae55d3eeebaf")
+	)
+	(no_connect
+		(at 106.68 71.12)
+		(uuid "8f7331ba-174c-41cb-873e-de2eb0f961e6")
+	)
+	(no_connect
 		(at 209.55 39.37)
 		(uuid "9574ad40-31e4-40fa-b2f6-e153583b75dc")
 	)
 	(no_connect
 		(at 39.37 40.64)
 		(uuid "a7205058-d38e-422d-88e9-7a59ed9e4591")
+	)
+	(no_connect
+		(at 106.68 88.9)
+		(uuid "e594496c-54ba-4b58-b6b2-7288799e35a8")
+	)
+	(no_connect
+		(at 78.74 81.28)
+		(uuid "e6a355a0-8a57-42bb-b56d-bff91743c053")
+	)
+	(no_connect
+		(at 106.68 96.52)
+		(uuid "eec4ccbb-ebf4-4fdd-8e96-50a832dc37f2")
+	)
+	(no_connect
+		(at 106.68 81.28)
+		(uuid "f0239ef4-367f-40b2-8c74-76973df5b90f")
 	)
 	(wire
 		(pts
@@ -2969,6 +3013,16 @@
 			(type default)
 		)
 		(uuid "0acb42bc-a9e9-4263-a8c9-975b648a0475")
+	)
+	(wire
+		(pts
+			(xy 63.5 101.6) (xy 78.74 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0c32b730-665f-42cb-8684-e5b8851cfb12")
 	)
 	(wire
 		(pts
@@ -3162,6 +3216,16 @@
 	)
 	(wire
 		(pts
+			(xy 63.5 104.14) (xy 78.74 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "40c72cff-8a12-4632-92e7-75f755b50d32")
+	)
+	(wire
+		(pts
 			(xy 39.37 33.02) (xy 31.75 33.02)
 		)
 		(stroke
@@ -3189,6 +3253,16 @@
 			(type default)
 		)
 		(uuid "4552f815-1ceb-4335-936c-2e16e9a700a3")
+	)
+	(wire
+		(pts
+			(xy 63.5 96.52) (xy 78.74 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "45698d81-65cc-4ad8-9b87-0b2e5e7df6fe")
 	)
 	(wire
 		(pts
@@ -3269,6 +3343,16 @@
 			(type default)
 		)
 		(uuid "603b4bb6-fa45-435c-8c9c-3f79e2c24360")
+	)
+	(wire
+		(pts
+			(xy 114.3 109.22) (xy 106.68 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "604321d3-66ff-4b8c-9015-d80be032ae40")
 	)
 	(wire
 		(pts
@@ -3532,6 +3616,16 @@
 	)
 	(wire
 		(pts
+			(xy 63.5 99.06) (xy 78.74 99.06)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9cf83f15-ca17-4c35-9e5e-743eb86a9014")
+	)
+	(wire
+		(pts
 			(xy 165.1 24.13) (xy 165.1 26.67)
 		)
 		(stroke
@@ -3619,6 +3713,16 @@
 			(type default)
 		)
 		(uuid "b4972b8a-cf8a-4ea9-9376-27dc78d0bb16")
+	)
+	(wire
+		(pts
+			(xy 63.5 93.98) (xy 78.74 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b732ab95-7d15-4964-a779-16ebac970416")
 	)
 	(wire
 		(pts
@@ -4251,25 +4355,25 @@
 	)
 	(hierarchical_label "BTN_X"
 		(shape input)
-		(at 34.29 101.6 0)
+		(at 63.5 101.6 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left)
+			(justify right)
 		)
 		(uuid "3bfc04ad-b974-463c-8e51-ab460c535fd1")
 	)
 	(hierarchical_label "BTN_RIGHT"
 		(shape input)
-		(at 34.29 99.06 0)
+		(at 63.5 99.06 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left)
+			(justify right)
 		)
 		(uuid "82b14b84-5d4a-4cb2-99af-9c6f1a33f612")
 	)
@@ -4287,25 +4391,25 @@
 	)
 	(hierarchical_label "BTN_LEFT"
 		(shape input)
-		(at 34.29 91.44 0)
+		(at 63.5 93.98 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left)
+			(justify right)
 		)
 		(uuid "ad18c700-7f45-4ccb-b7f7-ce1ecdbdcd87")
 	)
 	(hierarchical_label "BTN_UP"
 		(shape input)
-		(at 34.29 93.98 0)
+		(at 63.5 104.14 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left)
+			(justify right)
 		)
 		(uuid "c35cc9d6-61c4-43c3-bd22-d6c483b0da8b")
 	)
@@ -4335,7 +4439,7 @@
 	)
 	(hierarchical_label "BTN_O"
 		(shape input)
-		(at 34.29 88.9 0)
+		(at 114.3 109.22 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -4347,13 +4451,13 @@
 	)
 	(hierarchical_label "BTN_DOWN"
 		(shape input)
-		(at 34.29 96.52 0)
+		(at 63.5 96.52 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left)
+			(justify right)
 		)
 		(uuid "e80b67ee-ebc5-4036-924a-f98523801520")
 	)
