@@ -2972,16 +2972,6 @@
 	)
 	(wire
 		(pts
-			(xy 243.84 157.48) (xy 259.08 157.48)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0e2ea884-95ef-4de9-830d-ba6584e5e2af")
-	)
-	(wire
-		(pts
 			(xy 259.08 22.86) (xy 255.27 22.86)
 		)
 		(stroke
@@ -2999,16 +2989,6 @@
 			(type default)
 		)
 		(uuid "105b2df2-2543-4953-974a-95c1d098ec31")
-	)
-	(wire
-		(pts
-			(xy 245.11 114.3) (xy 259.08 114.3)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "10e09c58-695e-43f6-be36-07bfa0709080")
 	)
 	(wire
 		(pts
@@ -3209,6 +3189,16 @@
 			(type default)
 		)
 		(uuid "4552f815-1ceb-4335-936c-2e16e9a700a3")
+	)
+	(wire
+		(pts
+			(xy 106.68 86.36) (xy 121.92 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4b680222-0f8f-4d96-affa-a1aff11f706c")
 	)
 	(wire
 		(pts
@@ -3995,17 +3985,6 @@
 		)
 		(uuid "104af440-4798-4d5b-b4b2-3dea97c92d5e")
 	)
-	(label "IR_DATA_3V3"
-		(at 245.11 114.3 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "13044196-3943-42bc-a423-a4256af44b62")
-	)
 	(label "I2C_SCL"
 		(at 184.15 40.64 180)
 		(fields_autoplaced yes)
@@ -4160,17 +4139,6 @@
 		)
 		(uuid "9383fe41-0fcc-4f3f-a68a-948027a8e64f")
 	)
-	(label "IR_DATA_3V3"
-		(at 66.04 76.2 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "9d3e7115-3e1a-4a53-8b0d-ec771f82d1b6")
-	)
 	(label "~{RESET}"
 		(at 71.12 71.12 0)
 		(fields_autoplaced yes)
@@ -4203,17 +4171,6 @@
 			(justify left bottom)
 		)
 		(uuid "c3182ff8-2039-403b-9b41-2bc82dd1c3c5")
-	)
-	(label "BUZZER_3V3"
-		(at 243.84 157.48 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "c91eeae6-e639-4c25-a93a-cdadcfbc6f79")
 	)
 	(label "STATUS_LED1"
 		(at 114.3 148.59 0)
@@ -4318,13 +4275,13 @@
 	)
 	(hierarchical_label "IR_DATA_3V3"
 		(shape input)
-		(at 259.08 114.3 0)
+		(at 66.04 76.2 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left)
+			(justify right)
 		)
 		(uuid "9de82755-c716-474b-a604-1340643094b2")
 	)
@@ -4354,7 +4311,7 @@
 	)
 	(hierarchical_label "BUZZER_3V3"
 		(shape output)
-		(at 259.08 157.48 0)
+		(at 121.92 86.36 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
