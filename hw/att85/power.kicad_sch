@@ -843,7 +843,7 @@
 			(uuid "91ea0930-da87-4c60-887d-c794dedabac5")
 		)
 		(instances
-			(project ""
+			(project "att85"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/de7f174c-7a84-413b-92d9-b2f0c84612b1"
 					(reference "U501")
 					(unit 1)
@@ -1049,7 +1049,7 @@
 			(uuid "3684d796-b982-49b2-9bd5-d40169035690")
 		)
 		(instances
-			(project ""
+			(project "att85"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/de7f174c-7a84-413b-92d9-b2f0c84612b1"
 					(reference "#PWR0501")
 					(unit 1)

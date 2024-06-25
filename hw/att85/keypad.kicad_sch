@@ -2126,7 +2126,7 @@
 			(uuid "6a3d64c5-476f-4d96-ae20-0399da8b72bb")
 		)
 		(instances
-			(project ""
+			(project "att85"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/92669e5a-b445-42f6-941a-fe6cd3da5605"
 					(reference "#PWR0402")
 					(unit 1)
@@ -2136,7 +2136,7 @@
 	)
 	(symbol
 		(lib_id "4xxx:4050")
-		(at 215.9 99.06 0)
+		(at 215.9 86.36 0)
 		(unit 4)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2144,7 +2144,7 @@
 		(dnp no)
 		(uuid "207671be-9bd8-48ab-854e-dd9b262f24a6")
 		(property "Reference" "U401"
-			(at 215.9 92.202 0)
+			(at 215.9 79.502 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2152,7 +2152,7 @@
 			)
 		)
 		(property "Value" "4050"
-			(at 215.9 94.742 0)
+			(at 215.9 82.042 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2160,7 +2160,7 @@
 			)
 		)
 		(property "Footprint" "Package_SO:SOIC-16_3.9x9.9mm_P1.27mm"
-			(at 215.9 99.06 0)
+			(at 215.9 86.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2169,7 +2169,7 @@
 			)
 		)
 		(property "Datasheet" "http://www.intersil.com/content/dam/intersil/documents/cd40/cd4050bms.pdf"
-			(at 215.9 99.06 0)
+			(at 215.9 86.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2178,7 +2178,7 @@
 			)
 		)
 		(property "Description" "Hex Buffer"
-			(at 215.9 99.06 0)
+			(at 215.9 86.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2229,7 +2229,7 @@
 			(uuid "755a7827-e89f-4fa3-b467-af26d8c7db9d")
 		)
 		(instances
-			(project ""
+			(project "att85"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/92669e5a-b445-42f6-941a-fe6cd3da5605"
 					(reference "U401")
 					(unit 4)
@@ -2741,7 +2741,7 @@
 			(uuid "755a7827-e89f-4fa3-b467-af26d8c7db9e")
 		)
 		(instances
-			(project ""
+			(project "att85"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/92669e5a-b445-42f6-941a-fe6cd3da5605"
 					(reference "U401")
 					(unit 7)
@@ -2911,7 +2911,7 @@
 			(uuid "755a7827-e89f-4fa3-b467-af26d8c7db9f")
 		)
 		(instances
-			(project ""
+			(project "att85"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/92669e5a-b445-42f6-941a-fe6cd3da5605"
 					(reference "U401")
 					(unit 1)
@@ -3014,7 +3014,7 @@
 			(uuid "755a7827-e89f-4fa3-b467-af26d8c7dba0")
 		)
 		(instances
-			(project ""
+			(project "att85"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/92669e5a-b445-42f6-941a-fe6cd3da5605"
 					(reference "U401")
 					(unit 2)
@@ -3091,7 +3091,7 @@
 	)
 	(symbol
 		(lib_id "4xxx:4050")
-		(at 215.9 86.36 0)
+		(at 215.9 99.06 0)
 		(unit 3)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3099,7 +3099,7 @@
 		(dnp no)
 		(uuid "785da848-1a85-42ec-bb87-094e275149c3")
 		(property "Reference" "U401"
-			(at 215.9 79.502 0)
+			(at 215.9 92.202 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3107,7 +3107,7 @@
 			)
 		)
 		(property "Value" "4050"
-			(at 215.9 82.042 0)
+			(at 215.9 94.742 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3115,7 +3115,7 @@
 			)
 		)
 		(property "Footprint" "Package_SO:SOIC-16_3.9x9.9mm_P1.27mm"
-			(at 215.9 86.36 0)
+			(at 215.9 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3124,7 +3124,7 @@
 			)
 		)
 		(property "Datasheet" "http://www.intersil.com/content/dam/intersil/documents/cd40/cd4050bms.pdf"
-			(at 215.9 86.36 0)
+			(at 215.9 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3133,7 +3133,7 @@
 			)
 		)
 		(property "Description" "Hex Buffer"
-			(at 215.9 86.36 0)
+			(at 215.9 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3184,7 +3184,7 @@
 			(uuid "755a7827-e89f-4fa3-b467-af26d8c7dba1")
 		)
 		(instances
-			(project ""
+			(project "att85"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/92669e5a-b445-42f6-941a-fe6cd3da5605"
 					(reference "U401")
 					(unit 3)
@@ -3194,7 +3194,7 @@
 	)
 	(symbol
 		(lib_id "4xxx:4050")
-		(at 215.9 124.46 0)
+		(at 215.9 111.76 0)
 		(unit 6)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3202,7 +3202,7 @@
 		(dnp no)
 		(uuid "79487a90-04b7-44bb-9dae-3c9a1789e6c0")
 		(property "Reference" "U401"
-			(at 215.9 117.602 0)
+			(at 215.9 104.902 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3210,7 +3210,7 @@
 			)
 		)
 		(property "Value" "4050"
-			(at 215.9 120.142 0)
+			(at 215.9 107.442 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3218,7 +3218,7 @@
 			)
 		)
 		(property "Footprint" "Package_SO:SOIC-16_3.9x9.9mm_P1.27mm"
-			(at 215.9 124.46 0)
+			(at 215.9 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3227,7 +3227,7 @@
 			)
 		)
 		(property "Datasheet" "http://www.intersil.com/content/dam/intersil/documents/cd40/cd4050bms.pdf"
-			(at 215.9 124.46 0)
+			(at 215.9 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3236,7 +3236,7 @@
 			)
 		)
 		(property "Description" "Hex Buffer"
-			(at 215.9 124.46 0)
+			(at 215.9 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3287,7 +3287,7 @@
 			(uuid "755a7827-e89f-4fa3-b467-af26d8c7dba2")
 		)
 		(instances
-			(project ""
+			(project "att85"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/92669e5a-b445-42f6-941a-fe6cd3da5605"
 					(reference "U401")
 					(unit 6)
@@ -3419,7 +3419,7 @@
 			(uuid "38bff329-dfbe-4dfa-9e58-9b054cf0fab0")
 		)
 		(instances
-			(project ""
+			(project "att85"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/92669e5a-b445-42f6-941a-fe6cd3da5605"
 					(reference "#PWR02")
 					(unit 1)
@@ -3770,7 +3770,7 @@
 	)
 	(symbol
 		(lib_id "4xxx:4050")
-		(at 215.9 111.76 0)
+		(at 215.9 124.46 0)
 		(unit 5)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3778,7 +3778,7 @@
 		(dnp no)
 		(uuid "a10dac4d-d14a-405a-b9a6-eaa27ae65060")
 		(property "Reference" "U401"
-			(at 215.9 104.902 0)
+			(at 215.9 117.602 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3786,7 +3786,7 @@
 			)
 		)
 		(property "Value" "4050"
-			(at 215.9 107.442 0)
+			(at 215.9 120.142 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3794,7 +3794,7 @@
 			)
 		)
 		(property "Footprint" "Package_SO:SOIC-16_3.9x9.9mm_P1.27mm"
-			(at 215.9 111.76 0)
+			(at 215.9 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3803,7 +3803,7 @@
 			)
 		)
 		(property "Datasheet" "http://www.intersil.com/content/dam/intersil/documents/cd40/cd4050bms.pdf"
-			(at 215.9 111.76 0)
+			(at 215.9 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3812,7 +3812,7 @@
 			)
 		)
 		(property "Description" "Hex Buffer"
-			(at 215.9 111.76 0)
+			(at 215.9 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3863,7 +3863,7 @@
 			(uuid "755a7827-e89f-4fa3-b467-af26d8c7dba3")
 		)
 		(instances
-			(project ""
+			(project "att85"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/92669e5a-b445-42f6-941a-fe6cd3da5605"
 					(reference "U401")
 					(unit 5)
@@ -3929,7 +3929,7 @@
 			(uuid "2aa0dabe-9260-43f0-b065-c54dc08b6f60")
 		)
 		(instances
-			(project ""
+			(project "att85"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/92669e5a-b445-42f6-941a-fe6cd3da5605"
 					(reference "#PWR0403")
 					(unit 1)
@@ -4131,7 +4131,7 @@
 			(uuid "a0c15c50-3c7a-4817-9449-8cde7c687a03")
 		)
 		(instances
-			(project ""
+			(project "att85"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/92669e5a-b445-42f6-941a-fe6cd3da5605"
 					(reference "#PWR03")
 					(unit 1)

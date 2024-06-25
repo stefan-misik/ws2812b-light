@@ -3135,7 +3135,7 @@
 			(uuid "bb9f4cfc-9913-4050-9a92-f54c7f7514ae")
 		)
 		(instances
-			(project ""
+			(project "att85"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770"
 					(reference "#PWR01")
 					(unit 1)
@@ -3332,7 +3332,7 @@
 			(uuid "6a0a100b-0b9a-4711-ba05-275fe0c97948")
 		)
 		(instances
-			(project ""
+			(project "att85"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770"
 					(reference "#PWR0103")
 					(unit 1)
