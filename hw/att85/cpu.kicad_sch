@@ -1451,6 +1451,151 @@
 				)
 			)
 		)
+		(symbol "Jumper:Jumper_2_Bridged"
+			(pin_numbers hide)
+			(pin_names
+				(offset 0) hide)
+			(exclude_from_sim yes)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "JP"
+				(at 0 1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "Jumper_2_Bridged"
+				(at 0 -2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Jumper, 2-pole, closed/bridged"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "Jumper SPST"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Jumper* TestPoint*2Pads* TestPoint*Bridge*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "Jumper_2_Bridged_0_0"
+				(circle
+					(center -2.032 0)
+					(radius 0.508)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 2.032 0)
+					(radius 0.508)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "Jumper_2_Bridged_0_1"
+				(arc
+					(start 1.524 0.254)
+					(mid 0 0.762)
+					(end -1.524 0.254)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "Jumper_2_Bridged_1_1"
+				(pin passive line
+					(at -5.08 0 0)
+					(length 2.54)
+					(name "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 0 180)
+					(length 2.54)
+					(name "B"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "MCU_ST_STM32G0:STM32G030K8Tx"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -2847,13 +2992,13 @@
 		(uuid "4f60a5b8-0dfb-49b3-b866-de56670511ea")
 	)
 	(junction
-		(at 195.58 25.4)
+		(at 190.5 25.4)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "53568e35-a9b6-4cb0-a3fe-735e3fc550ac")
 	)
 	(junction
-		(at 205.74 36.83)
+		(at 195.58 36.83)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "89bf8267-dccc-49fd-9b60-251e90876aec")
@@ -3036,7 +3181,7 @@
 	)
 	(wire
 		(pts
-			(xy 195.58 26.67) (xy 195.58 25.4)
+			(xy 190.5 26.67) (xy 190.5 25.4)
 		)
 		(stroke
 			(width 0)
@@ -3046,7 +3191,7 @@
 	)
 	(wire
 		(pts
-			(xy 195.58 25.4) (xy 219.71 25.4)
+			(xy 190.5 25.4) (xy 219.71 25.4)
 		)
 		(stroke
 			(width 0)
@@ -3156,7 +3301,7 @@
 	)
 	(wire
 		(pts
-			(xy 195.58 35.56) (xy 195.58 34.29)
+			(xy 190.5 35.56) (xy 190.5 34.29)
 		)
 		(stroke
 			(width 0)
@@ -3266,6 +3411,16 @@
 	)
 	(wire
 		(pts
+			(xy 208.28 34.29) (xy 209.55 34.29)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "485d4fe6-83c9-4460-8b3b-8cd2416bb38e")
+	)
+	(wire
+		(pts
 			(xy 106.68 86.36) (xy 121.92 86.36)
 		)
 		(stroke
@@ -3283,16 +3438,6 @@
 			(type default)
 		)
 		(uuid "4e458736-b68f-4d90-8dde-bedf26af0f15")
-	)
-	(wire
-		(pts
-			(xy 205.74 34.29) (xy 209.55 34.29)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "503492f6-630c-47a3-9185-7c0802232cc3")
 	)
 	(wire
 		(pts
@@ -3386,7 +3531,7 @@
 	)
 	(wire
 		(pts
-			(xy 205.74 41.91) (xy 205.74 36.83)
+			(xy 195.58 41.91) (xy 195.58 36.83)
 		)
 		(stroke
 			(width 0)
@@ -3486,7 +3631,7 @@
 	)
 	(wire
 		(pts
-			(xy 205.74 36.83) (xy 205.74 34.29)
+			(xy 195.58 36.83) (xy 195.58 34.29)
 		)
 		(stroke
 			(width 0)
@@ -3576,13 +3721,23 @@
 	)
 	(wire
 		(pts
-			(xy 195.58 25.4) (xy 195.58 24.13)
+			(xy 190.5 25.4) (xy 190.5 24.13)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "8d75ccd8-27d5-41b0-bdaf-0119f6e59a84")
+	)
+	(wire
+		(pts
+			(xy 195.58 34.29) (xy 198.12 34.29)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8eabdd34-e1dd-45b0-bc18-b460b5b3319c")
 	)
 	(wire
 		(pts
@@ -3836,7 +3991,7 @@
 	)
 	(wire
 		(pts
-			(xy 205.74 36.83) (xy 209.55 36.83)
+			(xy 195.58 36.83) (xy 209.55 36.83)
 		)
 		(stroke
 			(width 0)
@@ -4754,6 +4909,74 @@
 		)
 	)
 	(symbol
+		(lib_id "Jumper:Jumper_2_Bridged")
+		(at 203.2 34.29 0)
+		(unit 1)
+		(exclude_from_sim yes)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "0ae257d1-177c-4c2c-9037-ed3b0f6018dd")
+		(property "Reference" "JP201"
+			(at 203.2 32.512 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Jumper_2_Bridged"
+			(at 203.2 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Jumper:SolderJumper-2_P1.3mm_Bridged_RoundedPad1.0x1.5mm"
+			(at 203.2 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 203.2 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Jumper, 2-pole, closed/bridged"
+			(at 203.2 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "d01e9491-338e-481b-aeff-2dc684501c2e")
+		)
+		(pin "1"
+			(uuid "135def49-249a-43d1-85c9-759f7c441404")
+		)
+		(instances
+			(project ""
+				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/32819f2b-3e26-4dff-931e-dc604d389a45"
+					(reference "JP201")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 85.09 55.88 0)
 		(unit 1)
@@ -5264,7 +5487,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 195.58 35.56 0)
+		(at 190.5 35.56 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5273,7 +5496,7 @@
 		(fields_autoplaced yes)
 		(uuid "4c776ab1-718e-4c58-b0c9-c0e230cd0bd2")
 		(property "Reference" "#PWR0214"
-			(at 195.58 41.91 0)
+			(at 190.5 41.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5282,7 +5505,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 195.58 40.64 0)
+			(at 190.5 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5290,7 +5513,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 195.58 35.56 0)
+			(at 190.5 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5299,7 +5522,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 195.58 35.56 0)
+			(at 190.5 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5308,7 +5531,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 195.58 35.56 0)
+			(at 190.5 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6204,7 +6427,7 @@
 	)
 	(symbol
 		(lib_id "power:+3.3V")
-		(at 195.58 24.13 0)
+		(at 190.5 24.13 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6213,7 +6436,7 @@
 		(fields_autoplaced yes)
 		(uuid "8bb8f830-054a-421c-8f97-9178be92043a")
 		(property "Reference" "#PWR0213"
-			(at 195.58 27.94 0)
+			(at 190.5 27.94 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6222,7 +6445,7 @@
 			)
 		)
 		(property "Value" "+3.3V"
-			(at 195.58 19.05 0)
+			(at 190.5 19.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6230,7 +6453,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 195.58 24.13 0)
+			(at 190.5 24.13 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6239,7 +6462,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 195.58 24.13 0)
+			(at 190.5 24.13 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6248,7 +6471,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 195.58 24.13 0)
+			(at 190.5 24.13 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6604,7 +6827,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 205.74 41.91 0)
+		(at 195.58 41.91 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6613,7 +6836,7 @@
 		(fields_autoplaced yes)
 		(uuid "ca013edb-8c9b-4f90-8c5d-a8afcae1a72c")
 		(property "Reference" "#PWR0216"
-			(at 205.74 48.26 0)
+			(at 195.58 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6622,7 +6845,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 205.74 46.99 0)
+			(at 195.58 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6630,7 +6853,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 205.74 41.91 0)
+			(at 195.58 41.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6639,7 +6862,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 205.74 41.91 0)
+			(at 195.58 41.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6648,7 +6871,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 205.74 41.91 0)
+			(at 195.58 41.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6670,7 +6893,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 195.58 30.48 0)
+		(at 190.5 30.48 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6679,7 +6902,7 @@
 		(fields_autoplaced yes)
 		(uuid "ca2788af-2782-4de4-8566-1efab0178ce7")
 		(property "Reference" "C204"
-			(at 198.755 29.21 0)
+			(at 193.675 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6688,7 +6911,7 @@
 			)
 		)
 		(property "Value" "100n"
-			(at 198.755 31.75 0)
+			(at 193.675 31.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6697,7 +6920,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
-			(at 196.5452 34.29 0)
+			(at 191.4652 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6706,7 +6929,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 195.58 30.48 0)
+			(at 190.5 30.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6715,7 +6938,7 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 195.58 30.48 0)
+			(at 190.5 30.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
