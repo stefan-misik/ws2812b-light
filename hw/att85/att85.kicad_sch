@@ -2455,6 +2455,18 @@
 		)
 		(uuid "feb3d103-e1bf-4de7-a3e4-22603876a7d2")
 	)
+	(text "3.3 V Power Supply:\n  CPU ............. 10 mA\n  Display ......... 100 mA\n  EEPROM .......... 5 mA\n  Keypad Buffer ... 1 mA\n  Pull-ups ........ 1 mA\n  IR Receiver ..... 1 mA\n -------------------------\n  Summary ......... 118 mA\n\nPower dissipation:\n P_{D} = (V_{IN} - V_{OUT}) * I = \n       = (5V - 3.3V) * 118 mA = \n       = 200.6 mW"
+		(exclude_from_sim no)
+		(at 33.02 63.246 0)
+		(effects
+			(font
+				(face "KiCad Font")
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "5e50e8b6-63a9-4c28-a2dd-cc347d82261c")
+	)
 	(symbol
 		(lib_id "Connector:Screw_Terminal_01x03")
 		(at 219.71 68.58 0)
