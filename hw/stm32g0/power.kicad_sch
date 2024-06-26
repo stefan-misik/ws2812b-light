@@ -702,7 +702,7 @@
 			(uuid "c3a6cb5f-4d91-493e-aabb-eb3852ed6fdb")
 		)
 		(instances
-			(project "att85"
+			(project "stm32g0"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/de7f174c-7a84-413b-92d9-b2f0c84612b1"
 					(reference "C501")
 					(unit 1)
@@ -772,7 +772,7 @@
 			(uuid "c297cabb-f631-40be-8d34-d025087202d8")
 		)
 		(instances
-			(project "att85"
+			(project "stm32g0"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/de7f174c-7a84-413b-92d9-b2f0c84612b1"
 					(reference "C503")
 					(unit 1)
@@ -843,7 +843,7 @@
 			(uuid "91ea0930-da87-4c60-887d-c794dedabac5")
 		)
 		(instances
-			(project "att85"
+			(project "stm32g0"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/de7f174c-7a84-413b-92d9-b2f0c84612b1"
 					(reference "U501")
 					(unit 1)
@@ -913,7 +913,7 @@
 			(uuid "5089cf76-3960-4955-8165-11acf99bdbba")
 		)
 		(instances
-			(project "att85"
+			(project "stm32g0"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/de7f174c-7a84-413b-92d9-b2f0c84612b1"
 					(reference "C504")
 					(unit 1)
@@ -983,7 +983,7 @@
 			(uuid "573c237c-36d7-4824-9e43-fa32df554524")
 		)
 		(instances
-			(project "att85"
+			(project "stm32g0"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/de7f174c-7a84-413b-92d9-b2f0c84612b1"
 					(reference "C502")
 					(unit 1)
@@ -1049,7 +1049,7 @@
 			(uuid "3684d796-b982-49b2-9bd5-d40169035690")
 		)
 		(instances
-			(project "att85"
+			(project "stm32g0"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/de7f174c-7a84-413b-92d9-b2f0c84612b1"
 					(reference "#PWR0501")
 					(unit 1)

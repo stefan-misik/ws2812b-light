@@ -544,7 +544,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/29ac8ca2-7a03-405c-8a16-1887fb5b1a4e")
 		(sheetname "Root")
-		(sheetfile "att85.kicad_sch")
+		(sheetfile "stm32g0.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.727064 0.91)
@@ -1957,7 +1957,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/5069d400-432f-453b-a974-a511e4dcaba8")
 		(sheetname "Root")
-		(sheetfile "att85.kicad_sch")
+		(sheetfile "stm32g0.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.227064 0.735)
@@ -2743,7 +2743,7 @@
 		(property ki_fp_filters "BarrelJack*")
 		(path "/be45976f-d3a5-4311-b2ac-4a0960dc109b")
 		(sheetname "Root")
-		(sheetfile "att85.kicad_sch")
+		(sheetfile "stm32g0.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -4.6 13.8)
@@ -4525,7 +4525,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/2c9c219d-bce3-4284-9ac1-37b2b8d0fa1e")
 		(sheetname "Root")
-		(sheetfile "att85.kicad_sch")
+		(sheetfile "stm32g0.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.727064 -0.91)
@@ -4737,7 +4737,7 @@
 		)
 		(path "/2a8d8fd7-da67-435d-8f13-ef58ef9c17dd")
 		(sheetname "Root")
-		(sheetfile "att85.kicad_sch")
+		(sheetfile "stm32g0.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 0.76 1.58)
@@ -6094,7 +6094,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/1c883759-38bc-4f6f-9e00-af53acd0ab02")
 		(sheetname "Root")
-		(sheetfile "att85.kicad_sch")
+		(sheetfile "stm32g0.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.261252 0.735)
@@ -7192,7 +7192,7 @@
 		(property ki_fp_filters "MountingHole*Pad*")
 		(path "/d0a2255c-f498-4105-92e9-babf4890e3fa")
 		(sheetname "Root")
-		(sheetfile "att85.kicad_sch")
+		(sheetfile "stm32g0.kicad_sch")
 		(zone_connect 2)
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
@@ -8067,7 +8067,7 @@
 		(property ki_fp_filters "TerminalBlock*:*")
 		(path "/1c12af1b-18c9-4898-b34e-536427d58311")
 		(sheetname "Root")
-		(sheetfile "att85.kicad_sch")
+		(sheetfile "stm32g0.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 12.56 -5.261)
@@ -8868,7 +8868,7 @@
 		(property ki_fp_filters "SOT?23*")
 		(path "/4ef2a0db-ab3e-47c8-952e-13266e469469")
 		(sheetname "Root")
-		(sheetfile "att85.kicad_sch")
+		(sheetfile "stm32g0.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 0 -1.56)
@@ -11051,7 +11051,7 @@
 		(property ki_fp_filters "*Buzzer*")
 		(path "/876f88b8-36ec-4ada-a63b-086a2f066791")
 		(sheetname "Root")
-		(sheetfile "att85.kicad_sch")
+		(sheetfile "stm32g0.kicad_sch")
 		(attr through_hole)
 		(net_tie_pad_groups "1,1" "2,2")
 		(fp_circle
@@ -14572,7 +14572,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/4e8cad5f-5cea-4054-866f-b6d5a8d41de9")
 		(sheetname "Root")
-		(sheetfile "att85.kicad_sch")
+		(sheetfile "stm32g0.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.227064 0.735)
