@@ -268,7 +268,7 @@
 		(descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor handsolder")
 		(property "Reference" "R406"
-			(at -4.0132 3.81 180)
+			(at -2.032 -2.7432 -90)
 			(layer "F.SilkS")
 			(uuid "a54139ab-9c6c-40cb-ad94-a181da54745f")
 			(effects
@@ -4675,7 +4675,7 @@
 		(descr "SOT-23, Handsoldering")
 		(tags "SOT-23")
 		(property "Reference" "Q101"
-			(at 2.516 6.1976 90)
+			(at 1.1698 2.3622 180)
 			(layer "F.SilkS")
 			(uuid "83bb07df-a5b5-4d0e-b312-620fd68e2eee")
 			(effects
@@ -14509,7 +14509,7 @@
 		(descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor handsolder")
 		(property "Reference" "R131"
-			(at -5.6896 3.302 90)
+			(at 3.937 -1.9558 180)
 			(layer "F.SilkS")
 			(uuid "65448abd-c573-4b5e-9dd1-64533db5fe63")
 			(effects
@@ -16400,6 +16400,15 @@
 		(free yes)
 		(net 3)
 		(uuid "086fa3d6-7692-4340-9d53-ffa76f827844")
+	)
+	(via
+		(at 162.052 90.805)
+		(size 0.8)
+		(drill 0.4)
+		(layers "F.Cu" "B.Cu")
+		(free yes)
+		(net 3)
+		(uuid "1006ae55-3b4e-46e2-986d-c33250aa32be")
 	)
 	(via
 		(at 168.91 87.122)
