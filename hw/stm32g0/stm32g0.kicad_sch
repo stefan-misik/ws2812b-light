@@ -1962,12 +1962,6 @@
 		(uuid "99c11685-11c8-46d7-9d3a-3832c864ea17")
 	)
 	(junction
-		(at 186.69 120.65)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "bc7743b2-b10c-4dfe-a344-6bd0228ffc4f")
-	)
-	(junction
 		(at 186.69 71.12)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1995,7 +1989,7 @@
 	)
 	(wire
 		(pts
-			(xy 165.1 120.65) (xy 176.53 120.65)
+			(xy 165.1 120.65) (xy 182.88 120.65)
 		)
 		(stroke
 			(width 0)
@@ -2175,7 +2169,7 @@
 	)
 	(wire
 		(pts
-			(xy 186.69 120.65) (xy 194.31 120.65)
+			(xy 190.5 120.65) (xy 194.31 120.65)
 		)
 		(stroke
 			(width 0)
@@ -2202,16 +2196,6 @@
 			(type default)
 		)
 		(uuid "43ebd7c6-a64b-4d08-8db1-b4aa74995332")
-	)
-	(wire
-		(pts
-			(xy 184.15 120.65) (xy 186.69 120.65)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4b953a4d-8f32-4b43-8985-51f265975065")
 	)
 	(wire
 		(pts
@@ -2242,16 +2226,6 @@
 			(type default)
 		)
 		(uuid "5e8bb9f0-6f5e-44f0-b48a-503b909f25a8")
-	)
-	(wire
-		(pts
-			(xy 186.69 120.65) (xy 186.69 121.92)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5ecaeb8f-54d4-4afe-bf57-fa31867ab4b3")
 	)
 	(wire
 		(pts
@@ -2452,16 +2426,6 @@
 			(type default)
 		)
 		(uuid "be51e7e5-c170-471a-b20a-2d7f5d7214d7")
-	)
-	(wire
-		(pts
-			(xy 186.69 129.54) (xy 186.69 130.81)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c1920eed-ef66-4ff1-95fc-765ddfc10e14")
 	)
 	(wire
 		(pts
@@ -2994,72 +2958,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 186.69 130.81 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "3a2e2436-17de-4a34-8ec1-33d881029fef")
-		(property "Reference" "#PWR06"
-			(at 186.69 137.16 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 186.69 135.89 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 186.69 130.81 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 186.69 130.81 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 186.69 130.81 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "93abedc0-0d14-4109-a158-68bb50b7f993")
-		)
-		(instances
-			(project "stm32g0"
-				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770"
-					(reference "#PWR06")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:R")
 		(at 201.93 110.49 0)
 		(unit 1)
@@ -3267,7 +3165,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 180.34 120.65 90)
+		(at 186.69 120.65 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3275,7 +3173,7 @@
 		(dnp no)
 		(uuid "5069d400-432f-453b-a974-a511e4dcaba8")
 		(property "Reference" "R132"
-			(at 180.34 114.935 90)
+			(at 186.69 114.935 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3283,7 +3181,7 @@
 			)
 		)
 		(property "Value" "10K"
-			(at 180.34 117.475 90)
+			(at 186.69 117.475 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3291,7 +3189,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
-			(at 180.34 122.428 90)
+			(at 186.69 122.428 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3300,7 +3198,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 180.34 120.65 0)
+			(at 186.69 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3309,7 +3207,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 180.34 120.65 0)
+			(at 186.69 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4061,76 +3959,6 @@
 			(project "stm32g0"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770"
 					(reference "H1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
-		(at 186.69 125.73 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "d7af9fe7-cbf2-4142-a492-d18e60383a07")
-		(property "Reference" "C101"
-			(at 190.5 124.4599 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "2n"
-			(at 190.5 126.9999 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
-			(at 187.6552 129.54 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 186.69 125.73 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor"
-			(at 186.69 125.73 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "ca40172e-e493-4f8a-8e54-1c3de23da785")
-		)
-		(pin "1"
-			(uuid "d9c0557a-2875-414f-a628-7a6a2ac01623")
-		)
-		(instances
-			(project "stm32g0"
-				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770"
-					(reference "C101")
 					(unit 1)
 				)
 			)
