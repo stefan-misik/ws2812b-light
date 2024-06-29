@@ -5,8 +5,8 @@
 	(uuid "fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770")
 	(paper "A4")
 	(title_block
-		(title "ATtiny85 LED Controller")
-		(date "2024-01-01")
+		(title "STM32G0 LED Controller")
+		(date "2024-06-29")
 		(company "Stefan Misik")
 		(comment 1 "www.stefanmisik.com")
 	)

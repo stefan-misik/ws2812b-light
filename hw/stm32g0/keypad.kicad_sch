@@ -4,6 +4,12 @@
 	(generator_version "8.0")
 	(uuid "bee74304-a0c2-4212-a02a-b93214927363")
 	(paper "A4")
+	(title_block
+		(title "STM32G0 LED Controller")
+		(date "2024-06-29")
+		(company "Stefan Misik")
+		(comment 1 "www.stefanmisik.com")
+	)
 	(lib_symbols
 		(symbol "4xxx:4050"
 			(pin_names

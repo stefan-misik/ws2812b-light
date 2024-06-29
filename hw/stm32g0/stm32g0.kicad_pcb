@@ -7,6 +7,12 @@
 		(legacy_teardrops no)
 	)
 	(paper "A4")
+	(title_block
+		(title "STM32G0 LED Controller")
+		(date "2024-06-29")
+		(company "Stefan Misik")
+		(comment 1 "www.stefanmisik.com")
+	)
 	(layers
 		(0 "F.Cu" signal)
 		(1 "In1.Cu" signal)
