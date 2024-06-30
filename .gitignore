@@ -4,6 +4,8 @@
 *.d
 # Listings
 *.lss
+# Object list
+*.objlst
 
 # Compilation results
 *.elf
