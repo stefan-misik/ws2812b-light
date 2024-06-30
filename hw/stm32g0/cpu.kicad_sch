@@ -5002,7 +5002,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp yes)
+		(dnp no)
 		(uuid "2177d34f-491c-45b6-aa25-39a4c0cb33ca")
 		(property "Reference" "R205"
 			(at 163.322 34.1884 0)
@@ -5071,7 +5071,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp yes)
+		(dnp no)
 		(uuid "2c6a03d6-fd00-49dd-9731-2084948303ce")
 		(property "Reference" "R204"
 			(at 154.432 34.1884 0)
