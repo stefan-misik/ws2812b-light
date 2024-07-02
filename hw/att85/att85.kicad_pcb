@@ -12078,6 +12078,42 @@
 		(layer "Edge.Cuts")
 		(uuid "f4e8a398-a005-4517-bae8-e7ad5262b813")
 	)
+	(gr_text "D"
+		(at 196.469 93.726 -90)
+		(layer "B.SilkS")
+		(uuid "2a1cfec7-b2ee-4269-ba18-3d75c5f62c1c")
+		(effects
+			(font
+				(size 1.5 1.5)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "-"
+		(at 196.469 98.552 -90)
+		(layer "B.SilkS")
+		(uuid "a2b76c45-43ba-4265-ae5b-77250aec5f7a")
+		(effects
+			(font
+				(size 1.5 1.5)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "+"
+		(at 196.469 88.519 -90)
+		(layer "B.SilkS")
+		(uuid "affa7114-c58e-4877-910e-9fa9a47914d1")
+		(effects
+			(font
+				(size 1.5 1.5)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
 	(gr_text "JLCJLCJLCJLC"
 		(at 186.563 76.835 0)
 		(layer "B.SilkS")
@@ -12099,6 +12135,18 @@
 				(size 1 1)
 				(thickness 0.2)
 				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "+"
+		(at 196.088 85.09 270)
+		(layer "F.SilkS")
+		(uuid "cc8e7a5e-580f-4c95-8953-ffcc78692e71")
+		(effects
+			(font
+				(size 1.5 1.5)
+				(thickness 0.15)
 			)
 			(justify left bottom)
 		)
@@ -17398,6 +17446,12 @@
 				(xy 132.033649 92.072906) (xy 132.033645 92.072913) (xy 131.983403 92.20762) (xy 131.983401 92.207627)
 				(xy 131.977 92.267155) (xy 131.572 92.267155) (xy 131.572 91.44) (xy 135.382 91.44)
 			)
+		)
+	)
+	(group ""
+		(uuid "d0103003-f998-4595-a7e4-990990864082")
+		(members "2a1cfec7-b2ee-4269-ba18-3d75c5f62c1c" "a2b76c45-43ba-4265-ae5b-77250aec5f7a"
+			"affa7114-c58e-4877-910e-9fa9a47914d1"
 		)
 	)
 	(group ""
