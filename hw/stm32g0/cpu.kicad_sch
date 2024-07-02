@@ -3040,6 +3040,12 @@
 		(uuid "7fab0e24-2bcd-4478-8f23-566fba2ef0e6")
 	)
 	(junction
+		(at 76.2 58.42)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "805dcfb0-b971-45fc-9266-ba7fd8f131f3")
+	)
+	(junction
 		(at 196.85 36.83)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3649,6 +3655,16 @@
 	)
 	(wire
 		(pts
+			(xy 64.77 58.42) (xy 76.2 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5e791d42-9083-4d16-b55d-4f544a2290d3")
+	)
+	(wire
+		(pts
 			(xy 259.08 30.48) (xy 261.62 30.48)
 		)
 		(stroke
@@ -3909,6 +3925,16 @@
 	)
 	(wire
 		(pts
+			(xy 64.77 57.15) (xy 64.77 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8d098ff1-00cd-4aab-90c6-b5f383bf269d")
+	)
+	(wire
+		(pts
 			(xy 187.96 25.4) (xy 187.96 24.13)
 		)
 		(stroke
@@ -3976,6 +4002,16 @@
 			(type default)
 		)
 		(uuid "94f160ee-a15b-47ba-a73a-56b021df9614")
+	)
+	(wire
+		(pts
+			(xy 76.2 48.26) (xy 64.77 48.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "95f84bec-26e3-4a05-8d44-febc3b699e29")
 	)
 	(wire
 		(pts
@@ -4056,6 +4092,16 @@
 			(type default)
 		)
 		(uuid "adc9cb5d-8e63-4948-9e58-f1e6f91a1bf1")
+	)
+	(wire
+		(pts
+			(xy 76.2 60.96) (xy 76.2 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "adcf5a4b-c25e-4d2a-9bc1-9fab11fa56fd")
 	)
 	(wire
 		(pts
@@ -4316,6 +4362,16 @@
 			(type default)
 		)
 		(uuid "ef0dc865-c821-4175-9167-266e182188d6")
+	)
+	(wire
+		(pts
+			(xy 64.77 48.26) (xy 64.77 49.53)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f038f0d2-1d37-40c7-895a-dc624008a4e7")
 	)
 	(wire
 		(pts
@@ -5297,7 +5353,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 76.2 58.42 0)
+		(at 76.2 60.96 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5306,7 +5362,7 @@
 		(fields_autoplaced yes)
 		(uuid "0e3dbfda-ec1e-4f90-92be-1f71ab3bddf7")
 		(property "Reference" "#PWR0206"
-			(at 76.2 64.77 0)
+			(at 76.2 67.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5315,7 +5371,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 76.2 63.5 0)
+			(at 76.2 66.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5323,7 +5379,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 76.2 58.42 0)
+			(at 76.2 60.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5332,7 +5388,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 76.2 58.42 0)
+			(at 76.2 60.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5341,7 +5397,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 76.2 58.42 0)
+			(at 76.2 60.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5356,6 +5412,76 @@
 			(project "stm32g0"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/32819f2b-3e26-4dff-931e-dc604d389a45"
 					(reference "#PWR0206")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 172.72 139.7 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "15803bc7-8d8c-459d-9834-3215c033e60f")
+		(property "Reference" "C206"
+			(at 175.895 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10u"
+			(at 175.895 140.97 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder"
+			(at 173.6852 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 172.72 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 172.72 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "6ba193bd-d2c9-4b67-8b55-bc891233c965")
+		)
+		(pin "1"
+			(uuid "42588779-bfaf-4b38-8067-c0b4d3bc4c0a")
+		)
+		(instances
+			(project "stm32g0"
+				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/32819f2b-3e26-4dff-931e-dc604d389a45"
+					(reference "C206")
 					(unit 1)
 				)
 			)
@@ -7489,7 +7615,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 172.72 139.7 0)
+		(at 64.77 53.34 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7498,7 +7624,7 @@
 		(fields_autoplaced yes)
 		(uuid "b7a4d40a-df46-487e-9f81-c010d84e19f6")
 		(property "Reference" "C202"
-			(at 175.895 138.43 0)
+			(at 67.945 52.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7507,7 +7633,7 @@
 			)
 		)
 		(property "Value" "10u"
-			(at 175.895 140.97 0)
+			(at 67.945 54.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7516,7 +7642,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder"
-			(at 173.6852 143.51 0)
+			(at 65.7352 57.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7525,7 +7651,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 172.72 139.7 0)
+			(at 64.77 53.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7534,7 +7660,7 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 172.72 139.7 0)
+			(at 64.77 53.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
