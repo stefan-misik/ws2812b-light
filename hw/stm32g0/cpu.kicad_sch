@@ -1602,6 +1602,151 @@
 				)
 			)
 		)
+		(symbol "Jumper:Jumper_2_Small_Open"
+			(pin_numbers hide)
+			(pin_names
+				(offset 0) hide)
+			(exclude_from_sim yes)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "JP"
+				(at 0 2.794 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "Jumper_2_Small_Open"
+				(at 0 -2.286 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Jumper, 2-pole, small symbol, open"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "Jumper SPST"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Jumper* TestPoint*2Pads* TestPoint*Bridge*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "Jumper_2_Small_Open_0_0"
+				(circle
+					(center -1.016 0)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 1.016 0)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "Jumper_2_Small_Open_0_1"
+				(arc
+					(start 0.762 1.0196)
+					(mid 0 1.2729)
+					(end -0.762 1.0196)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "Jumper_2_Small_Open_1_1"
+				(pin passive line
+					(at -2.54 0 0)
+					(length 1.27)
+					(name "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 0 180)
+					(length 1.27)
+					(name "B"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "MCU_ST_STM32G0:STM32G030K8Tx"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -3158,10 +3303,6 @@
 		(uuid "8f7331ba-174c-41cb-873e-de2eb0f961e6")
 	)
 	(no_connect
-		(at 172.72 39.37)
-		(uuid "9574ad40-31e4-40fa-b2f6-e153583b75dc")
-	)
-	(no_connect
 		(at 71.12 171.45)
 		(uuid "a7205058-d38e-422d-88e9-7a59ed9e4591")
 	)
@@ -3230,6 +3371,16 @@
 			(type default)
 		)
 		(uuid "0709b57a-b263-4082-ae94-776b0d52f496")
+	)
+	(wire
+		(pts
+			(xy 147.32 52.07) (xy 147.32 54.61)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "07ac998c-51bf-4c46-93b1-65e429491a0a")
 	)
 	(wire
 		(pts
@@ -3563,6 +3714,16 @@
 	)
 	(wire
 		(pts
+			(xy 168.91 36.83) (xy 168.91 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3a6fba17-2ca4-4d94-bc7b-239bd1b163cc")
+	)
+	(wire
+		(pts
 			(xy 133.35 43.18) (xy 143.51 43.18)
 		)
 		(stroke
@@ -3643,6 +3804,16 @@
 	)
 	(wire
 		(pts
+			(xy 171.45 54.61) (xy 171.45 39.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4772e9bb-ab83-495f-98fb-ce5efe3dba5c")
+	)
+	(wire
+		(pts
 			(xy 68.58 158.75) (xy 71.12 158.75)
 		)
 		(stroke
@@ -3720,6 +3891,16 @@
 			(type default)
 		)
 		(uuid "51cec92d-b783-4ddc-9156-7ae28836c930")
+	)
+	(wire
+		(pts
+			(xy 162.56 54.61) (xy 171.45 54.61)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "527283ad-b314-4f50-8a5c-9d928ad037cf")
 	)
 	(wire
 		(pts
@@ -3860,16 +4041,6 @@
 			(type default)
 		)
 		(uuid "65a5775b-f011-4fbc-aefd-93ae64cd6e54")
-	)
-	(wire
-		(pts
-			(xy 168.91 41.91) (xy 168.91 36.83)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "664aad92-0cfc-49e8-b91e-0fcbb8e4e008")
 	)
 	(wire
 		(pts
@@ -4363,6 +4534,16 @@
 	)
 	(wire
 		(pts
+			(xy 147.32 54.61) (xy 157.48 54.61)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c796c1c4-1a72-4cd8-a0ba-e234356b9a20")
+	)
+	(wire
+		(pts
 			(xy 251.46 113.03) (xy 254 113.03)
 		)
 		(stroke
@@ -4560,6 +4741,16 @@
 			(type default)
 		)
 		(uuid "ebb5bfd1-4e39-43d9-81ed-328952bd6126")
+	)
+	(wire
+		(pts
+			(xy 171.45 39.37) (xy 172.72 39.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ed9fa394-eb9a-4aee-a82f-ef1c06c66d58")
 	)
 	(wire
 		(pts
@@ -6107,7 +6298,7 @@
 			(uuid "8aca61ce-1e3b-4017-abe9-6efad6c867e9")
 		)
 		(instances
-			(project ""
+			(project "stm32g0"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/32819f2b-3e26-4dff-931e-dc604d389a45"
 					(reference "D204")
 					(unit 1)
@@ -7044,6 +7235,72 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+3.3V")
+		(at 147.32 52.07 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "63b6fe83-4ad8-4515-9025-634facf93888")
+		(property "Reference" "#PWR0227"
+			(at 147.32 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3.3V"
+			(at 147.32 46.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 147.32 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 147.32 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+			(at 147.32 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "72460bf3-40a1-473d-b17f-829e41bef964")
+		)
+		(instances
+			(project "stm32g0"
+				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/32819f2b-3e26-4dff-931e-dc604d389a45"
+					(reference "#PWR0227")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Memory_EEPROM:CAT24C256")
 		(at 182.88 36.83 0)
 		(unit 1)
@@ -7071,7 +7328,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_DIP:DIP-8_W7.62mm_Socket"
+		(property "Footprint" "project-specific:DIP-8_W7.62mm_Socket_Stacked_SOIC-8_3.9x4.9mm_P1.27mm"
 			(at 182.88 36.83 0)
 			(effects
 				(font
@@ -7259,7 +7516,7 @@
 			(uuid "b1cd33dd-f832-47fc-9670-c2538dd0d3b7")
 		)
 		(instances
-			(project ""
+			(project "stm32g0"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/32819f2b-3e26-4dff-931e-dc604d389a45"
 					(reference "#PWR0224")
 					(unit 1)
@@ -8399,7 +8656,7 @@
 			(uuid "9d65dc8e-273b-4d27-82f5-e0172f7ec758")
 		)
 		(instances
-			(project ""
+			(project "stm32g0"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/32819f2b-3e26-4dff-931e-dc604d389a45"
 					(reference "#PWR0223")
 					(unit 1)
@@ -8604,6 +8861,74 @@
 			(project "stm32g0"
 				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/32819f2b-3e26-4dff-931e-dc604d389a45"
 					(reference "C204")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Jumper:Jumper_2_Small_Open")
+		(at 160.02 54.61 0)
+		(unit 1)
+		(exclude_from_sim yes)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "ca75eb5a-69fb-4eca-9159-03ac2ea4cb2d")
+		(property "Reference" "JP201"
+			(at 160.02 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Jumper_2_Small_Open"
+			(at 160.02 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm"
+			(at 160.02 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 160.02 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Jumper, 2-pole, small symbol, open"
+			(at 160.02 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "2008c940-a62e-4eb1-8c78-88296d9b02ca")
+		)
+		(pin "2"
+			(uuid "bbe29db6-009e-488a-9022-23c0cb923abc")
+		)
+		(instances
+			(project "stm32g0"
+				(path "/fc4ba96f-a9f8-4f1a-a9c5-2b16679a6770/32819f2b-3e26-4dff-931e-dc604d389a45"
+					(reference "JP201")
 					(unit 1)
 				)
 			)
