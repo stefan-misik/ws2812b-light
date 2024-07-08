@@ -1,11 +1,14 @@
 KIKIT = kikit
 
-.PHONY: panel clean
+.PHONY: panel fab clean
 
 panel: $(PROJ)-panel.kicad_pcb
 
+fab: $(PROJ)-panel.kicad_pcb
+	$(KIKIT) fab jlcpcb --no-assembly --drc "$<" fab/
+
 clean:
-	$(RM) $(PROJ)-panel.kicad_*
+	$(RM) -r $(PROJ)-panel.kicad_* fab/
 
 
 %-panel.kicad_pcb: %.kicad_pcb
