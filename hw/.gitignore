@@ -26,5 +26,8 @@ fp-info-cache
 *.xml
 *.csv
 
+# Panelized
+*-panel.kicad_*
+
 # Gerber
 gerber/
