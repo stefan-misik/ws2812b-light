@@ -21250,6 +21250,17 @@
 		(layer "F.SilkS")
 		(uuid "35ddbffe-82a2-4c57-aa9f-e3e141256d21")
 	)
+	(gr_circle
+		(center 137.033 80.01)
+		(end 137.414 80.01)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(fill solid)
+		(layer "F.SilkS")
+		(uuid "51048904-f6f2-4cc1-b16e-3805bfe1270e")
+	)
 	(gr_poly
 		(pts
 			(xy 152.817168 77.720616) (xy 152.500515 77.720616) (xy 152.500515 78.055894) (xy 152.754516 78.055894)
@@ -21951,8 +21962,8 @@
 			(justify left bottom)
 		)
 	)
-	(gr_text "DEBUG"
-		(at 137.922 80.518 0)
+	(gr_text "SWD"
+		(at 139.446 80.518 0)
 		(layer "F.SilkS")
 		(uuid "2b9645aa-b594-4861-ae12-7dc29b567939")
 		(effects
