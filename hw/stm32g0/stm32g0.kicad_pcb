@@ -21913,6 +21913,18 @@
 			(justify left bottom)
 		)
 	)
+	(gr_text "v3.0"
+		(at 143.256 99.314 90)
+		(layer "B.SilkS")
+		(uuid "ea3fe3fb-ca64-48d2-bb6b-d20f4ccfee4f")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
 	(gr_text "+"
 		(at 196.342 88.646 270)
 		(layer "B.SilkS")
