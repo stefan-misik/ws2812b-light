@@ -6,10 +6,6 @@
 namespace
 {
 
-const constexpr uint8_t INVALID_COMMAND = 0x00;
-const constexpr uint8_t REPEAT_COMMAND = 0xFF;
-
-
 class IrData
 {
 public:
@@ -54,6 +50,19 @@ private:
 
     uint8_t byte_ = 0;
     uint8_t bit_ = 0;
+};
+
+
+struct IrCmd
+{
+    static IrCmd Invalid() { return {0xFF, 0x00}; }
+    static IrCmd Repeat() { return {0xFE, 0x00}; }
+
+    uint8_t address;
+    uint8_t command;
+
+    bool isInvalid() const { return 0xFF == address; }
+    bool isRepeat() const { return 0xFE == address; }
 };
 
 
@@ -103,22 +112,22 @@ inline bool readIr()
     return 0 != (PINB & (1 << PINB0));
 }
 
-inline uint8_t receiveCommand()
+inline IrCmd receiveCommand()
 {
     // Initial burst
     if (0xFF == waitForIRLevel(true, 53))
-        return INVALID_COMMAND;
+        return IrCmd::Invalid();
 
     // Initial pause
     {
         const uint8_t duration = waitForIRLevel(false, 27);
         if (0xFF == duration || duration < 10)
-            return INVALID_COMMAND;
+            return IrCmd::Invalid();
         if (duration < 18)
         {
             // Repeated button
             waitForIRLevel(true, 4);
-            return REPEAT_COMMAND;
+            return IrCmd::Repeat();
         }
     }
 
@@ -126,34 +135,51 @@ inline uint8_t receiveCommand()
     while (!data.isDone())
     {
         if (0xFF == waitForIRLevel(true, 4))
-            return INVALID_COMMAND;
+            return IrCmd::Invalid();
 
         const uint8_t duration = waitForIRLevel(false, 11);
         if (0xFF == duration)
-            return INVALID_COMMAND;
+            return IrCmd::Invalid();
 
         data.append(duration > 7);
     }
     waitForIRLevel(true, 4);
 
     if (!data.isValid())
-        return INVALID_COMMAND;
+        return IrCmd::Invalid();
 
-    return data.command();
+    return {data.address(), data.command()};
 }
 
-inline IrReceiver::ButtonId decodeButton(uint8_t command)
+inline IrReceiver::ButtonId decodeButton(IrCmd ir_cmd)
 {
     using ButtonId = IrReceiver::ButtonId;
 
-    switch (command)
+    switch (ir_cmd.address)
     {
-    case 0b00011000: return ButtonId::UP;
-    case 0b01011010: return ButtonId::RIGHT;
-    case 0b01010010: return ButtonId::DOWN;
-    case 0b00001000: return ButtonId::LEFT;
-    case 0b00010110: return ButtonId::O_BTN;
-    case 0b00001101: return ButtonId::X_BTN;
+    case 0x00:
+        switch (ir_cmd.command)
+        {
+        case 0b00011000: return ButtonId::UP;
+        case 0b01011010: return ButtonId::RIGHT;
+        case 0b01010010: return ButtonId::DOWN;
+        case 0b00001000: return ButtonId::LEFT;
+        case 0b00010110: return ButtonId::O_BTN;
+        case 0b00001101: return ButtonId::X_BTN;
+        }
+        break;
+
+    case 0x01:
+        switch (ir_cmd.command)
+        {
+        case 0x16: return ButtonId::UP;
+        case 0x50: return ButtonId::RIGHT;
+        case 0x1A: return ButtonId::DOWN;
+        case 0x51: return ButtonId::LEFT;
+        case 0x13: return ButtonId::O_BTN;
+        case 0x19: return ButtonId::X_BTN;
+        }
+        break;
     }
     return ButtonId::NONE;
 }
@@ -172,7 +198,7 @@ uint8_t IrReceiver::run()
     if (true == readIr())
         return 0;
 
-    uint8_t command;
+    IrCmd command;
     {
         volatile uint8_t old_sreg = SREG;
         cli();
@@ -180,9 +206,9 @@ uint8_t IrReceiver::run()
         SREG = old_sreg;
     }
 
-    if (INVALID_COMMAND == command)
+    if (command.isInvalid())
         return Status::RECEIVED;
-    else if (REPEAT_COMMAND == command)
+    else if (command.isRepeat())
     {
         if (repeat_count_ == REPEAT_SKIP)
         {
