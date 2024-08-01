@@ -1,0 +1,6 @@
+# STM Drivers
+STM32Cube*
+
+# Downloaded packages
+*.tar.gz
+*.zip
