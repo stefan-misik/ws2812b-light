@@ -15,7 +15,7 @@ SRC  =  \
     main.cpp
 
 DEFINE    = $(MCU_DEFINE)
-INCLUDE   = .
+INCLUDE   = . ../shared
 CPPFLAGS  =
 CFLAGS    = -g3 -Og -Wall
 CXXFLAGS  = -g3 -Og -Wall

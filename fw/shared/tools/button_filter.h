@@ -2,10 +2,10 @@
  * @file
  */
 
-#ifndef TOOLS_BUTTON_FILTER_H_
-#define TOOLS_BUTTON_FILTER_H_
+#ifndef SHARED_TOOLS_BUTTON_FILTER_H_
+#define SHARED_TOOLS_BUTTON_FILTER_H_
 
-#include <stdint.h>
+#include "defs.h"
 
 class ButtonFilter
 {
@@ -49,18 +49,18 @@ public:
      *
      * @return Bitwise or of values from @ref State
      */
-    uint8_t state() const
+    def::Uint8 state() const
     {
         return state_;
     }
 
 private:
-    static constexpr uint8_t PRESS_THRESHOLD = 5;
-    static constexpr uint8_t REPEAT_THRESHOLD = PRESS_THRESHOLD + 50;
-    static constexpr uint8_t NEXT_REPEAT_THRESHOLD = REPEAT_THRESHOLD + 8;
+    static constexpr def::Uint8 PRESS_THRESHOLD = 5;
+    static constexpr def::Uint8 REPEAT_THRESHOLD = PRESS_THRESHOLD + 50;
+    static constexpr def::Uint8 NEXT_REPEAT_THRESHOLD = REPEAT_THRESHOLD + 8;
 
-    uint8_t counter_;
-    uint8_t state_;
+    def::Uint8 counter_;
+    def::Uint8 state_;
 
     void countUp();
     void countDown();
@@ -68,4 +68,4 @@ private:
 };
 
 
-#endif  // TOOLS_BUTTON_FILTER_H_
+#endif  // SHARED_TOOLS_BUTTON_FILTER_H_

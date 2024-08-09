@@ -29,7 +29,7 @@ SRC  =  \
     time_service.cpp  \
     buttons.cpp  \
     ir_receiver.cpp  \
-    tools/button_filter.cpp  \
+    ../shared/tools/button_filter.cpp  \
     tools/color.cpp  \
     tools/id_selector.cpp  \
     $(addprefix animations/,  \
@@ -46,7 +46,7 @@ SONGS =  \
     jingle_bells
 
 DEFINE    = F_CPU=$(DEF_FREQ)UL __$(DEF_MCU)__ LED_ORDER=$(LED_ORDER)
-INCLUDE   = .
+INCLUDE   = . ../shared
 CPPFLAGS  =
 CFLAGS    = -ggdb -Os -Wall -Wno-array-bounds -mmcu=$(MCU)
 CXXFLAGS  = -ggdb -Os -Wall -Wno-array-bounds -mmcu=$(MCU) -std=c++14 -fno-exceptions

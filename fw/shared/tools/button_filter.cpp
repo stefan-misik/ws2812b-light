@@ -41,7 +41,7 @@ void ButtonFilter::countDown()
 void ButtonFilter::updateState()
 {
     bool old_pressed = (state_ & PRESSED);
-    uint8_t new_state = 0;
+    def::Uint8 new_state = 0;
 
     if (0 == counter_)
     {
