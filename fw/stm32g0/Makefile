@@ -12,6 +12,7 @@ SRC  =  \
     support/syscalls.c  \
     support/system_stm32g0xx.c  \
     driver/base.cpp  \
+    driver/led_controller.cpp  \
     main.cpp
 
 DEFINE    = $(MCU_DEFINE)
