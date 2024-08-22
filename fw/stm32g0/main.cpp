@@ -21,9 +21,9 @@ driver::LedController led_controller;
 int main()
 {
     driver::Base::init();
-    driver::LedController::initializeTimer(driver::LedController::TimerId::TIM_1);
-    led_controller.initialize(driver::LedController::TimerId::TIM_1, 2);
-    driver::LedController::startTimer(driver::LedController::TimerId::TIM_1);
+    driver::LedController::initializeTimer(driver::TimerId::TIM_1);
+    led_controller.initialize(driver::TimerId::TIM_1, 2);
+    driver::LedController::startTimer(driver::TimerId::TIM_1);
 
     uint8_t state = 0;
     while (true)

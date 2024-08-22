@@ -5,8 +5,7 @@
 #ifndef DRIVER_LED_CONTROLLER_HPP_
 #define DRIVER_LED_CONTROLLER_HPP_
 
-#include <cstddef>
-#include <cstdint>
+#include "driver/common.hpp"
 
 
 namespace driver
@@ -15,11 +14,6 @@ namespace driver
 class LedController
 {
 public:
-    enum class TimerId
-    {
-        TIM_1,
-    };
-
     static bool initializeTimer(TimerId tim_id);
     static bool startTimer(TimerId tim_id);
 

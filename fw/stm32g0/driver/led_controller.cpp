@@ -3,6 +3,8 @@
 #include <new>
 
 #include "stm32g0xx_ll_tim.h"
+#include "stm32g0xx_ll_dma.h"
+#include "stm32g0xx_ll_dmamux.h"
 
 
 
@@ -16,11 +18,12 @@ const std::uint16_t ONE_BIT_LENGTH = 51;
 // T1H = 0.4 us, (0.4us / 1.25us) * (80 - 1) ~= 25
 const std::uint16_t ZERO_BIT_LENGTH = 25;
 
-::TIM_TypeDef * to_timer(LedController::TimerId tim_id)
+::TIM_TypeDef * to_timer(TimerId tim_id)
 {
     switch (tim_id)
     {
-    case LedController::TimerId::TIM_1: return TIM1;
+    case TimerId::TIM_1: return TIM1;
+    case TimerId::TIM_3: return TIM3;
     }
     return nullptr;
 }
@@ -34,6 +37,17 @@ std::uint32_t to_channel(std::uint32_t channel_id)
     case 3: return LL_TIM_CHANNEL_CH3;
     case 4: return LL_TIM_CHANNEL_CH4;
     }
+    return 0;
+}
+
+std::uint8_t toDmaRequestId(TimerId tim_id)
+{
+    switch (tim_id)
+    {
+    case TimerId::TIM_1: return LL_DMAMUX_REQ_TIM1_UP;
+    case TimerId::TIM_3: return LL_DMAMUX_REQ_TIM3_UP;
+    }
+
     return 0;
 }
 
@@ -62,6 +76,62 @@ bool initializeChannel(::TIM_TypeDef * tim, std::uint32_t channel)
     ::LL_TIM_CC_EnableChannel(tim, channel);
     return true;
 }
+
+bool initializeDma(std::uint32_t channel_id, std::uint32_t source_id)
+{
+    ::LL_DMAMUX_SetRequestID(DMAMUX1, channel_id, source_id);
+    ::LL_DMAMUX_DisableEventGeneration(DMAMUX1, channel_id);
+    ::LL_DMAMUX_DisableSync(DMAMUX1, channel_id);
+    ::LL_DMAMUX_DisableRequestGen(DMAMUX1, channel_id);
+}
+
+
+class BitReader
+{
+public:
+    void start()
+    {
+        pos_ = 0;
+    }
+
+    /**
+     * @brief Read data to bit buffer
+     *
+     * @param[out] buffer Buffer to receive bit pattern
+     * @param capacity Capacity of the bit pattern buffer (for ideal operation,
+     *        capacity should be multiples of 8)
+     *
+     * @return Number of bytes written in the buffer
+     * @retval 0 Done writing or insufficient buffer
+     */
+    std::size_t read(std::uint8_t * buffer, std::size_t capacity, const void * data, std::size_t length)
+    {
+        const std::uint8_t * data_pos = reinterpret_cast<const std::uint8_t *>(data) + pos_;
+        const std::uint8_t * const data_end = reinterpret_cast<const std::uint8_t *>(data) + length;
+        std::uint8_t * buffer_pos = buffer;
+        std::size_t remaining = capacity >> 3;
+
+        for (; data_pos != data_end; ++data_pos)
+        {
+            if (remaining < 8)
+                break;
+            remaining -= 8;
+            std::uint8_t data_byte = *data_pos;
+            std::uint8_t * const buffer_end = buffer_pos + 8;
+            for (; buffer_pos != buffer_end; ++buffer_pos)
+            {
+                *buffer_pos = (data_byte & 1u) ? ONE_BIT_LENGTH : ZERO_BIT_LENGTH;
+                data_byte >>= 1;
+            }
+        }
+
+        pos_ = data_pos - reinterpret_cast<const std::uint8_t *>(data);
+        return capacity - remaining;
+    }
+
+private:
+    std::size_t pos_;
+};
 
 }  // namespace
 
