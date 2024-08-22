@@ -69,6 +69,10 @@ void Base::enable_peripheral_clocks()
             LL_IOP_GRP1_PERIPH_GPIOB |
             LL_IOP_GRP1_PERIPH_GPIOC);
 
+    ::LL_AHB1_GRP1_EnableClock(
+            LL_AHB1_GRP1_PERIPH_DMA1
+            );
+
     ::LL_APB1_GRP1_EnableClock(
             LL_APB1_GRP1_PERIPH_TIM3 |
             LL_APB1_GRP1_PERIPH_WWDG |
