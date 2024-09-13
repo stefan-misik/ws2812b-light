@@ -22,7 +22,7 @@ int main()
 {
     driver::Base::init();
     driver::LedController::initializeTimer(driver::TimerId::TIM_1);
-    led_controller.initialize(driver::TimerId::TIM_1, 2);
+    led_controller.initialize(driver::TimerId::TIM_1, 2, 0);
     driver::LedController::startTimer(driver::TimerId::TIM_1);
 
     uint8_t state = 0;

@@ -25,9 +25,11 @@ public:
      *
      * @param tim_id Timer whose channel to initialize (it already needs to be initialized)
      * @param channel_id Channel to associate the Led Controller instance with
+     * @param dma_channel_id ID of the DMA channel to use
+     *
      * @return Success
      */
-    bool initialize(TimerId tim_id, uint8_t channel_id);
+    bool initialize(TimerId tim_id, uint8_t channel_id, std::uint8_t dma_channel_id);
 
     void forcePwm(std::uint16_t value);
 
@@ -35,7 +37,7 @@ private:
     struct Private;
     struct PrivateStorage
     {
-        char data[8] alignas(std::uintptr_t);
+        char data[12] alignas(std::uintptr_t);
     };
 
     Private & p() { return *reinterpret_cast<Private *>(&p_); }
