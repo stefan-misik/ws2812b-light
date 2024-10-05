@@ -14,9 +14,100 @@ namespace
 {
 
 // T1H = 0.8 us, (0.8us / 1.25us) * (80 - 1) ~= 51
-const std::uint16_t ONE_BIT_LENGTH = 51;
+const std::uint8_t ONE_BIT_LENGTH = 51;
 // T1H = 0.4 us, (0.4us / 1.25us) * (80 - 1) ~= 25
-const std::uint16_t ZERO_BIT_LENGTH = 25;
+const std::uint8_t ZERO_BIT_LENGTH = 25;
+
+
+/**
+ * @brief Tool used to write bit patterns into a flip-flop buffers
+ */
+class BitDoubleBuffer
+{
+public:
+    static const inline std::size_t CAPACITY = LedController::BUFFER_LENGTH;
+
+    const void * data() const { return buffers_[active_buffer_id_]; }
+    std::size_t length() const { return buffered_; }
+
+    /**
+     * @brief Read data to bit buffer
+     *
+     * @param data[in] Data to be written in the buffer
+     * @param length Length of the data
+     *
+     * @return Number of bytes processed from the buffer, the length of the data
+     *         in the buffer is 8 times the returned value
+     * @retval 0 Done writing or insufficient buffer
+     */
+    std::size_t read(const void * data, std::size_t length, std::size_t offset = 0)
+    {
+        swapBuffers();
+
+        const std::uint8_t * data_pos = reinterpret_cast<const std::uint8_t *>(data) + offset;
+        const std::uint8_t * const data_end = reinterpret_cast<const std::uint8_t *>(data) + length;
+        std::uint8_t * buffer_pos = buffers_[active_buffer_id_];
+        std::size_t remaining = CAPACITY;
+
+        for (; data_pos != data_end; ++data_pos)
+        {
+            if (remaining < 8)
+                break;
+            remaining -= 8;
+            std::uint8_t data_byte = *data_pos;
+            std::uint8_t * const buffer_end = buffer_pos + 8;
+            for (; buffer_pos != buffer_end; ++buffer_pos)
+            {
+                *buffer_pos = (data_byte & 0x80u) ? ONE_BIT_LENGTH : ZERO_BIT_LENGTH;
+                data_byte <<= 1;
+            }
+        }
+
+        const std::size_t done = (data_pos - reinterpret_cast<const std::uint8_t *>(data)) - offset;
+        buffered_ = done * 8;
+        return done;
+    }
+
+private:
+    std::uint16_t buffered_ = 0;
+    std::uint8_t active_buffer_id_ = 0;
+    std::uint8_t buffers_[2][CAPACITY];
+
+    void swapBuffers()
+    {
+        active_buffer_id_ = 1 - active_buffer_id_;
+    }
+};
+
+
+/**
+ * @brief Simple object keeping track of data to be pushed into LEDs
+ */
+class LedDataBuffer
+{
+public:
+    void start(const void * data, std::size_t length)
+    {
+        data_ = data;
+        length_ = length;
+        pos_ = 0;
+    }
+
+    bool readInto(BitDoubleBuffer * buffer)
+    {
+        const std::size_t done = buffer->read(data_, length_, pos_);
+        if (0 == done)
+            return false;
+        pos_ += done;
+        return true;
+    }
+
+private:
+    const void * data_ = nullptr;
+    std::size_t length_ = 0;
+    std::size_t pos_ = 0;
+};
+
 
 ::TIM_TypeDef * toTimer(TimerId tim_id)
 {
@@ -102,53 +193,9 @@ bool initializeDma(std::uint32_t channel, std::uint32_t request)
     return true;
 }
 
-
-class BitReader
+void startDma(std::uint32_t dma_channel, const void * data, std::size_t length)
 {
-public:
-    void start()
-    {
-        pos_ = 0;
-    }
-
-    /**
-     * @brief Read data to bit buffer
-     *
-     * @param[out] buffer Buffer to receive bit pattern
-     * @param capacity Capacity of the bit pattern buffer (for ideal operation,
-     *        capacity should be multiples of 8)
-     *
-     * @return Number of bytes written in the buffer
-     * @retval 0 Done writing or insufficient buffer
-     */
-    std::size_t read(std::uint8_t * buffer, std::size_t capacity, const void * data, std::size_t length)
-    {
-        const std::uint8_t * data_pos = reinterpret_cast<const std::uint8_t *>(data) + pos_;
-        const std::uint8_t * const data_end = reinterpret_cast<const std::uint8_t *>(data) + length;
-        std::uint8_t * buffer_pos = buffer;
-        std::size_t remaining = capacity >> 3;
-
-        for (; data_pos != data_end; ++data_pos)
-        {
-            if (remaining < 8)
-                break;
-            remaining -= 8;
-            std::uint8_t data_byte = *data_pos;
-            std::uint8_t * const buffer_end = buffer_pos + 8;
-            for (; buffer_pos != buffer_end; ++buffer_pos)
-            {
-                *buffer_pos = (data_byte & 1u) ? ONE_BIT_LENGTH : ZERO_BIT_LENGTH;
-                data_byte >>= 1;
-            }
-        }
-
-        pos_ = data_pos - reinterpret_cast<const std::uint8_t *>(data);
-        return capacity - remaining;
-    }
-
-private:
-    std::size_t pos_;
-};
+}
 
 }  // namespace
 
@@ -158,6 +205,9 @@ struct LedController::Private
     ::TIM_TypeDef * tim;
     std::uint32_t channel;
     std::uint32_t dma_channel;
+
+    BitDoubleBuffer dma_buffer;
+    LedDataBuffer data;
 };
 
 bool LedController::initializeTimer(TimerId tim_id)
@@ -221,8 +271,8 @@ bool LedController::startTimer(TimerId tim_id)
 
 LedController::LedController()
 {
-    static_assert(sizeof(Private) == sizeof(PrivateStorage), "");
-    static_assert(alignof(Private) == alignof(PrivateStorage), "");
+    static_assert(sizeof(Private) == sizeof(PrivateStorage), "Check size of the private storage");
+    static_assert(alignof(Private) == alignof(PrivateStorage), "Check alignment of the private storage");
 
     new (&p_) Private();
 }
@@ -260,7 +310,22 @@ bool LedController::initialize(TimerId tim_id, uint8_t channel_id, std::uint8_t 
     return true;
 }
 
-void LedController::forcePwm(std::uint16_t value)
+bool LedController::update(const AbstractLedStrip * led_strip)
+{
+    auto & priv = p();
+    priv.data.start(led_strip->leds, led_strip->led_count * sizeof(LedState));
+
+    if (!priv.data.readInto(&priv.dma_buffer))
+        return true;
+
+    startDma(priv.dma_channel, priv.dma_buffer.data(), priv.dma_buffer.length());
+
+    priv.data.readInto(&priv.dma_buffer);
+
+    return true;
+}
+
+void LedController::forcePwm(std::uint8_t value)
 {
     switch (p().channel)
     {

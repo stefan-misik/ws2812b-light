@@ -3,6 +3,9 @@
 
 #include "support/cpu_pins.h"
 
+#include "led_strip.h"
+
+
 namespace
 {
 
@@ -17,6 +20,8 @@ void sleep()
 }  // namespace
 
 driver::LedController led_controller;
+LedStrip<100> leds;
+
 
 int main()
 {
@@ -25,7 +30,10 @@ int main()
     led_controller.initialize(driver::TimerId::TIM_1, 2, 0);
     driver::LedController::startTimer(driver::TimerId::TIM_1);
 
-    uint8_t state = 0;
+    leds[0] = {0xF0, 0xF1, 0xF2};
+    leds[1] = {0xF3, 0xF4, 0xF5};
+    led_controller.update(leds.abstarctPtr());
+
     while (true)
     {
         ::LL_GPIO_ResetOutputPin(STATUS_LED3_GPIO_Port, STATUS_LED3_Pin);
@@ -39,14 +47,6 @@ int main()
         ::LL_GPIO_ResetOutputPin(STATUS_LED2_GPIO_Port, STATUS_LED2_Pin);
         ::LL_GPIO_SetOutputPin(STATUS_LED3_GPIO_Port, STATUS_LED3_Pin);
         sleep();
-
-        switch (state)
-        {
-        case 0: led_controller.forcePwm(51); state = 1; break;
-        case 1: led_controller.forcePwm(0); state = 2; break;
-        case 2: led_controller.forcePwm(25); state = 3; break;
-        case 3: led_controller.forcePwm(0); state = 0; break;
-        }
     }
 
     return 0;

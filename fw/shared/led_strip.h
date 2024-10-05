@@ -2,16 +2,16 @@
  * @file
  */
 
-#ifndef LED_STRIP_H_
-#define LED_STRIP_H_
+#ifndef SHARED_LED_STRIP_H_
+#define SHARED_LED_STRIP_H_
 
 #ifndef LED_ORDER
 #define LED_ORDER red,green,blue
 #endif  // LED_ORDER
 
-#include <stdint.h>
+#include "defs.h"
 
-using LedSize = uint8_t;
+using LedSize = def::SmallSize;
 
 template <LedSize LED_C>
 struct LedStrip;
@@ -119,6 +119,4 @@ struct LedStrip
 };
 
 
-
-
-#endif  // LED_STRIP_H_
+#endif  // SHARED_LED_STRIP_H_
