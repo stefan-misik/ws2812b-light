@@ -15,7 +15,10 @@ namespace driver
 class LedController
 {
 public:
-    static const inline std::size_t BUFFER_LENGTH = 128;
+    /**
+     * @brief Length of the intermediate DMA buffer in data bytes
+     */
+    static const inline std::size_t BUFFER_HALF_LENGTH = 16;
 
     static bool initializeTimer(TimerId tim_id);
     static bool startTimer(TimerId tim_id);
@@ -43,17 +46,20 @@ public:
      */
     bool update(const AbstractLedStrip * led_strip);
 
+    /**
+     * @brief Handle the DMA interrupt
+     */
+    void maybeHandleDmaInterrupt();
+
 private:
     struct Private;
     struct PrivateStorage
     {
-        char data[12 + 4 + (2 * BUFFER_LENGTH) + 12] alignas(std::uintptr_t);
+        char data[12 + 4 + (BUFFER_HALF_LENGTH * 16) + 8] alignas(std::uintptr_t);
     };
 
     Private & p() { return *reinterpret_cast<Private *>(&p_); }
     const Private & p() const { return *reinterpret_cast<const Private *>(&p_); }
-
-    void forcePwm(std::uint8_t value);
 
     PrivateStorage p_;
 };
