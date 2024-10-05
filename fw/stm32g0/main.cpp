@@ -33,22 +33,20 @@ int main()
     led_controller.initialize(driver::TimerId::TIM_1, 2, 0);
     driver::LedController::startTimer(driver::TimerId::TIM_1);
 
-    leds[0] = {0xF0, 0xF1, 0xF2};
-    leds[1] = {0xF3, 0xF4, 0xF5};
-    led_controller.update(leds.abstarctPtr());
-
     while (true)
     {
-        ::LL_GPIO_ResetOutputPin(STATUS_LED3_GPIO_Port, STATUS_LED3_Pin);
-        ::LL_GPIO_SetOutputPin(STATUS_LED1_GPIO_Port, STATUS_LED1_Pin);
-        sleep();
+        std::uint8_t b = 0;
+        for (std::size_t n = 0; n != leds.led_count; ++n)
+        {
+            leds[n] = {
+                    static_cast<std::uint8_t>(b),
+                    static_cast<std::uint8_t>(b + 1),
+                    static_cast<std::uint8_t>(b + 2)
+            };
+            b += 3;
+        }
+        led_controller.update(leds.abstarctPtr());
 
-        ::LL_GPIO_ResetOutputPin(STATUS_LED1_GPIO_Port, STATUS_LED1_Pin);
-        ::LL_GPIO_SetOutputPin(STATUS_LED2_GPIO_Port, STATUS_LED2_Pin);
-        sleep();
-
-        ::LL_GPIO_ResetOutputPin(STATUS_LED2_GPIO_Port, STATUS_LED2_Pin);
-        ::LL_GPIO_SetOutputPin(STATUS_LED3_GPIO_Port, STATUS_LED3_Pin);
         sleep();
     }
 
@@ -59,4 +57,9 @@ int main()
 extern "C" void SysTick_Handler()
 {
     system_time.handleInterrupt();
+}
+
+extern "C" void DMA1_Channel1_IRQHandler()
+{
+    led_controller.maybeHandleDmaInterrupt();
 }
