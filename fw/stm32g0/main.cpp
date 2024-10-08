@@ -1,4 +1,5 @@
 #include "driver/base.hpp"
+#include "driver/systick.hpp"
 #include "driver/led_controller.hpp"
 
 #include "support/cpu_pins.h"
@@ -19,6 +20,7 @@ void sleep()
 
 }  // namespace
 
+driver::Systick system_time;
 driver::LedController led_controller;
 LedStrip<100> leds;
 
@@ -26,6 +28,7 @@ LedStrip<100> leds;
 int main()
 {
     driver::Base::init();
+    driver::Systick::initialize();
     driver::LedController::initializeTimer(driver::TimerId::TIM_1);
     led_controller.initialize(driver::TimerId::TIM_1, 2, 0);
     driver::LedController::startTimer(driver::TimerId::TIM_1);
@@ -50,4 +53,10 @@ int main()
     }
 
     return 0;
+}
+
+
+extern "C" void SysTick_Handler()
+{
+    system_time.handleInterrupt();
 }
