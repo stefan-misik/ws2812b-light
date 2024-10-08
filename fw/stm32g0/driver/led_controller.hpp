@@ -5,8 +5,10 @@
 #ifndef DRIVER_LED_CONTROLLER_HPP_
 #define DRIVER_LED_CONTROLLER_HPP_
 
+#include "tools/polymorphic_storage.hpp"
 #include "driver/common.hpp"
 #include "led_strip.h"
+#include "led_correction.hpp"
 
 
 namespace driver
@@ -19,6 +21,8 @@ public:
      * @brief Length of the intermediate DMA buffer in data bytes
      */
     static const inline std::size_t BUFFER_HALF_LENGTH = 16;
+
+    static const inline std::size_t MAX_DATA_LENGTH = 300;
 
     static bool initializeTimer(TimerId tim_id);
     static bool startTimer(TimerId tim_id);
@@ -52,10 +56,12 @@ public:
     void maybeHandleDmaInterrupt();
 
 private:
+    PolymorphicStorage<LedCorrection, 32> correction_;
+
     struct Private;
     struct PrivateStorage
     {
-        char data[12 + 4 + (BUFFER_HALF_LENGTH * 16) + 8] alignas(std::uintptr_t);
+        char data[12 + 4 + (BUFFER_HALF_LENGTH * 16) + 4 + MAX_DATA_LENGTH] alignas(std::uintptr_t);
     };
 
     Private & p() { return *reinterpret_cast<Private *>(&p_); }
