@@ -146,16 +146,17 @@ private:
 class LedDataBuffer
 {
 public:
-    void start(const void * data, std::size_t length)
+    static const inline std::size_t SIZE = LedController::MAX_DATA_LENGTH;
+
+    void start(const LedState * leds, std::size_t count, const LedCorrection * correction)
     {
-        data_ = data;
-        length_ = length;
+        length_ = correction->correct(leds, count, buffer_, SIZE);
         pos_ = 0;
     }
 
     bool readInto(std::size_t half, BitCircularBuffer * buffer)
     {
-        const std::size_t done = buffer->read(half, data_, length_, pos_);
+        const std::size_t done = buffer->read(half, buffer_, length_, pos_);
         if (0 == done)
             return false;
         pos_ += done;
@@ -163,7 +164,7 @@ public:
     }
 
 private:
-    const void * data_ = nullptr;
+    std::uint8_t buffer_[SIZE];
     std::size_t length_ = 0;
     std::size_t pos_ = 0;
 };
@@ -456,7 +457,8 @@ bool LedController::startTimer(TimerId tim_id)
     return true;
 }
 
-LedController::LedController()
+LedController::LedController():
+    correction_(TypeTag<CommonLedCorrection<DimmingLedWriter<>>>{}, 0x60)
 {
     static_assert(sizeof(Private) == sizeof(PrivateStorage), "Check size of the private storage");
     static_assert(alignof(Private) == alignof(PrivateStorage), "Check alignment of the private storage");
@@ -506,7 +508,7 @@ bool LedController::update(const AbstractLedStrip * led_strip)
     if (isDmaOngoing(priv.dma_channel))
         return false;
 
-    priv.data.start(led_strip->leds, led_strip->led_count * sizeof(LedState));
+    priv.data.start(led_strip->leds, led_strip->led_count, correction_.get());
 
     if (!priv.data.readInto(0, &priv.dma_buffer))
         return true;

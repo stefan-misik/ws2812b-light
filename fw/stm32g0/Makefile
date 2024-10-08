@@ -14,6 +14,7 @@ SRC  =  \
     driver/base.cpp  \
     driver/systick.cpp  \
     driver/led_controller.cpp  \
+    led_correction.cpp  \
     main.cpp
 
 DEFINE    = $(MCU_DEFINE)
