@@ -20,8 +20,8 @@ SRC  =  \
 DEFINE    = $(MCU_DEFINE)
 INCLUDE   = . ../shared
 CPPFLAGS  =
-CFLAGS    = -g3 -Og -Wall
-CXXFLAGS  = -g3 -Og -Wall
+CFLAGS    = -g3 -Og -Wall -Wextra
+CXXFLAGS  = -g3 -Og -Wall -Wextra
 LDFLAGS   = -g3 -Og -Wl,-Map=$(PROJ).map
 LDLIBS    =
 
