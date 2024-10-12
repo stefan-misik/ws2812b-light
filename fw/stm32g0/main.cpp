@@ -1,6 +1,7 @@
 #include "driver/base.hpp"
 #include "driver/systick.hpp"
 #include "driver/led_controller.hpp"
+#include "driver/buzzer.hpp"
 #include "tools/periodic_timer.hpp"
 
 #include "support/cpu_pins.h"
@@ -10,6 +11,7 @@
 
 driver::Systick system_time;
 driver::LedController led_controller;
+driver::Buzzer buzzer;
 
 PeriodicTimer led_update_timer;
 
@@ -96,6 +98,7 @@ int main()
     driver::LedController::initializeTimer(driver::TimerId::TIM_1);
     led_controller.initialize(driver::TimerId::TIM_1, 2, 0);
     driver::LedController::startTimer(driver::TimerId::TIM_1);
+    buzzer.initialize(driver::TimerId::TIM_16, 1);
 
     Rainbow rainbow;
     while (true)

@@ -15,6 +15,7 @@ enum class TimerId: std::uint8_t
 {
     TIM_1,
     TIM_3,
+    TIM_16,
 };
 
 enum class DmaRequestId: std::uint8_t
