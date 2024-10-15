@@ -14,6 +14,7 @@ SRC  =  \
     driver/base.cpp  \
     driver/systick.cpp  \
     driver/led_controller.cpp  \
+    driver/ir_receiver.cpp  \
     driver/buzzer.cpp  \
     led_correction.cpp  \
     main.cpp

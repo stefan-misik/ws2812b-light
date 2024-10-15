@@ -1,6 +1,7 @@
 #include "driver/base.hpp"
 #include "driver/systick.hpp"
 #include "driver/led_controller.hpp"
+#include "driver/ir_receiver.hpp"
 #include "driver/buzzer.hpp"
 #include "tools/periodic_timer.hpp"
 
@@ -11,6 +12,7 @@
 
 driver::Systick system_time;
 driver::LedController led_controller;
+driver::IrReceiver ir_receiver;
 driver::Buzzer buzzer;
 
 PeriodicTimer led_update_timer;
@@ -91,11 +93,16 @@ private:
     }
 };
 
+
+driver::IrReceiver::Code ir_received;
+
+
 int main()
 {
     driver::Base::init();
     driver::Systick::initialize();
     led_controller.initialize(driver::TimerId::TIM_1, 2, 0);
+    ir_receiver.initialize(driver::TimerId::TIM_3, 1);
     buzzer.initialize(driver::TimerId::TIM_16, 1);
 
     Rainbow rainbow;
@@ -107,6 +114,11 @@ int main()
         {
             rainbow.update(leds.abstarctPtr());
             led_controller.update(leds.abstarctPtr());
+
+            {
+                const auto [rcv, is_new] = ir_receiver.read(current_time);
+                ir_received = rcv;
+            }
         }
     }
 

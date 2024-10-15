@@ -134,14 +134,13 @@ void Base::configure_pins()
     gpio_init.Pull = LL_GPIO_PULL_NO;
     GPIO_INIT(BUZZER, LL_GPIO_AF_5);
 
-    // TODO: First initialize the Timer
-    // // IR Data
-    // ::LL_GPIO_StructInit(&gpio_init);
-    // gpio_init.Mode = LL_GPIO_MODE_ALTERNATE;
-    // gpio_init.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    // gpio_init.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    // gpio_init.Pull = LL_GPIO_PULL_NO;
-    // GPIO_INIT(IR_DATA, LL_GPIO_AF_1);
+    // IR Data
+    ::LL_GPIO_StructInit(&gpio_init);
+    gpio_init.Mode = LL_GPIO_MODE_ALTERNATE;
+    gpio_init.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    gpio_init.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
+    gpio_init.Pull = LL_GPIO_PULL_NO;
+    GPIO_INIT(IR_DATA, LL_GPIO_AF_1);
 
     // I2C
     ::LL_GPIO_StructInit(&gpio_init);
