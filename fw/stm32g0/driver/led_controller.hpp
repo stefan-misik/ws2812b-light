@@ -24,9 +24,6 @@ public:
 
     static const inline std::size_t MAX_DATA_LENGTH = 300;
 
-    static bool initializeTimer(TimerId tim_id);
-    static bool startTimer(TimerId tim_id);
-
     LedController();
     ~LedController();
 

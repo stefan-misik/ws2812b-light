@@ -95,9 +95,7 @@ int main()
 {
     driver::Base::init();
     driver::Systick::initialize();
-    driver::LedController::initializeTimer(driver::TimerId::TIM_1);
     led_controller.initialize(driver::TimerId::TIM_1, 2, 0);
-    driver::LedController::startTimer(driver::TimerId::TIM_1);
     buzzer.initialize(driver::TimerId::TIM_16, 1);
 
     Rainbow rainbow;
