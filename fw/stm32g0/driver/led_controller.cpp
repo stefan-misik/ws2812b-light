@@ -248,6 +248,51 @@ std::uint32_t timerRegisterAddress(::TIM_TypeDef * tim, std::uint32_t channel)
 }
 
 
+bool initializeTimer(::TIM_TypeDef * tim)
+{
+    ::LL_TIM_InitTypeDef init;
+    ::LL_TIM_StructInit(&init);
+    init.Prescaler = 0;  // No pre-scaler
+    init.CounterMode = LL_TIM_COUNTERDIRECTION_UP;
+    init.Autoreload = 80 - 1;  // 64 MHz / 800 kHz = 80
+    init.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
+    init.RepetitionCounter = 0;
+
+    if (::ErrorStatus::SUCCESS != ::LL_TIM_Init(tim, &init))
+        return false;
+
+    ::LL_TIM_DisableARRPreload(tim);
+    ::LL_TIM_SetClockSource(tim, LL_TIM_CLOCKSOURCE_INTERNAL);
+    ::LL_TIM_SetTriggerOutput(tim, LL_TIM_TRGO_RESET);
+    ::LL_TIM_SetTriggerOutput2(tim, LL_TIM_TRGO2_RESET);
+    ::LL_TIM_DisableMasterSlaveMode(tim);
+
+    // Break- and dead-time
+    {
+        LL_TIM_BDTR_InitTypeDef break_deat_time_init;
+
+        ::LL_TIM_BDTR_StructInit(&break_deat_time_init);
+        break_deat_time_init.OSSRState = LL_TIM_OSSR_DISABLE;
+        break_deat_time_init.OSSIState = LL_TIM_OSSI_DISABLE;
+        break_deat_time_init.LockLevel = LL_TIM_LOCKLEVEL_OFF;
+        break_deat_time_init.DeadTime = 0;
+        break_deat_time_init.BreakState = LL_TIM_BREAK_DISABLE;
+        break_deat_time_init.BreakPolarity = LL_TIM_BREAK_POLARITY_HIGH;
+        break_deat_time_init.BreakFilter = LL_TIM_BREAK_FILTER_FDIV1;
+        break_deat_time_init.Break2State = LL_TIM_BREAK2_DISABLE;
+        break_deat_time_init.Break2Polarity = LL_TIM_BREAK2_POLARITY_HIGH;
+        break_deat_time_init.Break2Filter = LL_TIM_BREAK2_FILTER_FDIV1;
+        break_deat_time_init.AutomaticOutput = LL_TIM_AUTOMATICOUTPUT_DISABLE;
+        if (::ErrorStatus::SUCCESS != ::LL_TIM_BDTR_Init(tim, &break_deat_time_init))
+        {
+            return false;
+        }
+    }
+
+    ::LL_TIM_EnableAllOutputs(tim);
+    return true;
+}
+
 bool initializeChannel(::TIM_TypeDef * tim, std::uint32_t channel)
 {
     ::LL_TIM_OC_EnablePreload(tim, channel);
@@ -272,6 +317,11 @@ bool initializeChannel(::TIM_TypeDef * tim, std::uint32_t channel)
     ::LL_TIM_OC_DisableFast(tim, channel);
     ::LL_TIM_CC_EnableChannel(tim, channel);
     return true;
+}
+
+inline void startTimer(::TIM_TypeDef * tim)
+{
+    ::LL_TIM_EnableCounter(tim);
 }
 
 void forcePwm(::TIM_TypeDef * tim, std::uint32_t channel, std::uint8_t value)
@@ -398,65 +448,6 @@ struct LedController::Private
     LedDataBuffer data;
 };
 
-bool LedController::initializeTimer(TimerId tim_id)
-{
-    auto * const tim = toTimer(tim_id);
-    if (nullptr == tim)
-        return false;
-
-    ::LL_TIM_InitTypeDef init;
-    ::LL_TIM_StructInit(&init);
-    init.Prescaler = 0;  // No pre-scaler
-    init.CounterMode = LL_TIM_COUNTERDIRECTION_UP;
-    init.Autoreload = 80 - 1;  // 64 MHz / 800 kHz = 80
-    init.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
-    init.RepetitionCounter = 0;
-
-    if (::ErrorStatus::SUCCESS != ::LL_TIM_Init(tim, &init))
-        return false;
-
-    ::LL_TIM_DisableARRPreload(tim);
-    ::LL_TIM_SetClockSource(tim, LL_TIM_CLOCKSOURCE_INTERNAL);
-    ::LL_TIM_SetTriggerOutput(tim, LL_TIM_TRGO_RESET);
-    ::LL_TIM_SetTriggerOutput2(tim, LL_TIM_TRGO2_RESET);
-    ::LL_TIM_DisableMasterSlaveMode(tim);
-
-    // Break- and dead-time
-    {
-        LL_TIM_BDTR_InitTypeDef break_deat_time_init;
-
-        ::LL_TIM_BDTR_StructInit(&break_deat_time_init);
-        break_deat_time_init.OSSRState = LL_TIM_OSSR_DISABLE;
-        break_deat_time_init.OSSIState = LL_TIM_OSSI_DISABLE;
-        break_deat_time_init.LockLevel = LL_TIM_LOCKLEVEL_OFF;
-        break_deat_time_init.DeadTime = 0;
-        break_deat_time_init.BreakState = LL_TIM_BREAK_DISABLE;
-        break_deat_time_init.BreakPolarity = LL_TIM_BREAK_POLARITY_HIGH;
-        break_deat_time_init.BreakFilter = LL_TIM_BREAK_FILTER_FDIV1;
-        break_deat_time_init.Break2State = LL_TIM_BREAK2_DISABLE;
-        break_deat_time_init.Break2Polarity = LL_TIM_BREAK2_POLARITY_HIGH;
-        break_deat_time_init.Break2Filter = LL_TIM_BREAK2_FILTER_FDIV1;
-        break_deat_time_init.AutomaticOutput = LL_TIM_AUTOMATICOUTPUT_DISABLE;
-        if (::ErrorStatus::SUCCESS != ::LL_TIM_BDTR_Init(tim, &break_deat_time_init))
-        {
-            return false;
-        }
-    }
-
-    ::LL_TIM_EnableAllOutputs(tim);
-    return true;
-}
-
-bool LedController::startTimer(TimerId tim_id)
-{
-    auto * const tim = toTimer(tim_id);
-    if (nullptr == tim)
-        return false;
-
-    ::LL_TIM_EnableCounter(tim);
-    return true;
-}
-
 LedController::LedController():
     correction_(TypeTag<CommonLedCorrection<DimmingLedWriter<>>>{}, 0x60)
 {
@@ -479,6 +470,9 @@ bool LedController::initialize(TimerId tim_id, uint8_t channel_id, std::uint8_t 
     if (nullptr == tim || 0 == channel)
         return false;
 
+    if (!initializeTimer(tim))
+        return false;
+
     if (!initializeChannel(tim, channel))
         return false;
 
@@ -498,6 +492,7 @@ bool LedController::initialize(TimerId tim_id, uint8_t channel_id, std::uint8_t 
     priv.dma_channel = dma_channel;
 
     forcePwm(tim, channel, 0);
+    startTimer(tim);
     return true;
 }
 
