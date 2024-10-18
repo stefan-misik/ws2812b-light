@@ -11,6 +11,13 @@
 namespace driver
 {
 
+enum class GpioId: std::uint8_t
+{
+    GPIO_A,
+    GPIO_B,
+    GPIO_C,
+};
+
 enum class TimerId: std::uint8_t
 {
     TIM_1,
@@ -18,14 +25,12 @@ enum class TimerId: std::uint8_t
     TIM_16,
 };
 
-enum class DmaRequestId: std::uint8_t
+struct GpioPinId
 {
-    TIM1_CH2 = 21,
+    GpioId gpio;
+    std::uint8_t pin;
 };
 
 }  // namespace driver
-
-
-
 
 #endif  // DRIVER_COMMON_HPP_

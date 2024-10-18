@@ -11,11 +11,13 @@ SRC  =  \
     support/sysmem.c  \
     support/syscalls.c  \
     support/system_stm32g0xx.c  \
+    ../shared/tools/button_filter.cpp  \
     driver/base.cpp  \
     driver/systick.cpp  \
     driver/led_controller.cpp  \
     driver/ir_receiver.cpp  \
     driver/buzzer.cpp  \
+    driver/keypad.cpp  \
     led_correction.cpp  \
     main.cpp
 
