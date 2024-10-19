@@ -4,6 +4,7 @@
 #include "driver/ir_receiver.hpp"
 #include "driver/buzzer.hpp"
 #include "driver/keypad.hpp"
+#include "driver/status_leds.hpp"
 #include "tools/periodic_timer.hpp"
 
 #include "support/cpu_pins.h"
@@ -16,6 +17,7 @@ driver::LedController led_controller;
 driver::IrReceiver ir_receiver;
 driver::Buzzer buzzer;
 driver::Keypad keypad;
+driver::StatusLeds status_leds;
 
 PeriodicTimer led_update_timer;
 
@@ -107,6 +109,7 @@ int main()
     ir_receiver.initialize(driver::TimerId::TIM_3, 1);
     buzzer.initialize(driver::TimerId::TIM_16, 1);
     keypad.initialize();
+    status_leds.initialize();
 
     Rainbow rainbow;
     while (true)
@@ -118,9 +121,12 @@ int main()
             rainbow.update(leds.abstarctPtr());
             led_controller.update(leds.abstarctPtr());
             keypad.update();
+            status_leds.update();
 
             {
                 const auto [rcv, is_new] = ir_receiver.read(current_time);
+                status_leds.setLed(driver::StatusLeds::LedId::LED_GREEN, rcv.isValid());
+                status_leds.setLed(driver::StatusLeds::LedId::LED_YELLOW, is_new);
                 ir_received = rcv;
             }
         }

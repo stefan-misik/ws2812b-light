@@ -18,6 +18,7 @@ SRC  =  \
     driver/ir_receiver.cpp  \
     driver/buzzer.cpp  \
     driver/keypad.cpp  \
+    driver/status_leds.cpp  \
     led_correction.cpp  \
     main.cpp
 
