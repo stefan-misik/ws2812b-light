@@ -20,6 +20,7 @@ SRC  =  \
     driver/keypad.cpp  \
     driver/status_leds.cpp  \
     led_correction.cpp  \
+    input.cpp  \
     main.cpp
 
 DEFINE    = $(MCU_DEFINE)
