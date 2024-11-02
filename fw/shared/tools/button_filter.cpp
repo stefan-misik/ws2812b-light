@@ -1,41 +1,37 @@
 #include "tools/button_filter.h"
 
+namespace
+{
+
+inline def::Uint8 countUp(def::Uint8 counter)
+{
+    if (counter < ButtonFilter::NEXT_REPEAT_THRESHOLD)
+        return counter + 1;
+    else
+        return ButtonFilter::REPEAT_THRESHOLD;
+}
+
+inline def::Uint8 countDown(def::Uint8 counter)
+{
+    if (counter > ButtonFilter::PRESS_THRESHOLD)
+        return ButtonFilter::PRESS_THRESHOLD;
+    else if (counter > 0)
+        return counter - 1;
+    else
+        return counter;
+}
+
+}  // namespace
+
+
 void ButtonFilter::updateButton(bool button_state)
 {
     if (button_state)
-    {
-        countUp();
-    }
+        counter_ = countUp(counter_);
     else
-    {
-        countDown();
-    }
+        counter_ = countDown(counter_);
 
     updateState();
-}
-
-void ButtonFilter::countUp()
-{
-    if (counter_ < NEXT_REPEAT_THRESHOLD)
-    {
-        ++counter_;
-    }
-    else
-    {
-        counter_ = REPEAT_THRESHOLD;
-    }
-}
-
-void ButtonFilter::countDown()
-{
-    if (counter_ > PRESS_THRESHOLD)
-    {
-        counter_ = PRESS_THRESHOLD;
-    }
-    else if (counter_ > 0)
-    {
-        --counter_;
-    }
 }
 
 void ButtonFilter::updateState()

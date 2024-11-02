@@ -10,6 +10,10 @@
 class ButtonFilter
 {
 public:
+    static const def::Uint8 PRESS_THRESHOLD = 5;
+    static const def::Uint8 REPEAT_THRESHOLD = PRESS_THRESHOLD + 50;
+    static const def::Uint8 NEXT_REPEAT_THRESHOLD = REPEAT_THRESHOLD + 8;
+
     enum State
     {
         /** @brief Indicates current state of the button */
@@ -55,15 +59,9 @@ public:
     }
 
 private:
-    static constexpr def::Uint8 PRESS_THRESHOLD = 5;
-    static constexpr def::Uint8 REPEAT_THRESHOLD = PRESS_THRESHOLD + 50;
-    static constexpr def::Uint8 NEXT_REPEAT_THRESHOLD = REPEAT_THRESHOLD + 8;
-
     def::Uint8 counter_;
     def::Uint8 state_;
 
-    void countUp();
-    void countDown();
     void updateState();
 };
 
