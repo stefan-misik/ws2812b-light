@@ -21,6 +21,22 @@ inline def::Uint8 countDown(def::Uint8 counter)
         return counter;
 }
 
+inline def::Uint8 countHardUp(def::Uint8 counter)
+{
+    if (counter < ButtonFilter::PRESS_THRESHOLD)
+        return ButtonFilter::PRESS_THRESHOLD;
+    else if (counter < ButtonFilter::NEXT_REPEAT_THRESHOLD)
+        return counter + 1;
+    else
+        return ButtonFilter::REPEAT_THRESHOLD;
+}
+
+inline def::Uint8 countHardDown(def::Uint8 counter)
+{
+    (void)counter;
+    return 0;
+}
+
 }  // namespace
 
 
@@ -30,6 +46,16 @@ void ButtonFilter::updateButton(bool button_state)
         counter_ = countUp(counter_);
     else
         counter_ = countDown(counter_);
+
+    updateState();
+}
+
+void ButtonFilter::updateHardButton(bool button_state)
+{
+    if (button_state)
+        counter_ = countHardUp(counter_);
+    else
+        counter_ = countHardDown(counter_);
 
     updateState();
 }

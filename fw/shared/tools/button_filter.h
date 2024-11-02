@@ -49,6 +49,13 @@ public:
     void updateButton(bool button_state);
 
     /**
+     * @brief Similar to @ref updateButton(), but no de-bouncing is performed
+     *
+     * @param button_state Current button state
+     */
+    void updateHardButton(bool button_state);
+
+    /**
      * @brief Get the current state of the button
      *
      * @return Bitwise or of values from @ref State
