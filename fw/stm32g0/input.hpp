@@ -30,11 +30,13 @@ public:
         KEY_O, KEY_LEFT, KEY_UP, KEY_DOWN, KEY_RIGHT, KEY_X,
         KEY_POWER,
         KEY_RED, KEY_GREEN, KEY_YELLOW, KEY_BLUE,
-        KEY_HOME, KEY_BACK,
+        KEY_HOME, KEY_OK, KEY_BACK,
+        KEY_MENU,
         KEY_0, KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9,
         KEY_MUTE, KEY_BACKSPACE,
 
-        KEY_COUNT_
+        KEY_NONE,
+        KEY_COUNT_ = KEY_NONE,
     };
 
     static const inline std::size_t KEY_COUNT = static_cast<std::size_t>(KeyId::KEY_COUNT_);
@@ -108,12 +110,21 @@ public:
          * @param time Current time
          * @param[out] buttons List which will obtain pressed keys, presume all keys are initially cleared
          */
-        virtual void getPressedKeys(std::uint32_t time, ButtonStateList * buttons) = 0;
+        virtual void getPressedKeys(std::uint32_t time, ButtonStateList * buttons)
+        {
+            (void) time; (void) buttons;
+        }
 
         virtual ~Source() = default;
     };
 
     static const inline std::size_t SOURCE_COUNT = 2;
+
+    template <typename T, typename... Ts>
+    void createSource(std::size_t source, Ts &&... args)
+    {
+        sources_[source].create<T>(std::forward<Ts>(args)...);
+    }
 
     /**
      * @brief Call periodically to obtain list of pressed keys

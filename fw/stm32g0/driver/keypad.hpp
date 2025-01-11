@@ -23,16 +23,18 @@ public:
         KEY_UP,
         KEY_DOWN,
         KEY_RIGHT,
-        KEY_X
+        KEY_X,
+
+        KEY_COUNT_,
     };
 
-    static const inline std::size_t KEY_COUNT = 6;
+    static const inline std::size_t KEY_COUNT = static_cast<std::size_t>(KeyId::KEY_COUNT_);
 
     bool initialize();
 
-    std::uint8_t keyState(KeyId id) const
+    bool isPressed(KeyId id) const
     {
-        return keys_[static_cast<std::size_t>(id)].state();
+        return keys_[static_cast<std::size_t>(id)].isPressed();
     }
 
     /**

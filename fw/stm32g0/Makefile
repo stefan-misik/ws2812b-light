@@ -11,7 +11,7 @@ SRC  =  \
     support/sysmem.c  \
     support/syscalls.c  \
     support/system_stm32g0xx.c  \
-    ../shared/tools/button_filter.cpp  \
+    tools/button_filter.cpp  \
     driver/base.cpp  \
     driver/systick.cpp  \
     driver/led_controller.cpp  \
@@ -19,23 +19,27 @@ SRC  =  \
     driver/buzzer.cpp  \
     driver/keypad.cpp  \
     driver/status_leds.cpp  \
+    input/keypad.cpp  \
+    input/ir_remote.cpp  \
     led_correction.cpp  \
     input.cpp  \
     main.cpp
 
+ifeq ($(strip $(DBG)),yes)
+BUILDDIR = Debug
+OPTFLAGS = -Og
+else
+BUILDDIR = Release
+OPTFLAGS = -Og
+endif
+
 DEFINE    = $(MCU_DEFINE)
 INCLUDE   = . ../shared
 CPPFLAGS  =
-CFLAGS    = -g3 -Og -Wall -Wextra
-CXXFLAGS  = -g3 -Og -Wall -Wextra
-LDFLAGS   = -g3 -Og -Wl,-Map=$(PROJ).map
+CFLAGS    = -g3 $(OPTFLAGS) -Wall -Wextra
+CXXFLAGS  = -g3 $(OPTFLAGS) -Wall -Wextra
+LDFLAGS   = -g3 $(OPTFLAGS) -Wl,-Map=$(PROJ).map
 LDLIBS    =
-
-ifeq ($(strip $(DBG)),yes)
-BUILDDIR = Debug
-else
-BUILDDIR = Release
-endif
 
 # C specific
 CFLAGS += -std=c99

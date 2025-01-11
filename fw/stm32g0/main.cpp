@@ -9,6 +9,10 @@
 
 #include "support/cpu_pins.h"
 
+#include "input.hpp"
+#include "input/keypad.hpp"
+#include "input/ir_remote.hpp"
+
 #include "led_strip.h"
 
 
@@ -21,6 +25,7 @@ driver::StatusLeds status_leds;
 
 PeriodicTimer led_update_timer;
 
+Input input;
 LedStrip<100> leds;
 
 
@@ -98,9 +103,6 @@ private:
 };
 
 
-driver::IrReceiver::Code ir_received;
-
-
 int main()
 {
     driver::Base::init();
@@ -111,6 +113,9 @@ int main()
     keypad.initialize();
     status_leds.initialize();
 
+    input.createSource<KeypadSource>(0, &keypad);
+    input.createSource<IrRemoteSource>(1, &ir_receiver);
+
     Rainbow rainbow;
     while (true)
     {
@@ -118,17 +123,10 @@ int main()
 
         if (led_update_timer.shouldRun(current_time, 8))
         {
+            input.update(current_time);
             rainbow.update(leds.abstarctPtr());
             led_controller.update(leds.abstarctPtr());
-            keypad.update();
             status_leds.update();
-
-            {
-                const auto [rcv, is_new] = ir_receiver.read(current_time);
-                status_leds.setLed(driver::StatusLeds::LedId::LED_GREEN, rcv.isValid());
-                status_leds.setLed(driver::StatusLeds::LedId::LED_YELLOW, is_new);
-                ir_received = rcv;
-            }
         }
     }
 
