@@ -167,12 +167,21 @@ void Base::configure_pins()
     GPIO_INIT(CTRL_EN, LL_GPIO_AF_0);
 
     // Debug Trace
+#if 0  // Use UART TX for tracing
     ::LL_GPIO_StructInit(&gpio_init);
     gpio_init.Mode = LL_GPIO_MODE_ALTERNATE;
     gpio_init.Speed = LL_GPIO_SPEED_FREQ_MEDIUM;
     gpio_init.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
     gpio_init.Pull = LL_GPIO_PULL_NO;
     GPIO_INIT(TRACE, LL_GPIO_AF_4);
+#else  // Use GPIO output for tracing
+    ::LL_GPIO_StructInit(&gpio_init);
+    gpio_init.Mode = LL_GPIO_MODE_OUTPUT;
+    gpio_init.Speed = LL_GPIO_SPEED_FREQ_MEDIUM;
+    gpio_init.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    gpio_init.Pull = LL_GPIO_PULL_NO;
+    GPIO_INIT(TRACE, LL_GPIO_AF_0);
+#endif
 }
 
 }  // namespace driver
