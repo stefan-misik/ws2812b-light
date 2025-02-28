@@ -62,7 +62,7 @@ bool initializeTimer(::TIM_TypeDef * tim)
     if (::ErrorStatus::SUCCESS != ::LL_TIM_Init(tim, &init))
         return false;
 
-    ::LL_TIM_DisableARRPreload(tim);
+    ::LL_TIM_EnableARRPreload(tim);
     ::LL_TIM_SetClockSource(tim, LL_TIM_CLOCKSOURCE_INTERNAL);
     ::LL_TIM_SetTriggerOutput(tim, LL_TIM_TRGO_RESET);
     ::LL_TIM_SetTriggerOutput2(tim, LL_TIM_TRGO2_RESET);
@@ -191,8 +191,15 @@ void Buzzer::playNote(MusicNote note)
 
     if (note.isValid())
     {
+        const std::uint32_t previous_auto_reload = ::LL_TIM_GetAutoReload(priv.tim);
+
         ::LL_TIM_SetPrescaler(priv.tim, 2 << (12 - note.octave()));
         ::LL_TIM_SetAutoReload(priv.tim, NOTES[note.tone()]);
+
+        // In case the timer is stopped, generate update event to transfer new
+        // auto-reload value into shadow register
+        if (0 == previous_auto_reload)
+            ::LL_TIM_GenerateEvent_UPDATE(priv.tim);
     }
     else
     {
