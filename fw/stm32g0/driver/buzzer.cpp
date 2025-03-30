@@ -1,7 +1,5 @@
 #include "driver/buzzer.hpp"
 
-#include <new>
-
 #include "stm32g0xx_ll_tim.h"
 #include "stm32g0xx_ll_cortex.h"
 
@@ -149,15 +147,10 @@ struct Buzzer::Private
 
 Buzzer::Buzzer()
 {
-    static_assert(sizeof(Private) == sizeof(PrivateStorage), "Check size of the private storage");
-    static_assert(alignof(Private) == alignof(PrivateStorage), "Check alignment of the private storage");
-
-    new (&p_) Private();
 }
 
 Buzzer::~Buzzer()
 {
-    p().~Private();
 }
 
 
@@ -174,7 +167,7 @@ bool Buzzer::initialize(TimerId tim_id, uint8_t channel_id)
     if (!initializeChannel(tim, channel))
         return false;
 
-    auto & priv = p();
+    auto & priv = *p_;
     priv.tim = tim;
     priv.channel = channel;
 
@@ -187,7 +180,7 @@ bool Buzzer::initialize(TimerId tim_id, uint8_t channel_id)
 
 void Buzzer::playNote(MusicNote note)
 {
-    auto & priv = p();
+    auto & priv = *p_;
 
     if (note.isValid())
     {

@@ -5,6 +5,7 @@
 #ifndef DRIVER_BUZZER_HPP_
 #define DRIVER_BUZZER_HPP_
 
+#include "tools/hidden.hpp"
 #include "driver/common.hpp"
 #include "music_note.hpp"
 
@@ -37,15 +38,7 @@ public:
 
 private:
     struct Private;
-    struct PrivateStorage
-    {
-        char data[8] alignas(std::uintptr_t);
-    };
-
-    Private & p() { return *reinterpret_cast<Private *>(&p_); }
-    const Private & p() const { return *reinterpret_cast<const Private *>(&p_); }
-
-    PrivateStorage p_;
+    Hidden<Private, 8> p_;
 };
 
 }  // driver

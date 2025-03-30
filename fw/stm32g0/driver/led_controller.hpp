@@ -6,6 +6,7 @@
 #define DRIVER_LED_CONTROLLER_HPP_
 
 #include "tools/polymorphic_storage.hpp"
+#include "tools/hidden.hpp"
 #include "driver/common.hpp"
 #include "led_strip.h"
 #include "led_correction.hpp"
@@ -56,15 +57,7 @@ private:
     PolymorphicStorage<LedCorrection, 32> correction_;
 
     struct Private;
-    struct PrivateStorage
-    {
-        char data[12 + 4 + (BUFFER_HALF_LENGTH * 16) + 4 + MAX_DATA_LENGTH] alignas(std::uintptr_t);
-    };
-
-    Private & p() { return *reinterpret_cast<Private *>(&p_); }
-    const Private & p() const { return *reinterpret_cast<const Private *>(&p_); }
-
-    PrivateStorage p_;
+    Hidden<Private, 12 + 4 + (BUFFER_HALF_LENGTH * 16) + 4 + MAX_DATA_LENGTH> p_;
 };
 
 }  // driver

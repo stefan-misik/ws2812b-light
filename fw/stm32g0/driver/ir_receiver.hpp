@@ -7,6 +7,7 @@
 
 #include <utility>
 
+#include "tools/hidden.hpp"
 #include "driver/common.hpp"
 #include "music_note.hpp"
 
@@ -70,15 +71,7 @@ public:
 
 private:
     struct Private;
-    struct PrivateStorage
-    {
-        char data[8 + (BUFFER_LENGTH + 4) + 8 + 4] alignas(std::uintptr_t);
-    };
-
-    Private & p() { return *reinterpret_cast<Private *>(&p_); }
-    const Private & p() const { return *reinterpret_cast<const Private *>(&p_); }
-
-    PrivateStorage p_;
+    Hidden<Private, 8 + (BUFFER_LENGTH + 4) + 8 + 4> p_;
 };
 
 }  // driver

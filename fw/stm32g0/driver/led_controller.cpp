@@ -1,6 +1,5 @@
 #include "driver/led_controller.hpp"
 
-#include <new>
 #include <algorithm>
 
 #include "stm32g0xx_ll_tim.h"
@@ -451,15 +450,10 @@ struct LedController::Private
 LedController::LedController():
     correction_(TypeTag<CommonLedCorrection<DimmingLedWriter<>>>{}, 0x60)
 {
-    static_assert(sizeof(Private) == sizeof(PrivateStorage), "Check size of the private storage");
-    static_assert(alignof(Private) == alignof(PrivateStorage), "Check alignment of the private storage");
-
-    new (&p_) Private();
 }
 
 LedController::~LedController()
 {
-    p().~Private();
 }
 
 
@@ -486,7 +480,7 @@ bool LedController::initialize(TimerId tim_id, uint8_t channel_id, std::uint8_t 
 
     enableDmaIrq(dma_channel);
 
-    auto & priv = p();
+    auto & priv = *p_;
     priv.tim = tim;
     priv.channel = channel;
     priv.dma_channel = dma_channel;
@@ -498,7 +492,7 @@ bool LedController::initialize(TimerId tim_id, uint8_t channel_id, std::uint8_t 
 
 bool LedController::update(const AbstractLedStrip * led_strip)
 {
-    auto & priv = p();
+    auto & priv = *p_;
 
     if (isDmaOngoing(priv.dma_channel))
         return false;
@@ -516,7 +510,7 @@ bool LedController::update(const AbstractLedStrip * led_strip)
 
 void LedController::maybeHandleDmaInterrupt()
 {
-    auto & priv = p();
+    auto & priv = *p_;
 
     const std::uint32_t dma_flags = readDmaFlags(priv.dma_channel);
     if (0 == dma_flags)

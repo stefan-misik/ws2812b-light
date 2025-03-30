@@ -1,6 +1,5 @@
 #include "driver/ir_receiver.hpp"
 
-#include <new>
 #include <utility>
 
 #include "stm32g0xx_ll_tim.h"
@@ -375,15 +374,10 @@ struct IrReceiver::Private
 
 IrReceiver::IrReceiver()
 {
-    static_assert(sizeof(Private) == sizeof(PrivateStorage), "Check size of the private storage");
-    static_assert(alignof(Private) == alignof(PrivateStorage), "Check alignment of the private storage");
-
-    new (&p_) Private();
 }
 
 IrReceiver::~IrReceiver()
 {
-    p().~Private();
 }
 
 
@@ -404,7 +398,7 @@ bool IrReceiver::initialize(TimerId tim_id, std::uint8_t dma_channel_id)
     if (!initializeDma(dma_channel, dma_request, tim))
         return false;
 
-    auto & priv = p();
+    auto & priv = *p_;
     priv.tim = tim;
     priv.dma_channel = dma_channel;
 
@@ -416,7 +410,7 @@ bool IrReceiver::initialize(TimerId tim_id, std::uint8_t dma_channel_id)
 
 auto IrReceiver::read(std::uint32_t time) -> std::pair<Code, bool>
 {
-    auto & priv = p();
+    auto & priv = *p_;
 
     bool is_new = false;
     while (true)
