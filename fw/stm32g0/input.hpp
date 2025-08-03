@@ -12,13 +12,6 @@
 #include "tools/polymorphic_storage.hpp"
 
 
-template <typename T>
-inline constexpr std::size_t calculateBitArrayLength(std::size_t length)
-{
-    const std::size_t div = length / (sizeof(T) * 8);
-    return (div * (sizeof(T) * 8)) != length ? div + 1 : div;
-}
-
 /**
  * @brief Key-input object
  */
@@ -44,47 +37,32 @@ public:
     /**
      * @brief Type used to represent a list of pressed buttons
      */
-    class ButtonStateList
+    class PressedButtonList
     {
-    private:
-        using Type = std::uint32_t;
-
-        static const std::size_t ARRAY_SIZE = calculateBitArrayLength<Type>(KEY_COUNT);
-
-        static std::pair<std::size_t, Type> makeOffsetAndMask(std::size_t bit)
-        {
-            const std::size_t offset = bit / (sizeof(Type) * 8);
-            const std::size_t bit_within = bit - (offset * (sizeof(Type) * 8));
-            return {offset, static_cast<Type>(1) << bit_within};
-        }
-
     public:
+        using KeyId = Input::KeyId;
+
+        static const std::size_t MAX_LENGTH = 16;
+
         void resetAll()
         {
-            for (auto & d : data_)
-                d = 0U;
+            count_ = 0;
         }
 
-        void setKey(KeyId key)
+        bool addKey(KeyId key)
         {
-            const auto [offset, mask] = makeOffsetAndMask(static_cast<std::size_t>(key));
-            data_[offset] |= mask;
+            if (count_ >= MAX_LENGTH)
+                return false;
+            list_[count_++] = key;
+            return true;
         }
 
-        void resetKey(KeyId key)
-        {
-            const auto [offset, mask] = makeOffsetAndMask(static_cast<std::size_t>(key));
-            data_[offset] &= ~mask;
-        }
-
-        bool isKeySet(KeyId key) const
-        {
-            const auto [offset, mask] = makeOffsetAndMask(static_cast<std::size_t>(key));
-            return 0 != (data_[offset] & mask);
-        }
+        std::size_t count() const { return count_; }
+        const KeyId * list() const { return list_; }
 
     private:
-        Type data_[ARRAY_SIZE];
+        KeyId list_[MAX_LENGTH];
+        std::size_t count_ = 0;
     };
 
 
@@ -108,9 +86,9 @@ public:
          * @brief Function called periodically to obtain list of pressed keys
          *
          * @param time Current time
-         * @param[out] buttons List which will obtain pressed keys, presume all keys are initially cleared
+         * @param[out] buttons List which will obtain pressed keys
          */
-        virtual void getPressedKeys(std::uint32_t time, ButtonStateList * buttons)
+        virtual void getPressedKeys(std::uint32_t time, PressedButtonList * buttons)
         {
             (void) time; (void) buttons;
         }

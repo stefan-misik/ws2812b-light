@@ -17,7 +17,7 @@ public:
         keypad_(keypad)
     { }
 
-    void getPressedKeys(std::uint32_t time, Input::ButtonStateList * buttons) final;
+    void getPressedKeys(std::uint32_t time, Input::PressedButtonList * buttons) final;
 
 private:
     driver::Keypad * const keypad_;

@@ -68,17 +68,17 @@ inline KeyId decodeKey(const IrCode ir_code)
     return KeyId::KEY_NONE;
 }
 
-inline void handleCode(Input::ButtonStateList * buttons, IrCode code)
+inline void handleCode(Input::PressedButtonList * buttons, IrCode code)
 {
     const auto key = decodeKey(code);
     if (KeyId::KEY_NONE != key)
-        buttons->setKey(key);
+        buttons->addKey(key);
 }
 
 }  // namespace
 
 
-void IrRemoteSource::getPressedKeys(std::uint32_t time, Input::ButtonStateList * buttons)
+void IrRemoteSource::getPressedKeys(std::uint32_t time, Input::PressedButtonList * buttons)
 {
     while (true)
     {
