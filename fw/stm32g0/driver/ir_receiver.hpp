@@ -21,6 +21,8 @@ public:
     class Code
     {
     public:
+        static Code Invalid() { return Code{}; }
+
         Code():
             is_valid_(false), address_(), command_()
         { }
@@ -35,6 +37,24 @@ public:
         bool isValid() const { return is_valid_; }
         std::uint8_t address() const { return address_; }
         std::uint8_t command() const { return command_; }
+
+        friend bool operator ==(const Code & lhs, const Code & rhs)
+        {
+            if (lhs.is_valid_ != rhs.is_valid_)
+                return false;
+            if (!lhs.is_valid_)
+                return true;
+            if (lhs.address_ != rhs.address_)
+                return false;
+            if (lhs.command_ != rhs.command_)
+                return false;
+            return true;
+        }
+
+        friend bool operator !=(const Code & lhs, const Code & rhs)
+        {
+            return ! operator ==(lhs, rhs);
+        }
 
     private:
         std::uint32_t is_valid_: 8;
