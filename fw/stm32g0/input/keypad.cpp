@@ -10,7 +10,7 @@ using RawKeyId = driver::Keypad::KeyId;
 }  // namespace
 
 
-void KeypadSource::getPressedKeys(std::uint32_t time, Input::ButtonStateList * buttons)
+void KeypadSource::getPressedKeys(std::uint32_t time, Input::PressedButtonList * buttons)
 {
     (void) time;  // Unused
 
@@ -19,6 +19,6 @@ void KeypadSource::getPressedKeys(std::uint32_t time, Input::ButtonStateList * b
     for (std::size_t key = 0; key != driver::Keypad::KEY_COUNT; ++key)
     {
         if (keypad_->isPressed(static_cast<RawKeyId>(key)))
-            buttons->setKey(static_cast<KeyId>(key));
+            buttons->addKey(static_cast<KeyId>(key));
     }
 }

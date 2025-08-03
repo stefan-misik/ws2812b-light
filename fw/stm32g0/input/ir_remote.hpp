@@ -17,7 +17,7 @@ public:
         receiver_(receiver)
     { }
 
-    void getPressedKeys(std::uint32_t time, Input::ButtonStateList * buttons) final;
+    void getPressedKeys(std::uint32_t time, Input::PressedButtonList * buttons) final;
 
 private:
     driver::IrReceiver * const receiver_;
