@@ -80,13 +80,17 @@ inline void handleCode(Input::PressedButtonList * buttons, IrCode code)
 
 void IrRemoteSource::getPressedKeys(std::uint32_t time, Input::PressedButtonList * buttons)
 {
+    auto prev_code = driver::IrReceiver::Code::Invalid();
+
     while (true)
     {
         const auto [code, is_new] = receiver_->read(time);
         if (!code.isValid())
             break;
 
-        handleCode(buttons, code);
+        if (prev_code != code)
+            handleCode(buttons, code);
+        prev_code = code;
 
         // In case the button press was a new, try to fetch more key presses, as
         // there may be more key presses in the buffer.
