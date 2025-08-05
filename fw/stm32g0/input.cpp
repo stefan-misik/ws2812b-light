@@ -4,6 +4,41 @@
 namespace
 {
 
+inline std::uint8_t countUp(std::uint8_t counter)
+{
+    if (counter < Input::KeyState::NEXT_REPEAT_THRESHOLD)
+        return counter + 1;
+    else
+        return Input::KeyState::REPEAT_THRESHOLD;
+}
+
+inline std::uint8_t updateKeyState(uint8_t previous_flags, uint8_t counter)
+{
+    const bool old_pressed = (previous_flags & Input::KeyState::PRESSED) != 0;
+    std::uint8_t new_flags = 0;
+
+    if (0 == counter)
+    {
+        if (old_pressed)
+            new_flags |= Input::KeyState::UP;
+    }
+    else
+    {
+        new_flags |= Input::KeyState::PRESSED;
+
+        if (!old_pressed)
+            new_flags |= (Input::KeyState::DOWN | Input::KeyState::PRESS);
+        else if (Input::KeyState::REPEAT_THRESHOLD == counter)
+        {
+            // This is branch is also taken in update cycle when
+            // NEXT_REPEAT_THRESHOLD is reached, see countUp()
+            new_flags |= Input::KeyState::PRESS;
+        }
+    }
+
+    return new_flags;
+}
+
 }  // namespace
 
 void Input::update(std::uint32_t time)
@@ -31,9 +66,24 @@ void Input::update(std::uint32_t time)
 
 void Input::KeyState::process()
 {
-    if (PressState::NONE == state_)
-        source_id_ = INVALID_SOURCE_ID;
+    const auto press_state = readPresseState();
+    if (PressState::NEWLY_PRESSED == press_state)
+    {
+        repeat_ = 0;
+        counter_ = 0;
+        flags_ &= ~PRESSED;  // Clear the pressed flag to generate new press event
+    }
 
-    // Mark press state as processed
-    state_ = PressState::NONE;
+    if (PressState::NONE != press_state)
+        counter_ = countUp(counter_);
+    else
+    {
+        source_id_ = INVALID_SOURCE_ID;
+        counter_ = 0;
+    }
+
+    flags_ = updateKeyState(flags_, counter_);
+
+    if (flags_ & PRESS)
+        repeat_ += 1;
 }
