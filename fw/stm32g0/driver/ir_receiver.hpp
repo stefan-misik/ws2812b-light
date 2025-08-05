@@ -91,6 +91,7 @@ public:
 private:
     struct Private;
     Hidden<Private, 8 + (BUFFER_LENGTH + 4) + 8 + 4> p_;
+    Code current_code_ = Code::Invalid();
 };
 
 }  // driver
