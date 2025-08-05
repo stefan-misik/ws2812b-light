@@ -41,7 +41,7 @@ inline std::uint8_t updateKeyState(uint8_t previous_flags, uint8_t counter)
 
 }  // namespace
 
-void Input::update(std::uint32_t time)
+void Input::update(std::uint32_t time, EventQueue * event_queue)
 {
     {
         PressedButtonList list;
@@ -60,7 +60,16 @@ void Input::update(std::uint32_t time)
     }
 
     for (auto & state: keys_)
+    {
         state.process();
+        const std::uint32_t event_flags = state.flags() & (KeyState::DOWN | KeyState::UP | KeyState::PRESS);
+        if (0 != event_flags)
+        {
+            const auto key_id = static_cast<KeyId>(&state - keys_);
+            event_queue->pushEvent(EventQueue::EventType::KEY_EVENT,
+                    EventParam(key_id, event_flags, state.repeat(), state.sourceId()));
+        }
+    }
 }
 
 

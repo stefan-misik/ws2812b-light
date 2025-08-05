@@ -10,6 +10,7 @@
 #include <utility>
 
 #include "tools/polymorphic_storage.hpp"
+#include "event_queue.hpp"
 
 
 /**
@@ -153,6 +154,16 @@ public:
         }
     };
 
+    struct EventParam
+    {
+        using KeyFlags = KeyState::StateFlags;
+
+        KeyId key;
+        std::uint8_t flags;
+        std::uint8_t repeat;
+        std::uint8_t source_id;
+    };
+
     /**
      * @brief Interface for input sources
      */
@@ -183,8 +194,9 @@ public:
      * @brief Call periodically to obtain list of pressed keys
      *
      * @param time Current time
+     * @param[out] event_queue Event queue that will receive input events
      */
-    void update(std::uint32_t time);
+    void update(std::uint32_t time, EventQueue * event_queue);
 
 private:
     using SourceStorage = PolymorphicStorage<Source, 16>;

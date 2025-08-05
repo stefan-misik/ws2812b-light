@@ -22,6 +22,7 @@ SRC  =  \
     input/keypad.cpp  \
     input/ir_remote.cpp  \
     led_correction.cpp  \
+    event_queue.cpp  \
     input.cpp  \
     main.cpp
 

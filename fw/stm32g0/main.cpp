@@ -9,6 +9,7 @@
 
 #include "support/cpu_pins.h"
 
+#include "event_queue.hpp"
 #include "input.hpp"
 #include "input/keypad.hpp"
 #include "input/ir_remote.hpp"
@@ -25,6 +26,7 @@ driver::StatusLeds status_leds;
 
 PeriodicTimer led_update_timer;
 
+EventQueue event_queue;
 Input input;
 LedStrip<100> leds;
 
@@ -123,10 +125,11 @@ int main()
 
         if (led_update_timer.shouldRun(current_time, 8))
         {
-            input.update(current_time);
+            input.update(current_time, &event_queue);
             rainbow.update(leds.abstarctPtr());
             led_controller.update(leds.abstarctPtr());
             status_leds.update();
+            event_queue.discard();
         }
     }
 
