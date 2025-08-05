@@ -437,10 +437,7 @@ auto IrReceiver::read(std::uint32_t time) -> std::pair<Code, bool>
             const Symbol symbol = classifySymbol(pos);
 
             if (Symbol::REPEAT == symbol)
-            {
-                priv.packet_state.reset();
                 priv.repeat_timer.reset(time);
-            }
 
             if (priv.packet_state.processSymbol(symbol))
             {
