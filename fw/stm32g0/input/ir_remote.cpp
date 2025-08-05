@@ -68,13 +68,6 @@ inline KeyId decodeKey(const IrCode ir_code)
     return KeyId::KEY_NONE;
 }
 
-inline void handleCode(Input::PressedButtonList * buttons, IrCode code)
-{
-    const auto key = decodeKey(code);
-    if (KeyId::KEY_NONE != key)
-        buttons->addKey(key);
-}
-
 }  // namespace
 
 
@@ -88,8 +81,13 @@ void IrRemoteSource::getPressedKeys(std::uint32_t time, Input::PressedButtonList
         if (!code.isValid())
             break;
 
-        if (prev_code != code)
-            handleCode(buttons, code);
+        if (prev_code == code)
+            break;
+
+        const auto key = decodeKey(code);
+        if (KeyId::KEY_NONE != key)
+            buttons->addKey(key, is_new);
+
         prev_code = code;
 
         // In case the button press was a new, try to fetch more key presses, as

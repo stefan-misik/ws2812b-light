@@ -18,7 +18,7 @@
 class Input
 {
 public:
-    enum class KeyId
+    enum class KeyId: uint8_t
     {
         KEY_O, KEY_LEFT, KEY_UP, KEY_DOWN, KEY_RIGHT, KEY_X,
         KEY_POWER,
@@ -42,6 +42,12 @@ public:
     public:
         using KeyId = Input::KeyId;
 
+        struct PressedButton
+        {
+            KeyId key_id;
+            bool is_new;
+        };
+
         static const std::size_t MAX_LENGTH = 16;
 
         void resetAll()
@@ -49,19 +55,19 @@ public:
             count_ = 0;
         }
 
-        bool addKey(KeyId key)
+        bool addKey(KeyId key, bool is_new = false)
         {
             if (count_ >= MAX_LENGTH)
                 return false;
-            list_[count_++] = key;
+            list_[count_++] = {key, is_new};
             return true;
         }
 
         std::size_t count() const { return count_; }
-        const KeyId * list() const { return list_; }
+        const PressedButton * list() const { return list_; }
 
     private:
-        KeyId list_[MAX_LENGTH];
+        PressedButton list_[MAX_LENGTH];
         std::size_t count_ = 0;
     };
 
