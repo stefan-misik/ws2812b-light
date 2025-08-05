@@ -22,7 +22,7 @@ struct TypeTag
  * @tparam I Interface of the object
  * @tparam MAX_S Maximum size of an object instance
  */
-template <typename I, std::size_t MAX_S, std::size_t MAX_A = alignof(typename std::aligned_storage<MAX_S>::type)>
+template <typename I, std::size_t MAX_S, std::size_t MAX_A = alignof(void *)>
 class PolymorphicStorage
 {
 public:
@@ -75,7 +75,11 @@ public:
     PolymorphicStorage & operator =(PolymorphicStorage &&) = delete;
 
 private:
-    typename std::aligned_storage<MAX_SIZE, MAX_ALIGN>::type storage_;
+    struct StorageType
+    {
+        alignas (MAX_ALIGN)
+        char data[MAX_SIZE];
+    } storage_;
 
     template <typename T>
     static constexpr void check()
