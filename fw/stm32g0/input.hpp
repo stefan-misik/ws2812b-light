@@ -34,6 +34,9 @@ public:
 
     static const inline std::size_t KEY_COUNT = static_cast<std::size_t>(KeyId::KEY_COUNT_);
 
+    static const inline std::size_t SOURCE_COUNT = 2;
+    static const inline std::size_t INVALID_SOURCE_ID = SOURCE_COUNT;
+
     /**
      * @brief Type used to represent a list of pressed buttons
      */
@@ -77,9 +80,69 @@ public:
      */
     class KeyState
     {
-    public:
     private:
-        std::uint32_t state_ = 0;
+        enum class PressState: std::uint8_t
+        {
+            NONE, PRESSED, NEWLY_PRESSED
+        };
+
+    public:
+        enum StateFlags : std::uint8_t
+        {
+            /** @brief Indicates current state of the button */
+            PRESSED = 0x01,
+            /** @brief Set in an update cycle when the button is first pressed */
+            DOWN = 0x02,
+            /** @brief Set in an update cycle when the button is released */
+            UP = 0x04,
+            /** @brief Set every update cycle a press event is generated */
+            PRESS = 0x08
+        };
+
+        static const inline std::uint8_t PRESS_THRESHOLD = 1;
+        static const inline std::uint8_t REPEAT_THRESHOLD = PRESS_THRESHOLD + 50;
+        static const inline std::uint8_t NEXT_REPEAT_THRESHOLD = REPEAT_THRESHOLD + 8;
+
+        KeyState() = default;
+
+        std::size_t sourceId() const { return source_id_; }
+        std::uint8_t flags() const { return flags_; }
+
+        /**
+         * @brief Mark key-press from given source
+         *
+         * This only marks down the key-press, it is necessary to call
+         * @ref process() to update the state of the key.
+         *
+         * @param source_id Source reporting the key-press
+         * @param is_new Source is reporting freshly pressed button
+         */
+        void markPressedBy(std::size_t source_id, bool is_new)
+        {
+            if (INVALID_SOURCE_ID == source_id_)
+            {
+                source_id_ = source_id;
+                state_ = PressState::NEWLY_PRESSED;
+            }
+            else if (source_id == source_id_)
+            {
+                if (is_new)
+                    state_ = PressState::NEWLY_PRESSED;
+                else if (PressState::NEWLY_PRESSED != state_)  // Prevent regular press to mask-out newly pressed event
+                    state_ = PressState::PRESSED;
+            }
+        }
+
+        /**
+         * @brief Process marked key presses
+         */
+        void process();
+
+    private:
+        std::uint8_t counter_ = 0;
+        std::uint8_t source_id_ = INVALID_SOURCE_ID;
+        std::uint8_t flags_ = 0;
+        PressState state_ = PressState::NONE;
     };
 
     /**
@@ -101,8 +164,6 @@ public:
 
         virtual ~Source() = default;
     };
-
-    static const inline std::size_t SOURCE_COUNT = 2;
 
     template <typename T, typename... Ts>
     void createSource(std::size_t source, Ts &&... args)
