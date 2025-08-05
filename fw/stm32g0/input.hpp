@@ -99,14 +99,14 @@ public:
             PRESS = 0x08
         };
 
-        static const inline std::uint8_t PRESS_THRESHOLD = 1;
-        static const inline std::uint8_t REPEAT_THRESHOLD = PRESS_THRESHOLD + 50;
+        static const inline std::uint8_t REPEAT_THRESHOLD = 1 + 50;
         static const inline std::uint8_t NEXT_REPEAT_THRESHOLD = REPEAT_THRESHOLD + 8;
 
         KeyState() = default;
 
         std::size_t sourceId() const { return source_id_; }
         std::uint8_t flags() const { return flags_; }
+        std::uint8_t repeat() const { return repeat_; }
 
         /**
          * @brief Mark key-press from given source
@@ -142,7 +142,15 @@ public:
         std::uint8_t counter_ = 0;
         std::uint8_t source_id_ = INVALID_SOURCE_ID;
         std::uint8_t flags_ = 0;
+        std::uint8_t repeat_ = 0;
         PressState state_ = PressState::NONE;
+
+        PressState readPresseState()
+        {
+            const auto state = state_;
+            state_ = PressState::NONE;
+            return state;
+        }
     };
 
     /**
