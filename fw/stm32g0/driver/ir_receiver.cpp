@@ -446,6 +446,7 @@ auto IrReceiver::read(std::uint32_t time) -> std::pair<Code, bool>
             {
                 priv.repeat_timer.reset(time);
                 is_new = true;
+                current_code_ = priv.packet_state.checkAndGet();
 
                 pos += 2;  // The current two bytes have been processed
                 break;
@@ -458,11 +459,14 @@ auto IrReceiver::read(std::uint32_t time) -> std::pair<Code, bool>
     };
 
     // Clear button code, when button is released
-    const Code code = priv.packet_state.checkAndGet();
+    const Code code = current_code_;
     if (code.isValid())
     {
         if (!priv.repeat_timer.isWithinTime(REPEAT_TIME, time))
-            priv.packet_state.clear();
+        {
+            current_code_ = Code::Invalid();
+            return {Code::Invalid(), true};
+        }
     }
 
     return {code, is_new};
