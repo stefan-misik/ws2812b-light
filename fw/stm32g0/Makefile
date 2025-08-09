@@ -24,6 +24,7 @@ SRC  =  \
     led_correction.cpp  \
     event_queue.cpp  \
     input.cpp  \
+    lights.cpp  \
     main.cpp
 
 ifeq ($(strip $(DBG)),yes)
