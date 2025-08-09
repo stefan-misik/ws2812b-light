@@ -116,6 +116,12 @@ struct LedStrip
     {
         return reinterpret_cast<AbstractLedStrip *>(this);
     }
+
+    /** @copydoc abstarctPtr() */
+    const AbstractLedStrip * abstarctPtr() const
+    {
+        return reinterpret_cast<const AbstractLedStrip *>(this);
+    }
 };
 
 
