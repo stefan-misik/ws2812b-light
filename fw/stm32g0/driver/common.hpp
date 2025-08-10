@@ -22,6 +22,7 @@ enum class TimerId: std::uint8_t
 {
     TIM_1,
     TIM_3,
+    TIM_6,
     TIM_16,
 };
 

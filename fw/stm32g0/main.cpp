@@ -4,6 +4,7 @@
 #include "driver/ir_receiver.hpp"
 #include "driver/keypad.hpp"
 #include "driver/buzzer.hpp"
+#include "driver/cpu_usage.hpp"
 #include "tools/periodic_timer.hpp"
 #include "input/keypad.hpp"
 #include "input/ir_remote.hpp"
@@ -15,6 +16,7 @@ driver::LedController led_controller;
 driver::IrReceiver ir_receiver;
 driver::Keypad keypad;
 driver::Buzzer buzzer;
+driver::CpuUsage cpu_usage;
 PeriodicTimer led_update_timer;
 
 Lights lights;
@@ -28,6 +30,7 @@ int main()
     ir_receiver.initialize(driver::TimerId::TIM_3, 1);
     keypad.initialize();
     buzzer.initialize(driver::TimerId::TIM_16, 1);
+    cpu_usage.initialize(driver::TimerId::TIM_6);
     lights.statusLeds().initialize();
     lights.initialize();
 
@@ -42,8 +45,10 @@ int main()
 
         if (led_update_timer.shouldRun(current_time, 8))
         {
+            cpu_usage.startPeriod();
             lights.step(current_time);
             led_controller.update(lights.leds());
+            cpu_usage.endPeriod();
         }
     }
 
