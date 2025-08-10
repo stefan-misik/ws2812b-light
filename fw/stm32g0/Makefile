@@ -38,8 +38,8 @@ endif
 DEFINE    = $(MCU_DEFINE)
 INCLUDE   = . ../shared
 CPPFLAGS  =
-CFLAGS    = -g3 $(OPTFLAGS) -Wall -Wextra
-CXXFLAGS  = -g3 $(OPTFLAGS) -Wall -Wextra
+CFLAGS    = -g3 $(OPTFLAGS) -Wall -Wextra -Werror
+CXXFLAGS  = -g3 $(OPTFLAGS) -Wall -Wextra -Werror
 LDFLAGS   = -g3 $(OPTFLAGS) -Wl,-Map=$(PROJ).map
 LDLIBS    =
 
