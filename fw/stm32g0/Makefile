@@ -19,6 +19,7 @@ SRC  =  \
     driver/buzzer.cpp  \
     driver/keypad.cpp  \
     driver/status_leds.cpp  \
+    driver/cpu_usage.cpp  \
     input/keypad.cpp  \
     input/ir_remote.cpp  \
     animation/rainbow.cpp  \
