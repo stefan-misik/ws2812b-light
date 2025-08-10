@@ -9,7 +9,7 @@
 #include "driver/ir_receiver.hpp"
 
 
-class IrRemoteSource:
+class IrRemoteSource final:
         public Input::Source
 {
 public:

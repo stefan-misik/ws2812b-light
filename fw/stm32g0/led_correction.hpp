@@ -130,7 +130,8 @@ private:
  * @tparam WT LED writer object
  */
 template <LedWriter WT = StandardLedWriter<>>
-class CommonLedCorrection: public LedCorrection
+class CommonLedCorrection final:
+        public LedCorrection
 {
 public:
     using LedWriterType = WT;
