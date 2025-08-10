@@ -9,7 +9,7 @@
 #include "driver/keypad.hpp"
 
 
-class KeypadSource:
+class KeypadSource final:
         public Input::Source
 {
 public:
