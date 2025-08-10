@@ -21,6 +21,7 @@ SRC  =  \
     driver/status_leds.cpp  \
     input/keypad.cpp  \
     input/ir_remote.cpp  \
+    animation/rainbow.cpp  \
     led_correction.cpp  \
     event_queue.cpp  \
     input.cpp  \

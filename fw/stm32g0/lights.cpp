@@ -1,5 +1,18 @@
 #include "lights.hpp"
 
+#include "animation/rainbow.hpp"
+
+
+namespace
+{
+
+}  // namespace
+
+
+Lights::Lights():
+    animation_{TypeTag<RainbowAnimation>{}}
+{
+}
 
 bool Lights::initialize()
 {
@@ -9,7 +22,7 @@ bool Lights::initialize()
 void Lights::step(std::uint32_t current_time)
 {
     input_.update(current_time, &event_queue_);
-    rainbow_.update(leds_.abstarctPtr());
+    animation_->render(leds_.abstarctPtr(), {});
     {
         const auto [ev, cnt] = event_queue_.peek();
         bool green = false, yellow = false;
