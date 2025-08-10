@@ -31,12 +31,14 @@ SRC  =  \
 ifeq ($(strip $(DBG)),yes)
 BUILDDIR = Debug
 OPTFLAGS = -Og
+DEBUGDEFINE = DEBUG
 else
 BUILDDIR = Release
 OPTFLAGS = -Og
+DEBUGDEFINE = NDEBUG
 endif
 
-DEFINE    = $(MCU_DEFINE)
+DEFINE    = $(MCU_DEFINE) $(DEBUGDEFINE)
 INCLUDE   = . ../shared
 CPPFLAGS  =
 CFLAGS    = -g3 $(OPTFLAGS) -Wall -Wextra -Werror
