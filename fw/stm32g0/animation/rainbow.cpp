@@ -3,21 +3,21 @@
 
 void RainbowAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
 {
-    ++step_;
-    if (2 != step_)
-        return;
-    step_ = 0;
-
     LedState color;
-    std::uint16_t hue = hue_;
+    std::uint16_t hue = state_.hue;
     for (auto & led: *strip)
     {
         toSaturatedHue(hue, &color);
-        hue = incrementHue(hue, 8);
+        hue = incrementHue(hue, config_.space_increment);
         led = color;
     }
 
-    hue_ = incrementHue(hue_, -4);
+    ++step_;
+    if (2 == step_)
+    {
+        state_.hue = incrementHue(state_.hue, -config_.time_increment);
+        step_ = 0;
+    }
     (void)flags;
 }
 

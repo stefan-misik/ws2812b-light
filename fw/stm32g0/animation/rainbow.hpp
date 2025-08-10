@@ -21,17 +21,29 @@ public:
     std::size_t restore(const void * buffer, std::size_t max_size, DataType type) override;
 
 private:
-    std::uint16_t step_ = 0;
-    std::uint16_t hue_ = 0;
-
-    static const inline uint16_t MAX_HUE = 0x02FF;
-
-    static void toSaturatedHue(uint16_t hue, LedState * color)
+    struct Configuration
     {
-        const uint8_t secondary_value = static_cast<uint8_t>(hue & 0xFF);
-        const uint8_t primary_value = 0xFF - secondary_value;
+        std::uint8_t space_increment = 8;
+        std::uint8_t time_increment = 4;
+    };
 
-        switch (static_cast<uint8_t>(hue >> 8))
+    struct State
+    {
+        std::uint16_t hue = 0;
+    };
+
+    Configuration config_;
+    State state_;
+    std::uint8_t step_ = 0;
+
+    static const inline std::uint16_t MAX_HUE = 0x02FF;
+
+    static void toSaturatedHue(std::uint16_t hue, LedState * color)
+    {
+        const std::uint8_t secondary_value = static_cast<std::uint8_t>(hue & 0xFF);
+        const std::uint8_t primary_value = 0xFF - secondary_value;
+
+        switch (static_cast<std::uint8_t>(hue >> 8))
         {
         case 0:
             color->red = primary_value;
@@ -59,12 +71,12 @@ private:
         }
     }
 
-    static uint16_t incrementHue(uint16_t hue, int8_t value = 1)
+    static std::uint16_t incrementHue(std::uint16_t hue, std::int16_t value = 1)
     {
-        int16_t new_value = value + static_cast<int16_t>(hue);
+        std::int16_t new_value = value + static_cast<std::int16_t>(hue);
         if (new_value < 0)
             return (MAX_HUE + 1) + new_value;
-        else if (new_value > static_cast<int16_t>(MAX_HUE))
+        else if (new_value > static_cast<std::int16_t>(MAX_HUE))
             return new_value - (MAX_HUE + 1);
         else
             return new_value;
