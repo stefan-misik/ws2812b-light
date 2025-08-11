@@ -1,5 +1,7 @@
 #include "animation/rainbow.hpp"
 
+#include "tools/serdes.hpp"
+
 
 void RainbowAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
 {
@@ -35,12 +37,18 @@ bool RainbowAnimation::getParameter(std::uint32_t param_id, int * value)
 
 std::size_t RainbowAnimation::store(void * buffer, std::size_t capacity, DataType type) const
 {
-    (void)buffer; (void)capacity; (void) type;
-    return 0;
+    Serializer ser(buffer, capacity);
+    ser.serialize(&config_);
+    if (type == DataType::BOTH)
+        ser.serialize(&state_);
+    return ser.processed(buffer);
 }
 
 std::size_t RainbowAnimation::restore(const void * buffer, std::size_t max_size, DataType type)
 {
-    (void)buffer; (void)max_size; (void) type;
-    return 0;
+    Deserializer deser(buffer, max_size);
+    deser.deserialize(&config_);
+    if (type == DataType::BOTH)
+        deser.deserialize(&state_);
+    return deser.processed(buffer);
 }
