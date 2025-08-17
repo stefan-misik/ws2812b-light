@@ -26,6 +26,7 @@ int main()
             lights.step(current_time);
             lights.io().cpuUsage().endPeriod();
         }
+        lights.io().run();
     }
 
     return 0;
@@ -40,4 +41,9 @@ extern "C" void SysTick_Handler()
 extern "C" void DMA1_Channel1_IRQHandler()
 {
     lights.io().ledController().maybeHandleDmaInterrupt();
+}
+
+extern "C" void I2C1_IRQHandler()
+{
+    lights.io().i2cBus().maybeHandleI2cInterrupt();
 }

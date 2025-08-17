@@ -21,6 +21,8 @@ SRC  =  \
     driver/keypad.cpp  \
     driver/status_leds.cpp  \
     driver/cpu_usage.cpp  \
+    driver/i2c_bus.cpp  \
+    driver/i2c_bus/cat24cx.cpp  \
     input/keypad.cpp  \
     input/ir_remote.cpp  \
     animation/rainbow.cpp  \
@@ -46,8 +48,8 @@ INCLUDE   = . ../shared
 CPPFLAGS  =
 CFLAGS    = -g3 $(OPTFLAGS) -Wall -Wextra -Werror
 CXXFLAGS  = -g3 $(OPTFLAGS) -Wall -Wextra -Werror
-LDFLAGS   = -g3 $(OPTFLAGS) -Wl,-Map=$(PROJ).map
-LDLIBS    =
+LDFLAGS   = -g3 $(OPTFLAGS)
+LDLIBS    = -specs=nano.specs -lc -lm
 
 # C specific
 CFLAGS += -std=c99
