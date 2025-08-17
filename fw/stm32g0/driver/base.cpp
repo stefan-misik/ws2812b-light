@@ -151,6 +151,7 @@ void Base::configure_pins()
     gpio_init.Pull = LL_GPIO_PULL_NO;
     GPIO_INIT(I2C_SCL, LL_GPIO_AF_6);
     GPIO_INIT(I2C_SDA, LL_GPIO_AF_6);
+    ::LL_SYSCFG_DisableFastModePlus(LL_SYSCFG_I2C_FASTMODEPLUS_PB8 | LL_SYSCFG_I2C_FASTMODEPLUS_PB9);
 
     // Control UART
     ::LL_GPIO_StructInit(&gpio_init);
@@ -183,6 +184,9 @@ void Base::configure_pins()
     gpio_init.Pull = LL_GPIO_PULL_NO;
     GPIO_INIT(TRACE, LL_GPIO_AF_0);
 #endif
+
+    // Clock sources
+    ::LL_RCC_SetI2CClockSource(LL_RCC_I2C1_CLKSOURCE_PCLK1);
 }
 
 }  // namespace driver

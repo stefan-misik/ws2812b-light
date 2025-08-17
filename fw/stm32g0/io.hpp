@@ -10,6 +10,7 @@
 #include "driver/ir_receiver.hpp"
 #include "driver/keypad.hpp"
 #include "driver/buzzer.hpp"
+#include "driver/i2c_bus.hpp"
 #include "driver/cpu_usage.hpp"
 
 
@@ -26,6 +27,7 @@ public:
     driver::IrReceiver & irReceiver() { return ir_receiver_; }
     driver::Keypad & keypad() { return keypad_; }
     driver::Buzzer & buzzer() { return buzzer_; }
+    driver::I2cBus & i2cBus() { return i2c_bus_; }
     driver::CpuUsage & cpuUsage() { return cpu_usage_; }
 
 private:
@@ -34,6 +36,7 @@ private:
     driver::IrReceiver ir_receiver_;
     driver::Keypad keypad_;
     driver::Buzzer buzzer_;
+    driver::I2cBus i2c_bus_;
     driver::CpuUsage cpu_usage_;
 };
 
