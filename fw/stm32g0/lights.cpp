@@ -1,5 +1,7 @@
 #include "lights.hpp"
 
+#include "input/keypad.hpp"
+#include "input/ir_remote.hpp"
 #include "animation/rainbow.hpp"
 
 
@@ -16,6 +18,14 @@ Lights::Lights():
 
 bool Lights::initialize()
 {
+    if (!io_.initialize())
+        return false;
+
+    // Keypad and IR Receiver are now managed by Input and their respective
+    // Input Sources, no need to manage them further here
+    input_.createSource<KeypadSource>(0, &io_.keypad());
+    input_.createSource<IrRemoteSource>(1, &io_.irReceiver());
+
     return true;
 }
 
@@ -34,9 +44,10 @@ void Lights::step(std::uint32_t current_time)
                 yellow = param.source_id == 1;
             }
         }
-        status_leds_.setLed(driver::StatusLeds::LedId::LED_GREEN, green);
-        status_leds_.setLed(driver::StatusLeds::LedId::LED_YELLOW, yellow);
+        io_.statusLeds().setLed(driver::StatusLeds::LedId::LED_GREEN, green);
+        io_.statusLeds().setLed(driver::StatusLeds::LedId::LED_YELLOW, yellow);
     }
     event_queue_.discard();
-    status_leds_.update();
+    io_.statusLeds().update();
+    io_.ledController().update(leds_.abstarctPtr());
 }

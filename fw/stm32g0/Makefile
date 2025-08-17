@@ -26,6 +26,7 @@ SRC  =  \
     led_correction.cpp  \
     event_queue.cpp  \
     input.cpp  \
+    io.cpp  \
     lights.cpp  \
     main.cpp
 

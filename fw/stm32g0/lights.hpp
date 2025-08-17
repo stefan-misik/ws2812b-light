@@ -6,7 +6,7 @@
 #define LIGHTS_HPP_
 
 #include "tools/polymorphic_storage.hpp"
-#include "driver/status_leds.hpp"
+#include "io.hpp"
 #include "animation.hpp"
 #include "event_queue.hpp"
 #include "input.hpp"
@@ -39,12 +39,10 @@ public:
      */
     void step(std::uint32_t current_time);
 
-    driver::StatusLeds & statusLeds() { return status_leds_; }
-    Input & input() { return input_; }
-    const AbstractLedStrip * leds() const { return leds_.abstarctPtr(); }
+    Io & io() { return io_; }
 
 private:
-    driver::StatusLeds status_leds_;
+    Io io_;
 
     AnimationStorage animation_;
 
