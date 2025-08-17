@@ -31,6 +31,11 @@ enum class TimerId: std::uint8_t
     TIM_16,
 };
 
+enum class I2cId: std::uint8_t
+{
+    I2C_1,
+};
+
 struct GpioPinId
 {
     GpioId gpio;

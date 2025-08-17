@@ -9,6 +9,7 @@ bool Io::initialize()
     ir_receiver_.initialize(driver::TimerId::TIM_3, driver::DmaChannelId::DMA_2);
     keypad_.initialize();
     buzzer_.initialize(driver::TimerId::TIM_16, 1);
+    i2c_bus_.initialize(driver::I2cId::I2C_1, driver::DmaChannelId::DMA_3, driver::DmaChannelId::DMA_4);
     cpu_usage_.initialize(driver::TimerId::TIM_6);
 
     return true;

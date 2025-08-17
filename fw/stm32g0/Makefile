@@ -21,6 +21,8 @@ SRC  =  \
     driver/keypad.cpp  \
     driver/status_leds.cpp  \
     driver/cpu_usage.cpp  \
+    driver/i2c_bus.cpp  \
+    driver/i2c_bus/cat24cx.cpp  \
     input/keypad.cpp  \
     input/ir_remote.cpp  \
     animation/rainbow.cpp  \
