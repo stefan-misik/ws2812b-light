@@ -77,7 +77,7 @@ public:
      *
      * @return Success
      */
-    bool initialize(TimerId tim_id, std::uint8_t dma_channel_id);
+    bool initialize(TimerId tim_id, DmaChannelId dma_channel_id);
 
     /**
      * @brief Read received IR packet

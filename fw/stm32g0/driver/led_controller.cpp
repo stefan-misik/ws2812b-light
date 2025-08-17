@@ -192,36 +192,6 @@ std::uint32_t toChannel(std::uint32_t channel_id)
     return 0;
 }
 
-std::uint32_t toDmaChannel(std::uint8_t dma_channel_id)
-{
-    switch (dma_channel_id)
-    {
-    case 0: return LL_DMA_CHANNEL_1;
-    case 1: return LL_DMA_CHANNEL_2;
-    case 2: return LL_DMA_CHANNEL_3;
-    case 3: return LL_DMA_CHANNEL_4;
-    case 4: return LL_DMA_CHANNEL_5;
-    case 5: return LL_DMA_CHANNEL_6;
-    case 6: return LL_DMA_CHANNEL_7;
-    }
-    return 0xFFFFFFFF;
-}
-
-std::uint32_t toDmamuxChannel(std::uint8_t dma_channel)
-{
-    switch (dma_channel)
-    {
-    case LL_DMA_CHANNEL_1: return LL_DMAMUX_CHANNEL_0;
-    case LL_DMA_CHANNEL_2: return LL_DMAMUX_CHANNEL_1;
-    case LL_DMA_CHANNEL_3: return LL_DMAMUX_CHANNEL_2;
-    case LL_DMA_CHANNEL_4: return LL_DMAMUX_CHANNEL_3;
-    case LL_DMA_CHANNEL_5: return LL_DMAMUX_CHANNEL_4;
-    case LL_DMA_CHANNEL_6: return LL_DMAMUX_CHANNEL_5;
-    case LL_DMA_CHANNEL_7: return LL_DMAMUX_CHANNEL_6;
-    }
-    return 0xFFFFFFFF;
-}
-
 std::uint32_t toDmaRequest(TimerId tim_id)
 {
     switch (tim_id)
@@ -457,7 +427,7 @@ LedController::~LedController()
 }
 
 
-bool LedController::initialize(TimerId tim_id, uint8_t channel_id, std::uint8_t dma_channel_id)
+bool LedController::initialize(TimerId tim_id, uint8_t channel_id, DmaChannelId dma_channel_id)
 {
     auto * const tim = toTimer(tim_id);
     const std::uint32_t channel = toChannel(channel_id);
@@ -472,7 +442,7 @@ bool LedController::initialize(TimerId tim_id, uint8_t channel_id, std::uint8_t 
 
     const std::uint32_t dma_request = toDmaRequest(tim_id);
     const std::uint32_t dma_channel = toDmaChannel(dma_channel_id);
-    if (0 == dma_request || 0xFFFFFFFF == dma_channel)
+    if (0 == dma_request || INVALID_DMA_CHANNEL == dma_channel)
         return false;
 
     if (!initializeDma(dma_channel, dma_request, tim, channel))

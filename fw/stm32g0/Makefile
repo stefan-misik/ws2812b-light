@@ -13,6 +13,7 @@ SRC  =  \
     support/system_stm32g0xx.c  \
     tools/button_filter.cpp  \
     driver/base.cpp  \
+    driver/common.cpp  \
     driver/systick.cpp  \
     driver/led_controller.cpp  \
     driver/ir_receiver.cpp  \

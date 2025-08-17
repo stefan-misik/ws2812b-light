@@ -37,7 +37,7 @@ public:
      *
      * @return Success
      */
-    bool initialize(TimerId tim_id, uint8_t channel_id, std::uint8_t dma_channel_id);
+    bool initialize(TimerId tim_id, uint8_t channel_id, DmaChannelId dma_channel_id);
 
     /**
      * @brief Initiate LED strip update process
