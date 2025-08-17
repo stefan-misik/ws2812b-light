@@ -142,9 +142,9 @@ public:
     { }
 
     /** @copydoc LedCorrection::correct() */
-    virtual std::size_t correct(
+    std::size_t correct(
             const LedState * leds, std::size_t count,
-            std::uint8_t * buffer, std::size_t capacity) const final
+            std::uint8_t * buffer, std::size_t capacity) const override
     {
         const LedState * const leds_end = leds + std::min<std::size_t>(count, capacity / LedWriterType::LED_LENGTH);
         std::uint8_t * buffer_pos = buffer;
