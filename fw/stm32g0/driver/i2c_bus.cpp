@@ -176,4 +176,12 @@ bool I2cBus::initialize(I2cId i2c_id, DmaChannelId dma_channel_id_rx, DmaChannel
     return true;
 }
 
+void I2cBus::tick()
+{
+    auto & priv = *p_;
+    ::LL_I2C_ReceiveData8(priv.i2c);
+    ::LL_I2C_HandleTransfer(priv.i2c, 0b10100000, LL_I2C_ADDRSLAVE_7BIT, 1, LL_I2C_MODE_AUTOEND,
+            LL_I2C_GENERATE_START_READ);
+}
+
 }  // namespace driver

@@ -25,6 +25,7 @@ int main()
             lights.io().cpuUsage().startPeriod();
             lights.step(current_time);
             lights.io().cpuUsage().endPeriod();
+            lights.io().i2cBus().tick();
         }
     }
 

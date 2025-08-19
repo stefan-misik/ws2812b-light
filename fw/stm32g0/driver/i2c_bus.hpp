@@ -9,6 +9,7 @@
 #include <cstdint>
 
 #include "tools/hidden.hpp"
+#include "tools/atomic_list.hpp"
 #include "driver/common.hpp"
 
 
@@ -18,29 +19,35 @@ namespace driver
 class I2cBus
 {
 public:
-    class Data
+    class Transaction
     {
     public:
-        static const inline std::size_t LOCAL_SIZE = 32;
+        static const inline std::size_t STORAGE_SIZE = 32;
+         enum class Type: std::uint8_t
+         {
+             EMPTY = 0u,
+             READ, WRITE,
+             READ_REMOTE, WRITE_REMOTE,
+         };
 
+         enum class Result: std::uint8_t
+         {
+             DONE,
+
+             FIRST_ERROR,
+             ERR_NO_ANSWRT = FIRST_ERROR,
+         };
 
     private:
-        struct Remote
-        {
-            void * data;
-            std::size_t length;
-        };
+        Type type_;
+        Result result_;
+        std::uint16_t address_;
 
-        std::size_t size;
+        std::size_t size_;
         alignas (void *)
-        char data[LOCAL_SIZE];
+        char data_[STORAGE_SIZE];
     };
 
-    class II2cDevice
-    {
-    public:
-        virtual bool exchange(Data * data) = 0;
-    };
 
     I2cBus();
     ~I2cBus();
@@ -55,6 +62,8 @@ public:
      * @return Success
      */
     bool initialize(I2cId i2c_id, DmaChannelId dma_channel_id_rx, DmaChannelId dma_channel_id_tx);
+
+    void tick();
 
 private:
     struct Private;
