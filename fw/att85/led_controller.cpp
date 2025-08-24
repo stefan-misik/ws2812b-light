@@ -15,6 +15,67 @@ namespace
 static constexpr uint8_t ZERO_BIT_PULSE_LENGTH = 1;
 static constexpr uint8_t ONE_BIT_PULSE_LENGTH = 3;
 
+
+void blastLeds(const uint8_t * data, const uint8_t * const data_end)
+{
+    uint16_t tmp_w;
+    uint8_t current_byte;
+    uint8_t bit_position;
+    uint8_t pulse_length;
+    uint8_t old_sreg;
+
+    asm volatile (
+            "    rjmp  lu_check_all_sent           \n"
+            "lu_send_byte:                         \n"
+            "    ld    %[current_byte], %a[data]+  \n"
+            // Do the lookup table correction
+            "    movw  %[tmp_w], %[lookup_table]   \n"
+            "    add   %A[tmp_w], %[current_byte]  \n"
+            "    adc   %B[tmp_w], __zero_reg__     \n"
+            "    lpm   %[current_byte], %a[tmp_w]  \n"
+
+            "    ldi   %[bit_position], 8          \n"
+
+            "lu_send_bit:                          \n"
+            "    ldi   %[pulse_length], %[zero_pl] \n"
+            "    lsl   %[current_byte]             \n"
+            "    brcc  lu_pulse_start              \n"
+            "    ldi   %[pulse_length], %[one_pl]  \n"
+
+            "lu_pulse_start:                       \n"
+            "    in %[old_sreg], __SREG__          \n"
+            "    cli                               \n"
+            "    sbi   %[pinr], %[pinb]            \n"
+
+            "lu_wait_pulse_end:                    \n"
+            "    subi  %[pulse_length], 1          \n"
+            "    brne  lu_wait_pulse_end           \n"
+            "    sbi   %[pinr], %[pinb]            \n"
+            "    out   __SREG__, %[old_sreg]       \n"
+
+            "lu_check_byte_sent:                   \n"
+            "    dec   %[bit_position]             \n"
+            "    brne  lu_send_bit                 \n"
+
+            "lu_check_all_sent:                    \n"
+            "    cp    %A[data], %A[data_end]      \n"
+            "    cpc   %B[data], %B[data_end]      \n"
+            "    brne  lu_send_byte               \n"
+            : [current_byte] "=&r" (current_byte),
+              [old_sreg] "=&r" (old_sreg),
+              [bit_position] "=&d" (bit_position),
+              [pulse_length] "=&d" (pulse_length),
+              [tmp_w] "=&z" (tmp_w),
+              [data] "+e" (data)
+            : [data_end] "e" (data_end),
+              [lookup_table] "w" (lookup_table),
+              [zero_pl] "M" (ZERO_BIT_PULSE_LENGTH),
+              [one_pl] "M" (ONE_BIT_PULSE_LENGTH),
+              [pinr] "I" (_SFR_IO_ADDR(PINB)),
+              [pinb] "I" (PINB2)
+    );
+}
+
 }  // namespace
 
 
@@ -40,122 +101,15 @@ void LedController::updateStatus(ColorId status)
 
     const uint8_t * data = const_cast<const uint8_t *>(&(led_data[0]));
     const uint8_t * data_end = data + sizeof(led_data);
-
-    {
-        uint8_t current_byte;
-        uint8_t bit_position;
-        uint8_t pulse_length;
-        uint8_t old_sreg;
-
-        asm volatile (
-                "    rjmp  lus_check_all_sent          \n"
-                "lus_send_byte:                        \n"
-                "    ld    %[current_byte], %a[data]+  \n"
-
-                "    ldi   %[bit_position], 8          \n"
-
-                "lus_send_bit:                         \n"
-                "    ldi   %[pulse_length], %[zero_pl] \n"
-                "    lsl   %[current_byte]             \n"
-                "    brcc  lus_pulse_start             \n"
-                "    ldi   %[pulse_length], %[one_pl]  \n"
-
-                "lus_pulse_start:                      \n"
-                "    in %[old_sreg], __SREG__          \n"
-                "    cli                               \n"
-                "    sbi   %[pinr], %[pinb]            \n"
-
-                "lus_wait_pulse_end:                   \n"
-                "    subi  %[pulse_length], 1          \n"
-                "    brne  lus_wait_pulse_end          \n"
-                "    sbi   %[pinr], %[pinb]            \n"
-                "    out   __SREG__, %[old_sreg]       \n"
-
-                "lus_check_byte_sent:                  \n"
-                "    dec   %[bit_position]             \n"
-                "    brne  lus_send_bit                \n"
-
-                "lus_check_all_sent:                   \n"
-                "    cp    %A[data], %A[data_end]      \n"
-                "    cpc   %B[data], %B[data_end]      \n"
-                "    brne  lus_send_byte               \n"
-                : [current_byte] "=&r" (current_byte),
-                  [old_sreg] "=&r" (old_sreg),
-                  [bit_position] "=&d" (bit_position),
-                  [pulse_length] "=&d" (pulse_length),
-                  [data] "+e" (data)
-                : [data_end] "e" (data_end),
-                  [zero_pl] "M" (ZERO_BIT_PULSE_LENGTH),
-                  [one_pl] "M" (ONE_BIT_PULSE_LENGTH),
-                  [pinr] "I" (_SFR_IO_ADDR(PINB)),
-                  [pinb] "I" (PINB2)
-        );
-    }
+    blastLeds(data, data_end);
 }
 void LedController::update(const AbstractLedStrip * led_strip, ColorId status)
 {
+    updateStatus(status);
+
     const uint8_t * data = reinterpret_cast<const uint8_t *>(&led_strip->leds);
     const uint8_t * data_end =
             reinterpret_cast<const uint8_t *>(&led_strip->leds) +
             (led_strip->led_count * sizeof(LedState));
-
-    {
-        uint16_t tmp_w;
-        uint8_t current_byte;
-        uint8_t bit_position;
-        uint8_t pulse_length;
-        uint8_t old_sreg;
-
-        updateStatus(status);
-        asm volatile (
-                "    rjmp  lu_check_all_sent           \n"
-                "lu_send_byte:                         \n"
-                "    ld    %[current_byte], %a[data]+  \n"
-                // Do the lookup table correction
-                "    movw  %[tmp_w], %[lookup_table]   \n"
-                "    add   %A[tmp_w], %[current_byte]  \n"
-                "    adc   %B[tmp_w], __zero_reg__     \n"
-                "    lpm   %[current_byte], %a[tmp_w]  \n"
-
-                "    ldi   %[bit_position], 8          \n"
-
-                "lu_send_bit:                          \n"
-                "    ldi   %[pulse_length], %[zero_pl] \n"
-                "    lsl   %[current_byte]             \n"
-                "    brcc  lu_pulse_start              \n"
-                "    ldi   %[pulse_length], %[one_pl]  \n"
-
-                "lu_pulse_start:                       \n"
-                "    in %[old_sreg], __SREG__          \n"
-                "    cli                               \n"
-                "    sbi   %[pinr], %[pinb]            \n"
-
-                "lu_wait_pulse_end:                    \n"
-                "    subi  %[pulse_length], 1          \n"
-                "    brne  lu_wait_pulse_end           \n"
-                "    sbi   %[pinr], %[pinb]            \n"
-                "    out   __SREG__, %[old_sreg]       \n"
-
-                "lu_check_byte_sent:                   \n"
-                "    dec   %[bit_position]             \n"
-                "    brne  lu_send_bit                 \n"
-
-                "lu_check_all_sent:                    \n"
-                "    cp    %A[data], %A[data_end]      \n"
-                "    cpc   %B[data], %B[data_end]      \n"
-                "    brne  lu_send_byte               \n"
-                : [current_byte] "=&r" (current_byte),
-                  [old_sreg] "=&r" (old_sreg),
-                  [bit_position] "=&d" (bit_position),
-                  [pulse_length] "=&d" (pulse_length),
-                  [tmp_w] "=&z" (tmp_w),
-                  [data] "+e" (data)
-                : [data_end] "e" (data_end),
-                  [lookup_table] "w" (lookup_table),
-                  [zero_pl] "M" (ZERO_BIT_PULSE_LENGTH),
-                  [one_pl] "M" (ONE_BIT_PULSE_LENGTH),
-                  [pinr] "I" (_SFR_IO_ADDR(PINB)),
-                  [pinb] "I" (PINB2)
-        );
-    }
+    blastLeds(data, data_end);
 }
