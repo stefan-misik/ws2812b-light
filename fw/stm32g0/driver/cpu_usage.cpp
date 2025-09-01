@@ -30,6 +30,8 @@ void freezeTimerInCpuStop(TimerId tim_id)
     case TimerId::TIM_6: ::LL_DBGMCU_APB1_GRP1_FreezePeriph(LL_DBGMCU_APB1_GRP1_TIM6_STOP); break;
     default: break;
     }
+#else
+    (void) tim_id;
 #endif  // DEBUG
 }
 
