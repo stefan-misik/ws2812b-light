@@ -41,11 +41,14 @@ _estack = ORIGIN(RAM) + LENGTH(RAM); /* end of "RAM" Ram type memory */
 _Min_Heap_Size = 0x200; /* required amount of heap */
 _Min_Stack_Size = 0x400; /* required amount of stack */
 
+/* _Fw_Offset can be defined using linker command line argument */
+PROVIDE(_Fw_Offset = 0);
+
 /* Memories definition */
 MEMORY
 {
   RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 36K
-  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 128K
+  FLASH    (rx)    : ORIGIN = 0x8000000 + _Fw_Offset,   LENGTH = 128K - _Fw_Offset
 }
 
 /* Sections */

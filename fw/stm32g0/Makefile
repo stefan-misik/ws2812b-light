@@ -90,6 +90,13 @@ DEFINE += USE_FULL_LL_DRIVER
 OUT = $(BUILDDIR)/$(PROJ).elf
 OUT_HEX = $(OUT:.elf=.hex)
 
+# Use simple wear leveling, by putting debug binary in second half of the flash memory
+ifeq ($(strip $(DBG)),yes)
+LDFLAGS += -Wl,--defsym=_Fw_Offset=64K
+endif
+
+$(OUT): $(LDSCR)
+
 ################################################################################
 
 .PHONY: all clean
