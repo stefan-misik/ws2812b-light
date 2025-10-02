@@ -7,25 +7,37 @@ TOOLCHAIN_PREFIX = arm-none-eabi
 PROJ = ws2812b-light
 # Source files
 SRC  =  \
-    support/startup_stm32g070kbtx.s  \
-    support/sysmem.c  \
-    support/syscalls.c  \
-    support/system_stm32g0xx.c  \
-    tools/button_filter.cpp  \
-    driver/base.cpp  \
-    driver/common.cpp  \
-    driver/systick.cpp  \
-    driver/led_controller.cpp  \
-    driver/ir_receiver.cpp  \
-    driver/buzzer.cpp  \
-    driver/keypad.cpp  \
-    driver/status_leds.cpp  \
-    driver/cpu_usage.cpp  \
-    driver/i2c_bus.cpp  \
-    driver/i2c_bus/cat24cx.cpp  \
-    input/keypad.cpp  \
-    input/ir_remote.cpp  \
-    animation/rainbow.cpp  \
+    $(addprefix support/,  \
+        startup_stm32g070kbtx.s  \
+        sysmem.c  \
+        syscalls.c  \
+        system_stm32g0xx.c  \
+    )  \
+    $(addprefix tools/,  \
+        button_filter.cpp  \
+    )  \
+    $(addprefix driver/,  \
+        base.cpp  \
+        common.cpp  \
+        systick.cpp  \
+        led_controller.cpp  \
+        ir_receiver.cpp  \
+        buzzer.cpp  \
+        keypad.cpp  \
+        status_leds.cpp  \
+        cpu_usage.cpp  \
+        i2c_bus.cpp  \
+        $(addprefix i2c_bus/,  \
+            cat24cx.cpp  \
+        )  \
+    )  \
+    $(addprefix input/,  \
+        keypad.cpp  \
+        ir_remote.cpp  \
+    )  \
+    $(addprefix animation/,  \
+        rainbow.cpp  \
+    )  \
     led_correction.cpp  \
     event_queue.cpp  \
     input.cpp  \
