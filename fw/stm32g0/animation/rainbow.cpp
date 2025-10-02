@@ -1,6 +1,7 @@
 #include "animation/rainbow.hpp"
 
 #include "tools/serdes.hpp"
+#include "color_tools.hpp"
 
 
 void RainbowAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)

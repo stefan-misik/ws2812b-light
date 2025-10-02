@@ -38,6 +38,7 @@ SRC  =  \
     $(addprefix animation/,  \
         rainbow.cpp  \
     )  \
+    color_tools.cpp  \
     led_correction.cpp  \
     event_queue.cpp  \
     input.cpp  \
