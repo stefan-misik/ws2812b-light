@@ -8,8 +8,9 @@
 #include "tools/flags.hpp"
 #include "led_strip.h"
 
-#include <stdlib.h>
-#include <stdint.h>
+#include <cstddef>
+#include <cstdint>
+#include <optional>
 
 
 /**
@@ -39,6 +40,15 @@ public:
         ONLY_CONFIG,
     };
 
+    enum ParamId: std::uint32_t
+    {
+        RESERVED_,
+        PRIMARY,
+        SECONDARY,
+
+        FIRST_CUSTOM_ID_ = 0x10000ul,
+    };
+
     /**
      * @brief Render the animation frame onto the LED strip
      *
@@ -64,9 +74,10 @@ public:
      * @param param_id Parameter ID
      * @param[out] value Value of the parameter
      *
-     * @return Success
+     * @return Parameter value
+     * @retval {} Failed to get parameter value
      */
-    virtual bool getParameter(std::uint32_t param_id, int * value) = 0;
+    virtual std::optional<int> getParameter(std::uint32_t param_id) = 0;
 
     /**
      * @brief Store state of the animation

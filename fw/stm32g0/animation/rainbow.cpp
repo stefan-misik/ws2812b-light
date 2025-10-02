@@ -30,10 +30,10 @@ bool RainbowAnimation::setParamater(std::uint32_t param_id, int value, ChangeTyp
     (void)param_id; (void)value; (void)type;
 }
 
-bool RainbowAnimation::getParameter(std::uint32_t param_id, int * value)
+std::optional<int> RainbowAnimation::getParameter(std::uint32_t param_id)
 {
-    return false;
-    (void)param_id; (void)value;
+    return {};
+    (void)param_id;
 }
 
 std::size_t RainbowAnimation::store(void * buffer, std::size_t capacity, DataType type) const
