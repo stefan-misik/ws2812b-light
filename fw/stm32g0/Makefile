@@ -39,6 +39,7 @@ SRC  =  \
         rainbow.cpp  \
         color.cpp  \
     )  \
+    animation_storage.cpp  \
     color_tools.cpp  \
     led_correction.cpp  \
     event_queue.cpp  \

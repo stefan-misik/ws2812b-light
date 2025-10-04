@@ -5,12 +5,14 @@
 #ifndef LIGHTS_HPP_
 #define LIGHTS_HPP_
 
-#include "tools/polymorphic_storage.hpp"
+#include <array>
+
 #include "io.hpp"
-#include "animation.hpp"
+#include "animation_storage.hpp"
 #include "event_queue.hpp"
 #include "input.hpp"
 #include "led_strip.h"
+#include "animation_register.hpp"
 
 
 /**
@@ -19,7 +21,8 @@
 class Lights
 {
 public:
-    using AnimationStorage = PolymorphicStorage<Animation, 64>;
+
+    static const inline std::size_t ANIMATION_SLOT_CNT = 2;
 
     Lights();
 
@@ -44,11 +47,19 @@ public:
 private:
     Io io_;
 
+    std::size_t current_register_;
     AnimationStorage animation_;
 
     EventQueue event_queue_;
     Input input_;
     LedStrip<100> leds_;
+
+    std::array<AnimationRegister, ANIMATION_SLOT_CNT> animation_file_;
+
+    void handleEvents();
+    bool handleInputEvent(const Input::EventParam & e);
+
+    void switchAnimation(int dir);
 };
 
 
