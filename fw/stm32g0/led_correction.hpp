@@ -80,7 +80,7 @@ concept LedWriter = requires
  *
  * @tparam CWT Color writer type
  */
-template <ComponentWriter CWT = ComponentWriterGRB>
+template <ComponentWriter CWT = ComponentWriterRGB>
 class StandardLedWriter
 {
 public:
@@ -98,7 +98,7 @@ public:
  *
  * @tparam CWT Color writer type
  */
-template <ComponentWriter CWT = ComponentWriterGRB>
+template <ComponentWriter CWT = ComponentWriterRGB>
 class DimmingLedWriter
 {
 public:
