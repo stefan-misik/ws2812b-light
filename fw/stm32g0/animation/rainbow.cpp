@@ -26,8 +26,24 @@ void RainbowAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
 
 bool RainbowAnimation::setParamater(std::uint32_t param_id, int value, ChangeType type)
 {
+    switch (param_id)
+    {
+    case ParamId::SECONDARY:
+        if (ChangeType::ABSOLUTE == type)
+            return false;
+        else
+        {
+            if (value > 0)
+                config_.space_increment = (config_.space_increment + 1u) & 0xFu;
+            else if (value < 0)
+                config_.time_increment = (config_.time_increment + 1u) & 0xFu;
+        }
+        return true;
+
+    default:
+        return false;
+    }
     return false;
-    (void)param_id; (void)value; (void)type;
 }
 
 std::optional<int> RainbowAnimation::getParameter(std::uint32_t param_id)
