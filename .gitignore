@@ -28,6 +28,10 @@
 *.launch
 RemoteSystemsTempFiles/
 
+# Language Server
+compile_commands.json
+.cache/
+
 # Ignore doxygen outputs
 */doxygen/*.files
 

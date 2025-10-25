@@ -1,0 +1,8 @@
+{
+  "C_Cpp.intelliSenseEngine": "disabled",
+  "clangd.arguments": [
+    "--background-index",
+    "--query-driver=/usr/bin/arm-none-eabi-*"
+  ]
+  "files.trimTrailingWhitespace": true
+}
