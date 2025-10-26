@@ -1,13 +1,12 @@
 #include "driver/i2c_bus.hpp"
 
-#include <utility>
-#include <atomic>
 #include <memory>
 
-#include "stm32g0xx_ll_cortex.h"
 #include "stm32g0xx_ll_i2c.h"
 #include "stm32g0xx_ll_dma.h"
 #include "stm32g0xx_ll_dmamux.h"
+
+#include "driver/tools/irq.hpp"
 
 
 namespace driver
@@ -87,31 +86,6 @@ namespace
 
 using Transaction = I2cBus::Transaction;
 using TransactionNode = I2cBus::TransactionNode;
-
-class IrqGuard
-{
-public:
-    IrqGuard():
-        primask_(disableAndGetPrimask())
-    { }
-
-    ~IrqGuard()
-    {
-        __DSB();
-        __set_PRIMASK(primask_);
-    }
-
-private:
-    const std::uint32_t primask_;
-
-    static std::uint32_t disableAndGetPrimask()
-    {
-        __DSB();
-        const auto primask = __get_PRIMASK();
-        __disable_irq();
-        return primask;
-    }
-};
 
 
 struct Hardware
