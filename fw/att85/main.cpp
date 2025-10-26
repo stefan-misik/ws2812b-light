@@ -26,7 +26,7 @@ Music music;
 
 inline uint8_t ledStripEvent(Animation::Event type)
 {
-    return animations.current()->handleEvent(type, Animation::Param(led_strip.abstarctPtr()), &shared_storage);
+    return animations.current()->handleEvent(type, Animation::Param(led_strip.abstractPtr()), &shared_storage);
 }
 
 void moveAnimation(int8_t offset)
@@ -149,7 +149,7 @@ void mainPeriodicRoutine()
         animations.current()->handleEvent(Animation::Event::EVENTS, Animation::Param{events}, &shared_storage);
 
     if (Animation::Result::IS_OK == ledStripEvent(Animation::Event::UPDATE))
-        LedController::update(led_strip.abstarctPtr(), status_led.color());
+        LedController::update(led_strip.abstractPtr(), status_led.color());
     else
         LedController::updateStatus(status_led.color());
 }

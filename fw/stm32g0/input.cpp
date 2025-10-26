@@ -75,7 +75,7 @@ void Input::update(std::uint32_t time, EventQueue * event_queue)
 
 void Input::KeyState::process()
 {
-    const auto press_state = readPresseState();
+    const auto press_state = readPressState();
     if (PressState::NEWLY_PRESSED == press_state)
     {
         repeat_ = 0;

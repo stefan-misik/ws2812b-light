@@ -59,9 +59,9 @@ void Lights::step(std::uint32_t current_time)
 {
     input_.update(current_time, &event_queue_);
     handleEvents();
-    animation_->render(leds_.abstarctPtr(), {});
+    animation_->render(leds_.abstractPtr(), {});
     io_.statusLeds().update();
-    io_.ledController().update(leds_.abstarctPtr());
+    io_.ledController().update(leds_.abstractPtr());
 }
 
 void Lights::handleEvents()
@@ -71,8 +71,8 @@ void Lights::handleEvents()
         const auto [ev, cnt] = event_queue_.peek();
         if (0 == cnt)
             break;
-        const auto * const eend = ev + cnt;
-        for (const auto * e = ev; e != eend; ++e)
+        const auto * const e_end = ev + cnt;
+        for (const auto * e = ev; e != e_end; ++e)
         {
             switch (e->type())
             {

@@ -146,7 +146,7 @@ public:
         std::uint8_t repeat_ = 0;
         PressState state_ = PressState::NONE;
 
-        PressState readPresseState()
+        PressState readPressState()
         {
             const auto state = state_;
             state_ = PressState::NONE;

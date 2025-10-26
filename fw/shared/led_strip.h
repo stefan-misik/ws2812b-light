@@ -112,13 +112,13 @@ struct LedStrip
      *
      * @return Pointer to an abstract LED strip type
      */
-    AbstractLedStrip * abstarctPtr()
+    AbstractLedStrip * abstractPtr()
     {
         return reinterpret_cast<AbstractLedStrip *>(this);
     }
 
-    /** @copydoc abstarctPtr() */
-    const AbstractLedStrip * abstarctPtr() const
+    /** @copydoc abstractPtr() */
+    const AbstractLedStrip * abstractPtr() const
     {
         return reinterpret_cast<const AbstractLedStrip *>(this);
     }
