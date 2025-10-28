@@ -2,8 +2,8 @@
  * @file
  */
 
-#ifndef IO_HPP_
-#define IO_HPP_
+#ifndef APP_IO_HPP_
+#define APP_IO_HPP_
 
 #include "driver/status_leds.hpp"
 #include "driver/led_controller.hpp"
@@ -48,4 +48,4 @@ private:
     driver::CpuUsage cpu_usage_;
 };
 
-#endif  // IO_HPP_
+#endif  // APP_IO_HPP_

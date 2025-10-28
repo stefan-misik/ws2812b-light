@@ -1,7 +1,7 @@
 #include "driver/base.hpp"
 #include "driver/systick.hpp"
 #include "tools/periodic_timer.hpp"
-#include "lights.hpp"
+#include "app/lights.hpp"
 
 
 driver::Systick system_time;

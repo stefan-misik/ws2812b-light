@@ -31,22 +31,24 @@ SRC  =  \
             cat24cx.cpp  \
         )  \
     )  \
-    $(addprefix input/,  \
-        keypad.cpp  \
-        ir_remote.cpp  \
-    )  \
-    $(addprefix animation/,  \
-        rainbow.cpp  \
-        color.cpp  \
-    )  \
-    animation_storage.cpp  \
-    color_tools.cpp  \
-    led_correction.cpp  \
-    event_queue.cpp  \
-    input.cpp  \
-    io.cpp  \
-    lights.cpp  \
-    main.cpp
+    $(addprefix app/,  \
+        $(addprefix input/,  \
+            keypad.cpp  \
+            ir_remote.cpp  \
+        )  \
+        $(addprefix animation/,  \
+            rainbow.cpp  \
+            color.cpp  \
+        )  \
+        animation_storage.cpp  \
+        color_tools.cpp  \
+        led_correction.cpp  \
+        event_queue.cpp  \
+        input.cpp  \
+        io.cpp  \
+        lights.cpp  \
+        main.cpp  \
+    )
 
 ifeq ($(strip $(DBG)),yes)
 BUILDDIR = Debug

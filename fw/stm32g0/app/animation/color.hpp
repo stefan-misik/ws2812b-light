@@ -2,16 +2,18 @@
  * @file
  */
 
-#ifndef ANIMATION_RAINBOW_HPP_
-#define ANIMATION_RAINBOW_HPP_
+#ifndef APP_ANIMATION_COLOR_HPP_
+#define APP_ANIMATION_COLOR_HPP_
 
-#include "animation.hpp"
+#include "app/animation.hpp"
 
 
-class RainbowAnimation final:
+class ColorAnimation final:
         public Animation
 {
 public:
+    static const inline std::size_t FIRST_COLOR = 1;
+
     void render(AbstractLedStrip * strip, Flags<RenderFlag> flags) override;
 
     bool setParamater(std::uint32_t param_id, int value, ChangeType type = ChangeType::ABSOLUTE) override;
@@ -23,20 +25,17 @@ public:
 private:
     struct Configuration
     {
-        std::uint8_t space_increment = 8;
-        std::uint8_t time_increment = 4;
+        std::uint8_t color = 0;
     };
 
     struct State
     {
-        std::uint16_t hue = 0;
     };
 
     Configuration config_;
     State state_;
-    std::uint8_t step_ = 0;
 };
 
 
 
-#endif  // ANIMATION_RAINBOW_HPP_
+#endif  // APP_ANIMATION_COLOR_HPP_

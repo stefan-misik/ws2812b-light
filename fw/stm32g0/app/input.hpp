@@ -2,15 +2,15 @@
  * @file
  */
 
-#ifndef INPUT_HPP_
-#define INPUT_HPP_
+#ifndef APP_INPUT_HPP_
+#define APP_INPUT_HPP_
 
 #include <cstddef>
 #include <cstdint>
 #include <utility>
 
 #include "tools/polymorphic_storage.hpp"
-#include "event_queue.hpp"
+#include "app/event_queue.hpp"
 
 
 /**
@@ -207,4 +207,4 @@ private:
 };
 
 
-#endif  // INPUT_HPP_
+#endif  // APP_INPUT_HPP_

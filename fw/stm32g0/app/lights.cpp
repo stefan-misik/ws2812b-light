@@ -1,8 +1,8 @@
-#include "lights.hpp"
+#include "app/lights.hpp"
 
-#include "input/keypad.hpp"
-#include "input/ir_remote.hpp"
-#include "animation/rainbow.hpp"
+#include "app/input/keypad.hpp"
+#include "app/input/ir_remote.hpp"
+#include "app/animation/rainbow.hpp"
 
 
 namespace

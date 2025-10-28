@@ -2,17 +2,17 @@
  * @file
  */
 
-#ifndef LIGHTS_HPP_
-#define LIGHTS_HPP_
+#ifndef APP_LIGHTS_HPP_
+#define APP_LIGHTS_HPP_
 
 #include <array>
 
-#include "io.hpp"
-#include "animation_storage.hpp"
-#include "event_queue.hpp"
-#include "input.hpp"
+#include "app/io.hpp"
+#include "app/animation_storage.hpp"
+#include "app/event_queue.hpp"
+#include "app/input.hpp"
 #include "led_strip.h"
-#include "animation_register.hpp"
+#include "app/animation_register.hpp"
 
 
 /**
@@ -64,4 +64,4 @@ private:
 
 
 
-#endif  // LIGHTS_HPP_
+#endif  // APP_LIGHTS_HPP_

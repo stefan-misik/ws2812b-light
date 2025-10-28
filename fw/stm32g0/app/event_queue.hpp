@@ -2,8 +2,8 @@
  * @file
  */
 
-#ifndef EVENT_QUEUE_HPP_
-#define EVENT_QUEUE_HPP_
+#ifndef APP_EVENT_QUEUE_HPP_
+#define APP_EVENT_QUEUE_HPP_
 
 #include <cstddef>
 #include <cstdint>
@@ -110,4 +110,4 @@ private:
 
 
 
-#endif  // EVENT_QUEUE_HPP_
+#endif  // APP_EVENT_QUEUE_HPP_

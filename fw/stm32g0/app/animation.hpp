@@ -2,8 +2,8 @@
  * @file
  */
 
-#ifndef ANIMATION_H_
-#define ANIMATION_H_
+#ifndef APP_ANIMATION_H_
+#define APP_ANIMATION_H_
 
 #include "tools/flags.hpp"
 #include "led_strip.h"
@@ -104,4 +104,4 @@ public:
     virtual ~Animation() = default;
 };
 
-#endif  // ANIMATION_H_
+#endif  // APP_ANIMATION_H_

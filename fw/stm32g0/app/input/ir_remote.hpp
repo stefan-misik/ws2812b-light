@@ -2,10 +2,10 @@
  * @file
  */
 
-#ifndef INPUT_IR_REMOTE_HPP_
-#define INPUT_IR_REMOTE_HPP_
+#ifndef APP_INPUT_IR_REMOTE_HPP_
+#define APP_INPUT_IR_REMOTE_HPP_
 
-#include "input.hpp"
+#include "app/input.hpp"
 #include "driver/ir_receiver.hpp"
 
 
@@ -24,4 +24,4 @@ private:
 };
 
 
-#endif  // INPUT_IR_REMOTE_HPP_
+#endif  // APP_INPUT_IR_REMOTE_HPP_

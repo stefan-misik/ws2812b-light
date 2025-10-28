@@ -9,7 +9,7 @@
 #include "tools/hidden.hpp"
 #include "driver/common.hpp"
 #include "led_strip.h"
-#include "led_correction.hpp"
+#include "app/led_correction.hpp"
 
 
 namespace driver

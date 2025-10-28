@@ -2,8 +2,8 @@
  * @file
  */
 
-#ifndef LED_CORRECTION_HPP_
-#define LED_CORRECTION_HPP_
+#ifndef APP_LED_CORRECTION_HPP_
+#define APP_LED_CORRECTION_HPP_
 
 #include <cstdint>
 
@@ -161,4 +161,4 @@ private:
 };
 
 
-#endif  // LED_CORRECTION_HPP_
+#endif  // APP_LED_CORRECTION_HPP_

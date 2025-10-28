@@ -2,10 +2,10 @@
  * @file
  */
 
-#ifndef INPUT_KEYPAD_HPP_
-#define INPUT_KEYPAD_HPP_
+#ifndef APP_INPUT_KEYPAD_HPP_
+#define APP_INPUT_KEYPAD_HPP_
 
-#include "input.hpp"
+#include "app/input.hpp"
 #include "driver/keypad.hpp"
 
 
@@ -24,4 +24,4 @@ private:
 };
 
 
-#endif  // INPUT_KEYPAD_HPP_
+#endif  // APP_INPUT_KEYPAD_HPP_

@@ -2,11 +2,11 @@
  * @file
  */
 
-#ifndef ANIMATION_STORAGE_HPP_
-#define ANIMATION_STORAGE_HPP_
+#ifndef APP_ANIMATION_STORAGE_HPP_
+#define APP_ANIMATION_STORAGE_HPP_
 
 #include "tools/polymorphic_storage.hpp"
-#include "animation_register.hpp"
+#include "app/animation_register.hpp"
 
 
 class AnimationStorage
@@ -31,4 +31,4 @@ private:
 };
 
 
-#endif  // ANIMATION_STORAGE_HPP_
+#endif  // APP_ANIMATION_STORAGE_HPP_

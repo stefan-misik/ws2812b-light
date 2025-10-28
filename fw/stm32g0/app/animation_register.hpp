@@ -2,13 +2,13 @@
  * @file
  */
 
-#ifndef ANIMATION_REGISTER_HPP_
-#define ANIMATION_REGISTER_HPP_
+#ifndef APP_ANIMATION_REGISTER_HPP_
+#define APP_ANIMATION_REGISTER_HPP_
 
 #include <cstddef>
 #include <cstdint>
 
-#include <animation.hpp>
+#include "app/animation.hpp"
 
 
 class AnimationRegister
@@ -48,4 +48,4 @@ private:
 
 
 
-#endif  // ANIMATION_REGISTER_HPP_
+#endif  // APP_ANIMATION_REGISTER_HPP_

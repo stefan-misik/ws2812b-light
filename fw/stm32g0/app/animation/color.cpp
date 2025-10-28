@@ -1,7 +1,7 @@
-#include "animation/color.hpp"
+#include "app/animation/color.hpp"
 
 #include "tools/serdes.hpp"
-#include "color_tools.hpp"
+#include "app/color_tools.hpp"
 
 namespace
 {
