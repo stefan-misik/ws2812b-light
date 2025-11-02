@@ -23,7 +23,7 @@
 namespace def
 {
 
-using SmallSize = AUTOSELECT_VALUE(std::size_t, uint8_t);
+using SmallSize = AUTOSELECT_VALUE(std::uint16_t, uint8_t);
 using Size = AUTOSELECT_VALUE(std::size_t, size_t);
 
 using Int8 = AUTOSELECT_VALUE(std::int8_t, int8_t);

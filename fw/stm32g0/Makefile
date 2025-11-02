@@ -40,6 +40,7 @@ SRC  =  \
             color.cpp  \
             rainbow.cpp  \
             retro.cpp  \
+            twinkle.cpp  \
         )  \
         animation_storage.cpp  \
         color_tools.cpp  \

@@ -20,13 +20,13 @@ using AbstractLedStrip = LedStrip<1>;
 
 struct LedState
 {
-    LedState() = default; // @suppress("Class members should be properly initialized") leave uninitialized by default
+    LedState() = default;  // @suppress("Class members should be properly initialized") leave uninitialized by default
     constexpr LedState(const LedState &) = default;
     constexpr LedState(LedState &&) = default;
 
     explicit constexpr LedState(uint32_t color):
             red(color >> 16), green(color >> 8), blue(color >> 0)
-    {}
+    { }
 
     constexpr LedState(uint8_t red, uint8_t green, uint8_t blue):
             red(red), green(green), blue(blue)
@@ -34,6 +34,16 @@ struct LedState
 
     constexpr LedState & operator =(const LedState &) = default;
     constexpr LedState & operator =(LedState &&) = default;
+
+    constexpr bool operator ==(const LedState & o) const
+    {
+        return o.red == red && o.green == green && o.blue == blue;
+    }
+
+    constexpr bool operator !=(const LedState & o) const
+    {
+        return o.red != red || o.green != green || o.blue != blue;
+    }
 
     uint8_t LED_ORDER;
 };
