@@ -4,6 +4,7 @@
 #include <cstdlib>
 
 #include "tools/serdes.hpp"
+#include "app/tools/animation_parameter.hpp"
 #include "app/color_tools.hpp"
 
 namespace
@@ -82,18 +83,8 @@ bool RetroAnimation::setParamater(std::uint32_t param_id, int value, ChangeType 
     {
     case ParamId::VARIANT:
         reset();
-        if (ChangeType::ABSOLUTE == type)
-            config_.variant = static_cast<std::uint8_t>(value) >= VARIANT_CNT ? 0 : value;
-        else
-        {
-            int variant = config_.variant;
-            variant += value;
-            if (variant >= static_cast<int>(VARIANT_CNT))
-                variant = 0u;
-            else if (variant < 0)
-                variant = VARIANT_CNT - 1u;
-            config_.variant = variant;
-        }
+        setCyclicParameter<decltype(config_.variant), VARIANT_CNT - 1>(
+            &(config_.variant), value, type);
         return true;
 
     default:

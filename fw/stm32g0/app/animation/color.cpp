@@ -1,6 +1,7 @@
 #include "app/animation/color.hpp"
 
 #include "tools/serdes.hpp"
+#include "app/tools/animation_parameter.hpp"
 #include "app/color_tools.hpp"
 
 namespace
@@ -26,18 +27,8 @@ bool ColorAnimation::setParamater(std::uint32_t param_id, int value, ChangeType 
     switch (param_id)
     {
     case ParamId::SECONDARY:
-        if (ChangeType::ABSOLUTE == type)
-            config_.color = value >= static_cast<int>(MY_COLOR_COUNT) ? 0 : value;
-        else
-        {
-            int color_id = config_.color;
-            color_id += value;
-            if (color_id >= static_cast<int>(MY_COLOR_COUNT))
-                color_id = 0;
-            else if (color_id < 0)
-                color_id = MY_COLOR_COUNT - 1;
-            config_.color = color_id;
-        }
+        setCyclicParameter<decltype(config_.color), MY_COLOR_COUNT - 1>(
+            &(config_.color), value, type);
         return true;
 
     default:

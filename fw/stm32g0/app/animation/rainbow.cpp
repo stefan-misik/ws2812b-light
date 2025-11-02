@@ -1,6 +1,7 @@
 #include "app/animation/rainbow.hpp"
 
 #include "tools/serdes.hpp"
+#include "app/tools/animation_parameter.hpp"
 #include "app/color_tools.hpp"
 
 
@@ -34,9 +35,9 @@ bool RainbowAnimation::setParamater(std::uint32_t param_id, int value, ChangeTyp
         else
         {
             if (value > 0)
-                config_.space_increment = (config_.space_increment + 1u) & 0xFu;
+                setCyclicParameter<std::uint8_t, 15>(&(config_.space_increment), 1, ChangeType::RELATIVE);
             else if (value < 0)
-                config_.time_increment = (config_.time_increment + 1u) & 0xFu;
+                setCyclicParameter<std::uint8_t, 15>(&(config_.time_increment), 1, ChangeType::RELATIVE);
         }
         return true;
 
