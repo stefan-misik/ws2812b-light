@@ -1,7 +1,7 @@
 #include "app/color_tools.hpp"
 
 
-const LedState standard_colors[] =
+constexpr const LedState standard_colors[] =
 {
         {0x00, 0x00, 0x00},
         {0x9A, 0x9A, 0x9A},
