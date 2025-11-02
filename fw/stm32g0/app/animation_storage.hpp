@@ -24,7 +24,7 @@ public:
     Animation & operator *() { return *get(); }
     const Animation & operator *() const { return *get(); }
 
-    AnimationId change(AnimationId id);
+    void change(AnimationId id);
 
 private:
     Storage storage_;

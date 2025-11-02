@@ -37,8 +37,9 @@ SRC  =  \
             ir_remote.cpp  \
         )  \
         $(addprefix animation/,  \
-            rainbow.cpp  \
             color.cpp  \
+            rainbow.cpp  \
+            retro.cpp  \
         )  \
         animation_storage.cpp  \
         color_tools.cpp  \
