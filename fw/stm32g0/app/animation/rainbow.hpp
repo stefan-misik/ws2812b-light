@@ -12,6 +12,12 @@ class RainbowAnimation final:
         public Animation
 {
 public:
+    enum ParamId: std::uint32_t
+    {
+        SPACE_INCREMENT = Animation::ParamId::FIRST_CUSTOM_ID_,
+        TIME_INCREMENT,
+    };
+
     void render(AbstractLedStrip * strip, Flags<RenderFlag> flags) override;
 
     bool setParamater(std::uint32_t param_id, int value, ChangeType type = ChangeType::ABSOLUTE) override;

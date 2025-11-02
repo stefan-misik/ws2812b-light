@@ -26,7 +26,8 @@ bool ColorAnimation::setParamater(std::uint32_t param_id, int value, ChangeType 
 {
     switch (param_id)
     {
-    case ParamId::SECONDARY:
+    case Animation::ParamId::SECONDARY:
+    case ParamId::COLOR_ID:
         setCyclicParameter<decltype(config_.color), MY_COLOR_COUNT - 1>(
             &(config_.color), value, type);
         return true;
@@ -39,8 +40,15 @@ bool ColorAnimation::setParamater(std::uint32_t param_id, int value, ChangeType 
 
 std::optional<int> ColorAnimation::getParameter(std::uint32_t param_id)
 {
-    return {};
-    (void)param_id;
+    switch (param_id)
+    {
+    case Animation::ParamId::SECONDARY:
+    case ParamId::COLOR_ID:
+        return static_cast<int>(config_.color);
+
+    default:
+        return {};
+    }
 }
 
 std::size_t ColorAnimation::store(void * buffer, std::size_t capacity, DataType type) const

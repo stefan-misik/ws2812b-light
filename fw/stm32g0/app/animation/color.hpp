@@ -12,6 +12,11 @@ class ColorAnimation final:
         public Animation
 {
 public:
+    enum ParamId: std::uint32_t
+    {
+        COLOR_ID = Animation::ParamId::FIRST_CUSTOM_ID_,
+    };
+
     static const inline std::size_t FIRST_COLOR = 1;
 
     void render(AbstractLedStrip * strip, Flags<RenderFlag> flags) override;

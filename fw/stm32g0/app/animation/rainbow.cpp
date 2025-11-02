@@ -29,7 +29,7 @@ bool RainbowAnimation::setParamater(std::uint32_t param_id, int value, ChangeTyp
 {
     switch (param_id)
     {
-    case ParamId::SECONDARY:
+    case Animation::ParamId::SECONDARY:
         if (ChangeType::ABSOLUTE == type)
             return false;
         else
@@ -41,6 +41,14 @@ bool RainbowAnimation::setParamater(std::uint32_t param_id, int value, ChangeTyp
         }
         return true;
 
+    case ParamId::SPACE_INCREMENT:
+        setCyclicParameter<std::uint8_t, 15>(&(config_.space_increment), value, type);
+        return true;
+
+    case ParamId::TIME_INCREMENT:
+        setCyclicParameter<std::uint8_t, 15>(&(config_.time_increment), value, type);
+        return true;
+
     default:
         return false;
     }
@@ -49,8 +57,17 @@ bool RainbowAnimation::setParamater(std::uint32_t param_id, int value, ChangeTyp
 
 std::optional<int> RainbowAnimation::getParameter(std::uint32_t param_id)
 {
-    return {};
-    (void)param_id;
+    switch (param_id)
+    {
+    case ParamId::SPACE_INCREMENT:
+        return static_cast<int>(config_.space_increment);
+
+    case ParamId::TIME_INCREMENT:
+        return static_cast<int>(config_.time_increment);
+
+    default:
+        return {};
+    }
 }
 
 std::size_t RainbowAnimation::store(void * buffer, std::size_t capacity, DataType type) const
