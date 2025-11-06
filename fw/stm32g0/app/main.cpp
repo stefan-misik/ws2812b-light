@@ -26,7 +26,7 @@ int main()
             lights.step(current_time);
             lights.io().cpuUsage().endPeriod();
         }
-        lights.io().run();
+        lights.runBackgroundTasks(current_time);
     }
 
     return 0;

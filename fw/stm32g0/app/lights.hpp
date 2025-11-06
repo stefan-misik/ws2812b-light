@@ -42,6 +42,13 @@ public:
      */
     void step(std::uint32_t current_time);
 
+    /**
+     * @brief Perform background tasks
+     *
+     * @param current_time Current time in milliseconds
+     */
+    void runBackgroundTasks(std::uint32_t current_time);
+
     Io & io() { return io_; }
 
 private:
