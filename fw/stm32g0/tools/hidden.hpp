@@ -6,9 +6,14 @@
 #define TOOLS_HIDDEN_HPP_
 
 #include <cstddef>
-
 #include <utility>
 #include <new>
+
+
+template <typename T, std::size_t SZ, std::size_t AL>
+concept CompleteHiddenType =
+    sizeof(T) == SZ &&  // Type does not fit the storage
+    alignof(T) <= AL;  // Type exceeds alignment
 
 
 template <typename T, std::size_t SZ, std::size_t AL = alignof(void *)>
@@ -29,7 +34,7 @@ public:
     template <typename... Ts>
     Hidden(Ts &&... args)
     {
-        make(std::forward<Ts>(args)...);
+        make<Type>(std::forward<Ts>(args)...);
     }
 
     ~Hidden()
@@ -46,18 +51,10 @@ private:
 
     Storage storage_;
 
-    template <typename MT>
-    static constexpr void check()
-    {
-        static_assert(sizeof(MT) == SIZE, "Type does not fit the storage");
-        static_assert(alignof(MT) <= ALIGN, "Type exceeds alignment");
-    }
-
-    template <typename... Ts>
+    template <CompleteHiddenType<SIZE, ALIGN> AT, typename... Ts>
     void make(Ts &&... args)
     {
-        check<Type>();
-        new (&storage_) Type(std::forward<Ts>(args)...);
+        new (&storage_) AT(std::forward<Ts>(args)...);
     }
 };
 

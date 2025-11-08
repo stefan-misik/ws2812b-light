@@ -66,8 +66,7 @@ void Input::update(std::uint32_t time, EventQueue * event_queue)
         if (0 != event_flags)
         {
             const auto key_id = static_cast<KeyId>(&state - keys_);
-            event_queue->pushEvent(EventQueue::EventType::KEY_EVENT,
-                    EventParam(key_id, event_flags, state.repeat(), state.sourceId()));
+            event_queue->pushEvent<EventParam>(key_id, event_flags, state.repeat(), state.sourceId());
         }
     }
 }

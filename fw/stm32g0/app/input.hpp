@@ -158,6 +158,8 @@ public:
     {
         using KeyFlags = KeyState::StateFlags;
 
+        static const inline EventType TYPE = EventType::KEY_EVENT;
+
         KeyId key;
         std::uint8_t flags;
         std::uint8_t repeat;

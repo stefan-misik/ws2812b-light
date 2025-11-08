@@ -16,6 +16,14 @@ struct TypeTag
     using Type = T;
 };
 
+
+template <typename T, typename I, std::size_t MAX_S, std::size_t MAX_A>
+concept PolymorphicStorageType =
+        sizeof(T) <= MAX_S &&  // Type does not fit the storage
+        alignof(T) <= MAX_A &&  // Type exceeds alignment
+        std::is_base_of<I, T>::value &&  // Type needs to be an implementation of the interface
+        std::has_virtual_destructor<T>::value;  // Type needs to define a virtual destructor
+
 /**
  * @brief Object encapsulating an instance of a polymorphic object
  *
@@ -37,7 +45,7 @@ public:
         make<Interface>();
     }
 
-    template <typename T, typename... Ts>
+    template <PolymorphicStorageType<Interface, MAX_SIZE, MAX_ALIGN> T, typename... Ts>
     PolymorphicStorage(TypeTag<T> tag, Ts &&... args)
     {
         make<typename decltype(tag)::Type>(std::forward<Ts>(args)...);
@@ -50,14 +58,14 @@ public:
     Interface & operator *() { return *get(); }
     const Interface & operator *() const { return *get(); }
 
-    template <typename T>
+    template <PolymorphicStorageType<Interface, MAX_SIZE, MAX_ALIGN> T>
     void create()
     {
         get()->~Interface();
         make<T>();
     }
 
-    template <typename T, typename... Ts>
+    template <PolymorphicStorageType<Interface, MAX_SIZE, MAX_ALIGN> T, typename... Ts>
     void create(Ts &&... args)
     {
         get()->~Interface();
@@ -81,19 +89,9 @@ private:
         char data[MAX_SIZE];
     } storage_;
 
-    template <typename T>
-    static constexpr void check()
-    {
-        static_assert(sizeof(T) <= MAX_SIZE, "Type does not fit the storage");
-        static_assert(alignof(T) <= MAX_ALIGN, "Type exceeds alignment");
-        static_assert(std::is_base_of<Interface, T>::value, "Type needs to be an implementation of the interface");
-        static_assert(std::has_virtual_destructor<T>::value, "Type needs to define a virtual destructor");
-    }
-
-    template <typename T, typename... Ts>
+    template <PolymorphicStorageType<Interface, MAX_SIZE, MAX_ALIGN> T, typename... Ts>
     void make(Ts &&... args)
     {
-        check<T>();
         new (&storage_) T(std::forward<Ts>(args)...);
     }
 };

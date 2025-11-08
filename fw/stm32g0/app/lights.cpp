@@ -82,7 +82,7 @@ void Lights::handleEvents()
         {
             switch (e->type())
             {
-            case EventQueue::EventType::KEY_EVENT:
+            case EventType::KEY_EVENT:
                 handleInputEvent(e->param<Input::EventParam>());
                 break;
             default: break;

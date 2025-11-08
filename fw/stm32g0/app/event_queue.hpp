@@ -8,8 +8,44 @@
 #include <cstddef>
 #include <cstdint>
 #include <utility>
-
+#include <new>
 #include <type_traits>
+#include <concepts>
+
+
+/**
+ * @brief List of known event types
+ */
+enum class EventType
+{
+    NONE,
+    KEY_EVENT,
+};
+
+
+/**
+ * @brief Object used to store event parameter value
+ */
+struct EventParameterStorageType
+{
+    alignas(std::uintptr_t)
+    char v[sizeof(std::uintptr_t)];
+};
+
+
+/**
+ * @brief Concept of event parameter objects
+ */
+template <typename T>
+concept EventParameter =
+    std::is_trivially_copyable<T>::value &&
+    std::is_trivially_destructible<T>::value &&
+    sizeof(T) <= sizeof(EventParameterStorageType) &&
+    alignof(T) <= alignof(EventParameterStorageType) &&
+    requires()
+{
+    { T::TYPE } -> std::convertible_to<EventType>;
+};
 
 
 /**
@@ -18,65 +54,40 @@
 class EventQueue
 {
 public:
-    enum class EventType
-    {
-        NONE,
-        KEY_EVENT,
-    };
-
     class Event
     {
     public:
         Event() = default;
 
-        template <typename T>
-        void set(EventType type, T && value)
+        template <EventParameter T, typename... Ts>
+        void set(Ts &&... args)
         {
-            type_ = type;
-            checkType<T>();
-            *reinterpret_cast<T *>(&param_) = value;
+            new (&param_) T(std::forward<Ts>(args)...);
+            type_ = T::TYPE;
         }
 
         EventType type() const { return type_; }
 
-        template <typename T>
+        template <EventParameter T>
         const T & param() const
         {
-            checkType<T>();
             return *reinterpret_cast<const T *>(&param_);
         }
 
     private:
-        struct StorageType
-        {
-            alignas(std::uintptr_t)
-            char v[sizeof(std::uintptr_t)];
-        };
-
         EventType type_;
-        StorageType param_;
-
-        template <typename T>
-        static void checkType()
-        {
-            static_assert(
-                    std::is_trivially_copyable<T>::value &&
-                    std::is_trivially_destructible<T>::value &&
-                    sizeof(T) <= sizeof(StorageType) && alignof(T) <= alignof(StorageType),
-                    "Type needs to be trivially copy-able and of appropriate size");
-        }
+        EventParameterStorageType param_;
     };
 
     static const inline std::size_t CAPACITY = 32;
 
-    template <typename T>
-    bool pushEvent(EventType type, T && param)
+    template <EventParameter T, typename... Ts>
+    bool pushEvent(Ts &&... args)
     {
-        std::size_t next_head = (CAPACITY - 1) != head_ ? head_ + 1 : 0;
-        if (next_head == tail_)
+        Event * const ev = allocate();
+        if (nullptr == ev)
             return false;
-        events_[head_].set(type, std::forward<T>(param));
-        head_ = next_head;
+        ev->template set<T>(std::forward<Ts>(args)...);
         return true;
     }
 
@@ -106,6 +117,16 @@ private:
     Event events_[CAPACITY];
 
     bool isContiguous() const { return head_ >= tail_; }
+
+    Event * allocate()
+    {
+        std::size_t next_head = (CAPACITY - 1) != head_ ? head_ + 1 : 0;
+        if (next_head == tail_)
+            return nullptr;
+        Event * ev = events_ + head_;
+        head_ = next_head;
+        return ev;
+    }
 };
 
 
