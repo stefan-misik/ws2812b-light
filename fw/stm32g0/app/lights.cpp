@@ -1,5 +1,6 @@
 #include "app/lights.hpp"
 
+#include "app/tools/animation_parameter.hpp"
 #include "app/input/keypad.hpp"
 #include "app/input/ir_remote.hpp"
 #include "app/animation/rainbow.hpp"
@@ -10,19 +11,8 @@ namespace
 
 inline std::size_t changeAnimation(std::size_t current, int dir)
 {
-    if (dir > 0)
-    {
-        if (current == (Lights::ANIMATION_SLOT_CNT - 1))
-            return 0;
-        return current + 1;
-    }
-    else if (dir < 0)
-    {
-        if (0 == current)
-            return Lights::ANIMATION_SLOT_CNT - 1;
-        return current - 1;
-    }
-    return current;
+    return setCyclicParameter<std::size_t, Lights::ANIMATION_SLOT_CNT - 1>(current, dir,
+        Animation::ChangeType::RELATIVE);
 }
 
 }  // namespace
