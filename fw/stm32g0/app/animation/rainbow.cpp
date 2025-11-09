@@ -35,18 +35,24 @@ bool RainbowAnimation::setParamater(std::uint32_t param_id, int value, ChangeTyp
         else
         {
             if (value > 0)
-                setCyclicParameter<std::uint8_t, 15>(&(config_.space_increment), 1, ChangeType::RELATIVE);
+            {
+                config_.space_increment = setCyclicParameter<std::uint8_t, 15>(
+                    config_.space_increment, 1, ChangeType::RELATIVE);
+            }
             else if (value < 0)
-                setCyclicParameter<std::uint8_t, 15>(&(config_.time_increment), 1, ChangeType::RELATIVE);
+            {
+                config_.time_increment = setCyclicParameter<std::uint8_t, 15>(
+                    config_.time_increment, 1, ChangeType::RELATIVE);
+            }
         }
         return true;
 
     case ParamId::SPACE_INCREMENT:
-        setCyclicParameter<std::uint8_t, 15>(&(config_.space_increment), value, type);
+        config_.space_increment = setCyclicParameter<std::uint8_t, 15>(config_.space_increment, value, type);
         return true;
 
     case ParamId::TIME_INCREMENT:
-        setCyclicParameter<std::uint8_t, 15>(&(config_.time_increment), value, type);
+        config_.time_increment = setCyclicParameter<std::uint8_t, 15>(config_.time_increment, value, type);
         return true;
 
     default:

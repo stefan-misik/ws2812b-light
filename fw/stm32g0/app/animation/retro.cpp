@@ -83,8 +83,8 @@ bool RetroAnimation::setParamater(std::uint32_t param_id, int value, ChangeType 
     {
     case ParamId::VARIANT:
         reset();
-        setCyclicParameter<decltype(config_.variant), VARIANT_CNT - 1>(
-            &(config_.variant), value, type);
+        config_.variant = setCyclicParameter<decltype(config_.variant), VARIANT_CNT - 1>(
+            config_.variant, value, type);
         return true;
 
     default:

@@ -28,8 +28,8 @@ bool ColorAnimation::setParamater(std::uint32_t param_id, int value, ChangeType 
     {
     case Animation::ParamId::SECONDARY:
     case ParamId::COLOR_ID:
-        setCyclicParameter<decltype(config_.color), MY_COLOR_COUNT - 1>(
-            &(config_.color), value, type);
+        config_.color = setCyclicParameter<decltype(config_.color), MY_COLOR_COUNT - 1>(
+            config_.color, value, type);
         return true;
 
     default:

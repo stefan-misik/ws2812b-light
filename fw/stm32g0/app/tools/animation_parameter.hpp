@@ -35,13 +35,13 @@ enum class SetParameterType
  */
 template <std::integral T, T MAX_V = std::numeric_limits<T>::max(), T MIN_V = std::numeric_limits<T>::min(),
     SetParameterType SPT = SetParameterType::LIMIT>
-inline void setParameter(T * param_value, int value, Animation::ChangeType type)
+inline T setParameter(T param_value, int value, Animation::ChangeType type)
 {
     if (Animation::ChangeType::ABSOLUTE == type)
-        *param_value = static_cast<T>(value);
+        return static_cast<T>(value);
     else
     {
-        int new_value = static_cast<int>(*param_value);
+        int new_value = static_cast<int>(param_value);
         new_value += value;
         if constexpr (MAX_V != std::numeric_limits<T>::max() || MIN_V != std::numeric_limits<T>::min())
         {
@@ -60,21 +60,21 @@ inline void setParameter(T * param_value, int value, Animation::ChangeType type)
                     new_value = MIN_V;
             }
         }
-        *param_value = static_cast<T>(new_value);
+        return static_cast<T>(new_value);
     };
 }
 
 
 /** @copydoc setParameter() */
 template <std::integral T, T MAX_V = std::numeric_limits<T>::max(), T MIN_V = std::numeric_limits<T>::min()>
-inline void setCyclicParameter(T * param_value, int value, Animation::ChangeType type)
+inline T setCyclicParameter(T param_value, int value, Animation::ChangeType type)
 {
     return setParameter<T, MAX_V, MIN_V, SetParameterType::CYCLIC>(param_value, value, type);
 }
 
 /** @copydoc setParameter() */
 template <std::integral T, T MAX_V = std::numeric_limits<T>::max(), T MIN_V = std::numeric_limits<T>::min()>
-inline void setLimitParameter(T * param_value, int value, Animation::ChangeType type)
+inline T setLimitParameter(T param_value, int value, Animation::ChangeType type)
 {
     return setParameter<T, MAX_V, MIN_V, SetParameterType::LIMIT>(param_value, value, type);
 }

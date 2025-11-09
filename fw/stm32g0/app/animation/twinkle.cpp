@@ -96,13 +96,13 @@ bool TwinkleAnimation::setParamater(std::uint32_t param_id, int value, ChangeTyp
     {
     case Animation::ParamId::SECONDARY:
     case ParamId::FREQUENCY:
-        setLimitParameter<decltype(config_.frequency), 7>(
-            &(config_.frequency), value, type);
+        config_.frequency = setLimitParameter<decltype(config_.frequency), 7>(
+            config_.frequency, value, type);
         return true;
 
     case ParamId::VARIANT:
-        setCyclicParameter<decltype(config_.variant), VARIANT_CNT - 1>(
-            &(config_.variant), value, type);
+        config_.variant = setCyclicParameter<decltype(config_.variant), VARIANT_CNT - 1>(
+            config_.variant, value, type);
         return true;
 
     default:
