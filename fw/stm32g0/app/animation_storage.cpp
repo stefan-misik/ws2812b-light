@@ -1,9 +1,10 @@
 #include "app/animation_storage.hpp"
 
-#include "animation/color.hpp"
-#include "animation/rainbow.hpp"
-#include "animation/retro.hpp"
-#include "animation/twinkle.hpp"
+#include "app/animation/color.hpp"
+#include "app/animation/rainbow.hpp"
+#include "app/animation/retro.hpp"
+#include "app/animation/twinkle.hpp"
+#include "app/animation/shifting_color.hpp"
 #include "app/animation.hpp"
 
 
@@ -18,6 +19,8 @@ enum AnimationName: AnimationStorage::AnimationId
     ANIM_RETRO_LAST = ANIM_RETRO + (RetroAnimation::VARIANT_CNT - 1),
     ANIM_TWINKLE,
     ANIM_TWINKLE_LAST = ANIM_TWINKLE + (TwinkleAnimation::VARIANT_CNT - 1),
+    ANIM_SHIFTING_COLOR,
+    ANIM_SHIFTING_COLOR_LAST = ANIM_SHIFTING_COLOR + (ShiftingColorAnimation::VARIANT_CNT - 1),
 };
 
 }  // namespace
@@ -50,6 +53,13 @@ void AnimationStorage::change(AnimationId id)
         {
             const std::uint8_t variant_id = id - ANIM_TWINKLE;
             storage_->setParamater(TwinkleAnimation::VARIANT, variant_id);
+        }
+        break;
+    case ANIM_SHIFTING_COLOR ... ANIM_SHIFTING_COLOR_LAST:
+        storage_.create<ShiftingColorAnimation>();
+        {
+            const std::uint8_t variant_id = id - ANIM_SHIFTING_COLOR;
+            storage_->setParamater(ShiftingColorAnimation::VARIANT, variant_id);
         }
         break;
     }
