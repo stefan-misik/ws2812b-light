@@ -2,8 +2,8 @@
  * @file
  */
 
-#ifndef APP_COLOR_TOOLS_HPP_
-#define APP_COLOR_TOOLS_HPP_
+#ifndef APP_TOOLS_COLOR_HPP_
+#define APP_TOOLS_COLOR_HPP_
 
 #include "led_strip.h"
 
@@ -70,7 +70,4 @@ inline std::uint16_t incrementHue(std::uint16_t hue, std::int8_t value = 1)
         return new_value;
 }
 
-
-
-
-#endif  // APP_COLOR_TOOLS_HPP_
+#endif  // APP_TOOLS_COLOR_HPP_

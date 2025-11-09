@@ -1,4 +1,4 @@
-#include "app/color_tools.hpp"
+#include "app/tools/color.hpp"
 
 
 constexpr const LedState standard_colors[] =

@@ -32,6 +32,9 @@ SRC  =  \
         )  \
     )  \
     $(addprefix app/,  \
+        $(addprefix tools/,  \
+            color.cpp  \
+        )  \
         $(addprefix input/,  \
             keypad.cpp  \
             ir_remote.cpp  \
@@ -44,7 +47,6 @@ SRC  =  \
             shifting_color.cpp  \
         )  \
         animation_storage.cpp  \
-        color_tools.cpp  \
         led_correction.cpp  \
         event_queue.cpp  \
         input.cpp  \
