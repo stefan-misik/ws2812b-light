@@ -17,26 +17,27 @@ constexpr const LedState standard_colors[] =
 };
 
 
-void blendColors(LedState * color, const LedState & secondary, std::uint8_t num, std::uint8_t den)
+void blendColors(LedState * color, const LedState & secondary, std::uint16_t num, std::uint16_t den)
 {
-    const std::uint16_t secondary_blend = (static_cast<std::uint16_t>(num) * static_cast<std::uint16_t>(256)) /
-            static_cast<std::uint16_t>(den);
-    const std::uint16_t primary_blend = 256 - secondary_blend;
+    static const std::uint32_t POINT_POS = 16;
+    const std::uint32_t secondary_blend = (static_cast<std::uint32_t>(num) << POINT_POS) /
+            static_cast<std::uint32_t>(den);
+    const std::uint32_t primary_blend = (1u << POINT_POS) - secondary_blend;
 
-    std::uint16_t acc;
+    std::uint32_t acc;
 
     // Red
     acc = color->red * primary_blend;
     acc += secondary.red * secondary_blend;
-    color->red = acc >> 8;
+    color->red = acc >> POINT_POS;
     // Green
     acc = color->green * primary_blend;
     acc += secondary.green * secondary_blend;
-    color->green = acc >> 8;
+    color->green = acc >> POINT_POS;
     // Blue
     acc = color->blue * primary_blend;
     acc += secondary.blue * secondary_blend;
-    color->blue = acc >> 8;
+    color->blue = acc >> POINT_POS;
 }
 
 

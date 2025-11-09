@@ -48,7 +48,7 @@ inline void getColor(LedState * value, ColorId id)
  * @param num Numerator
  * @param den Denominator
  */
-void blendColors(LedState * color, const LedState & secondary, std::uint8_t num, std::uint8_t den);
+void blendColors(LedState * color, const LedState & secondary, std::uint16_t num, std::uint16_t den);
 
 /**
  * @brief Generate color with given hue value
