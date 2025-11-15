@@ -1,6 +1,7 @@
 #include "app/animation/shifting_color.hpp"
 
 #include <cstddef>
+#include <cstdint>
 #include <cstdlib>
 
 #include "led_strip.h"
@@ -124,20 +125,32 @@ private:
     }
 };
 
+
+template <std::size_t FB>
+inline std::uint32_t wholePartFixedPoint(std::uint32_t num)
+{
+    return num >> FB;
+}
+
+template <std::size_t FB>
+inline std::uint32_t fractionPartFixedPoint(std::uint32_t num)
+{
+    return num & (0xFFFFFFFFul >> (32 - FB));
+}
+
+template <std::size_t FB>
+inline std::uint32_t changeWholeFixedPoint(std::uint32_t num, std::uint32_t whole)
+{
+    return fractionPartFixedPoint<FB>(num) | (whole << FB);
+}
+
 }  // namespace
 
 
 void ShiftingColorAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
 {
-    if (0 != step_)
-    {
-        --step_;
-        return;
-    }
-    step_ = (15 - config_.speed);
-
-    const LedSize last = strip->prevId(state_.offset);
-    LedSize pos = state_.offset;
+    LedSize pos = wholePartFixedPoint<FRACTION_BITS>(state_.offset);
+    const LedSize last = strip->prevId(pos);
     SegmentWalker seg_w{config_.variant};
 
     while (true)
@@ -157,7 +170,14 @@ void ShiftingColorAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> 
         pos = strip->nextId(pos);
     }
 
-    state_.offset = strip->nextId(state_.offset);
+
+    {
+        std::uint32_t new_offset = state_.offset + config_.speed;
+        std::uint32_t new_pos = wholePartFixedPoint<FRACTION_BITS>(new_offset);
+        if (new_pos >= strip->led_count)
+            new_pos -= strip->led_count;
+        state_.offset = changeWholeFixedPoint<FRACTION_BITS>(new_offset, new_pos);
+    }
     (void) flags;
 }
 
@@ -167,7 +187,7 @@ bool ShiftingColorAnimation::setParamater(std::uint32_t param_id, int value, Cha
     {
     case Animation::ParamId::SECONDARY:
     case ParamId::SPEED:
-        config_.speed = setCyclicParameter<decltype(config_.speed), 15>(
+        config_.speed = setCyclicParameter<decltype(config_.speed), 16, 1>(
             config_.speed, value, type);
         return true;
 

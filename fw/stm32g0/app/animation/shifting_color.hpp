@@ -36,15 +36,17 @@ public:
     std::size_t restore(const void * buffer, std::size_t max_size, DataType type) override;
 
 private:
+    static const inline std::size_t FRACTION_BITS = 4;
+
     struct Configuration
     {
         std::uint8_t variant = 0;
-        std::uint8_t speed = 11;
+        std::uint8_t speed = 3;
     };
 
     struct State
     {
-        LedSize offset = 0;
+        std::uint32_t offset = 0;
     };
 
     Configuration config_;
