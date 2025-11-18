@@ -94,7 +94,7 @@ public:
     }
 
     const LedState & color() const { return current_.color; }
-    LedSize transitionLength() const { return current_.transition_length; }
+    LedSize transitionLength() const { return current_.transition_length + 1; }
 
     bool isTransitioning() const
     {
