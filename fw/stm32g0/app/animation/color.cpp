@@ -62,9 +62,9 @@ std::size_t ColorAnimation::store(void * buffer, std::size_t capacity, DataType 
 
 std::size_t ColorAnimation::restore(const void * buffer, std::size_t max_size, DataType type)
 {
-    Deserializer deser(buffer, max_size);
-    deser.deserialize(&config_);
+    Deserializer de_ser(buffer, max_size);
+    de_ser.deserialize(&config_);
     if (type == DataType::BOTH)
-        deser.deserialize(&state_);
-    return deser.processed(buffer);
+        de_ser.deserialize(&state_);
+    return de_ser.processed(buffer);
 }

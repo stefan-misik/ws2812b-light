@@ -19,7 +19,7 @@ public:
     using AnimationId = std::uint16_t;
 
     AnimationId animationId() const { return id_; }
-    void setAnimationId(AnimationId animid) { id_ = animid; }
+    void setAnimationId(AnimationId anim_id) { id_ = anim_id; }
 
     bool store(const Animation * anim, Animation::DataType type)
     {

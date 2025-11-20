@@ -138,7 +138,7 @@ public:
 
     template <typename... Ts>
     CommonLedCorrection(Ts &&... args):
-        writter_(std::forward<Ts>(args)...)
+        writer_(std::forward<Ts>(args)...)
     { }
 
     /** @copydoc LedCorrection::correct() */
@@ -150,14 +150,14 @@ public:
         std::uint8_t * buffer_pos = buffer;
         for (const LedState * leds_pos = leds; leds_pos != leds_end; ++leds_pos)
         {
-            writter_.writeLed(*leds_pos, buffer_pos);
+            writer_.writeLed(*leds_pos, buffer_pos);
             buffer_pos += LedWriterType::LED_LENGTH;
         }
         return buffer_pos - buffer;
     }
 
 private:
-    LedWriterType writter_;
+    LedWriterType writer_;
 };
 
 
