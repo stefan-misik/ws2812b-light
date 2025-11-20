@@ -5,7 +5,7 @@
             "name": "Debug with ST-Link",
             "preLaunchTask": "Build Debug",
             "cwd": "${workspaceFolder}",
-            "executable": "./Debug/ws2812b-light.elf",
+            "executable": "Debug/ws2812b-light.elf",
             "postLaunchCommands": [
                 "monitor halt",
                 "set $sp = &_estack",
@@ -36,7 +36,7 @@
             "name": "Run Release with ST-Link",
             "preLaunchTask": "Build Release",
             "cwd": "${workspaceFolder}",
-            "executable": "./Release/ws2812b-light.elf",
+            "executable": "Release/ws2812b-light.elf",
             "device": "STM32G070K8",
             "request": "launch",
             "type": "cortex-debug",
