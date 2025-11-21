@@ -46,6 +46,7 @@ SRC  =  \
             twinkle.cpp  \
             shifting_color.cpp  \
         )  \
+        music.cpp  \
         animation_storage.cpp  \
         led_correction.cpp  \
         event_queue.cpp  \
@@ -123,7 +124,7 @@ $(OUT): $(LDSCR)
 
 ################################################################################
 
-.PHONY: all clean
+.PHONY: all clean songs
 
 all: $(OUT) $(OUT_HEX)
 
@@ -133,7 +134,10 @@ include ../rules.mk
 $(OUT_HEX): $(OUT)
 	$(OCP) --strip-all $< -O ihex $@
 
-music.cpp: $(addprefix songs/,$(addsuffix .inc,$(SONGS)))
+app/music.cpp: songs
+songs:
+	$(MAKE) -C ../shared/songs all
 
 clean:
 	$(RM) -r Debug/ Release/
+	$(MAKE) -C ../shared/songs clean

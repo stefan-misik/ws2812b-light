@@ -13,6 +13,7 @@
 #include "app/input.hpp"
 #include "led_strip.hpp"
 #include "app/animation_register.hpp"
+#include "app/music.hpp"
 
 
 /**
@@ -63,7 +64,10 @@ private:
 
     std::array<AnimationRegister, ANIMATION_SLOT_CNT> animation_file_;
 
+    Music music_;
+
     void handleEvents();
+    Music::Result handleMusic();
     bool handleInputEvent(const Input::EventParam & e);
 
     void switchAnimation(int dir);

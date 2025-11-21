@@ -49,7 +49,17 @@ void Lights::step(std::uint32_t current_time)
 {
     input_.update(current_time, &event_queue_);
     handleEvents();
-    animation_->render(leds_.abstractPtr(), {});
+    {
+        const auto music_result = handleMusic();
+        Flags<Animation::RenderFlag> flags;
+        switch (music_result)
+        {
+        case Music::Result::CHANGE: flags.setFlag(Animation::RenderFlag::NOTE_CHANGED); break;
+        case Music::Result::STOPPED: flags.setFlag(Animation::RenderFlag::MUSIC_STOPPED); break;
+        default: break;
+        }
+        animation_->render(leds_.abstractPtr(), flags);
+    }
     io_.statusLeds().update();
     io_.ledController().update(leds_.abstractPtr());
 }
@@ -82,6 +92,25 @@ void Lights::handleEvents()
     }
 }
 
+Music::Result Lights::handleMusic()
+{
+    const auto result = music_.play();
+    switch (result)
+    {
+    case Music::Result::CHANGE:
+        io_.buzzer().playNote(music_.currentNote());
+        break;
+    case Music::Result::NONE:
+    case Music::Result::STOPPED:
+    case Music::Result::PRE_CHANGE:
+        io_.buzzer().playNote(MusicNote::InvalidNote());
+        break;
+    case Music::Result::PLAYING:
+        break;
+    }
+    return result;
+}
+
 bool Lights::handleInputEvent(const Input::EventParam & e)
 {
     if (0 == (e.flags & Input::KeyState::PRESS))
@@ -103,8 +132,10 @@ bool Lights::handleInputEvent(const Input::EventParam & e)
         animation_->setParamater(Animation::SECONDARY, -1, Animation::ChangeType::RELATIVE);
         return true;
     case Input::KeyId::KEY_O:
+        music_.change(1);
         return true;
     case Input::KeyId::KEY_X:
+        music_.change(-1);
         return true;
     default:
         return false;
