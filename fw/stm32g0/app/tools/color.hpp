@@ -5,7 +5,7 @@
 #ifndef APP_TOOLS_COLOR_HPP_
 #define APP_TOOLS_COLOR_HPP_
 
-#include "led_strip.h"
+#include "led_strip.hpp"
 
 static const inline std::uint16_t MAX_HUE = 0x02FF;
 

@@ -5,7 +5,7 @@
 #ifndef ANIMATION_H_
 #define ANIMATION_H_
 
-#include "led_strip.h"
+#include "led_strip.hpp"
 #include "buttons.h"
 #include "shared_storage.h"
 #include "nvm_storage.h"

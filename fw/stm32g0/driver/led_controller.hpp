@@ -8,7 +8,7 @@
 #include "tools/polymorphic_storage.hpp"
 #include "tools/hidden.hpp"
 #include "driver/common.hpp"
-#include "led_strip.h"
+#include "led_strip.hpp"
 #include "app/led_correction.hpp"
 
 

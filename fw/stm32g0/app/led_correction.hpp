@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <type_traits>
 
-#include "led_strip.h"
+#include "led_strip.hpp"
 
 
 /**

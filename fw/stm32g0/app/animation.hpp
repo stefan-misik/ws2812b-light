@@ -6,7 +6,7 @@
 #define APP_ANIMATION_H_
 
 #include "tools/flags.hpp"
-#include "led_strip.h"
+#include "led_strip.hpp"
 
 #include <cstddef>
 #include <cstdint>

@@ -6,7 +6,7 @@
 #define DRIVER_KEYPAD_HPP_
 
 #include "driver/common.hpp"
-#include "tools/button_filter.h"
+#include "tools/button_filter.hpp"
 
 
 namespace driver

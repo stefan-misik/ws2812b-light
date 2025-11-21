@@ -5,7 +5,7 @@
 #ifndef SHARED_MUSIC_NOTE_HPP_
 #define SHARED_MUSIC_NOTE_HPP_
 
-#include "defs.h"
+#include "defs.hpp"
 
 
 /**

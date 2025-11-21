@@ -2,7 +2,7 @@
 
 #include <avr/pgmspace.h>
 
-#include "led_strip.h"
+#include "led_strip.hpp"
 
 
 static const LedState twinkle_sparks_seq[] PROGMEM =

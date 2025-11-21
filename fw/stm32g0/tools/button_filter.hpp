@@ -2,8 +2,8 @@
  * @file
  */
 
-#ifndef TOOLS_BUTTON_FILTER_H_
-#define TOOLS_BUTTON_FILTER_H_
+#ifndef TOOLS_BUTTON_FILTER_HPP_
+#define TOOLS_BUTTON_FILTER_HPP_
 
 #include <cstdint>
 
@@ -45,4 +45,4 @@ private:
 };
 
 
-#endif  // TOOLS_BUTTON_FILTER_H_
+#endif  // TOOLS_BUTTON_FILTER_HPP_

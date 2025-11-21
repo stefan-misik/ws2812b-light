@@ -5,7 +5,7 @@
 #ifndef SHARED_TOOLS_BUTTON_FILTER_H_
 #define SHARED_TOOLS_BUTTON_FILTER_H_
 
-#include "defs.h"
+#include "defs.hpp"
 
 class ButtonFilter
 {

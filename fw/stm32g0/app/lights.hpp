@@ -11,7 +11,7 @@
 #include "app/animation_storage.hpp"
 #include "app/event_queue.hpp"
 #include "app/input.hpp"
-#include "led_strip.h"
+#include "led_strip.hpp"
 #include "app/animation_register.hpp"
 
 

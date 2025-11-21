@@ -6,7 +6,7 @@
 
 #include <avr/pgmspace.h>
 
-#include "led_strip.h"
+#include "led_strip.hpp"
 
 static const uint16_t MAX_HUE = 0x02FF;
 

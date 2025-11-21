@@ -9,7 +9,7 @@
 #include <stdint.h>
 
 #include "tools/color.h"
-#include "led_strip.h"
+#include "led_strip.hpp"
 
 
 /**

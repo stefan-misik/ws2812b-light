@@ -2,8 +2,8 @@
  * @file
  */
 
-#ifndef SHARED_DEFS_H_
-#define SHARED_DEFS_H_
+#ifndef SHARED_DEFS_HPP_
+#define SHARED_DEFS_HPP_
 
 #ifdef STM32
 #include <cstddef>
@@ -40,4 +40,4 @@ using UintPtr = AUTOSELECT_VALUE(std::uintptr_t, uintptr_t);
 
 }  // namespace def
 
-#endif  // SHARED_DEFS_H_
+#endif  // SHARED_DEFS_HPP_
