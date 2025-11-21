@@ -3,7 +3,7 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include "tools/id_selector.h"
-#include "song.h"
+#include "song.hpp"
 
 
 namespace

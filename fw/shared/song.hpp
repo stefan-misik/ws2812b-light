@@ -2,13 +2,13 @@
  * @file
  */
 
-#ifndef SONG_H_
-#define SONG_H_
+#ifndef SONG_HPP_
+#define SONG_HPP_
 
-#include <avr/pgmspace.h>
+#include "defs.hpp"
 
 
-enum class NoteLength: uint8_t
+enum class NoteLength: def::Uint8
 {
     WHOLE = 0,
     HALF_DOT, HALF,
@@ -46,7 +46,7 @@ enum class NoteLength: uint8_t
 class MusicElement
 {
 public:
-    enum class ControlType: uint8_t
+    enum class ControlType: def::Uint8
     {
         FLOW = 0,
         SET_OCTAVE,
@@ -55,54 +55,54 @@ public:
         CONTROL_COUNT_,
     };
 
-    enum ControlFlowParam: uint8_t
+    enum ControlFlowParam: def::Uint8
     {
         CONTROL_FLOW_TERMINATE = 0,
         CONTROL_FLOW_LOOP_END = 0x0F,
     };
 
-    static const uint8_t NOTE_START = static_cast<uint8_t>(ControlType::CONTROL_COUNT_);
+    static const def::Uint8 NOTE_START = static_cast<def::Uint8>(ControlType::CONTROL_COUNT_);
 
     static constexpr NoteLength toNoteLength(ControlType control)
     {
-        return static_cast<NoteLength>(static_cast<uint8_t>(control) - NOTE_START);
+        return static_cast<NoteLength>(static_cast<def::Uint8>(control) - NOTE_START);
     }
 
     constexpr MusicElement(const MusicElement &) = default;
     constexpr MusicElement & operator =(const MusicElement &) = default;
-    constexpr MusicElement(uint8_t code): code_(code) { }
-    constexpr MusicElement & operator =(uint8_t code)
+    constexpr MusicElement(def::Uint8 code): code_(code) { }
+    constexpr MusicElement & operator =(def::Uint8 code)
     {
         code_ = code;
         return *this;
     }
 
-    constexpr operator uint8_t() const { return code_; }
+    constexpr operator def::Uint8() const { return code_; }
 
-    constexpr MusicElement(NoteLength length, int8_t note_diff):
-            code_(((NOTE_START + static_cast<uint8_t>(length)) << 4) | static_cast<uint8_t>(note_diff + 8))
+    constexpr MusicElement(NoteLength length, def::Int8 note_diff):
+            code_(((NOTE_START + static_cast<def::Uint8>(length)) << 4) | static_cast<def::Uint8>(note_diff + 8))
     { }
 
-    constexpr MusicElement(ControlType control, uint8_t param):
-            code_((static_cast<uint8_t>(control) << 4) | param)
+    constexpr MusicElement(ControlType control, def::Uint8 param):
+            code_((static_cast<def::Uint8>(control) << 4) | param)
     { }
 
     static constexpr MusicElement Terminate() { return MusicElement{ControlType::FLOW, 0}; }
-    static constexpr MusicElement BeginLoop(uint8_t count) { return MusicElement{ControlType::FLOW, count}; }
+    static constexpr MusicElement BeginLoop(def::Uint8 count) { return MusicElement{ControlType::FLOW, count}; }
     static constexpr MusicElement EndLoop() { return MusicElement{ControlType::FLOW, CONTROL_FLOW_LOOP_END}; }
-    static constexpr MusicElement SetOctave(uint8_t octave) { return MusicElement{ControlType::SET_OCTAVE, octave}; }
+    static constexpr MusicElement SetOctave(def::Uint8 octave) { return MusicElement{ControlType::SET_OCTAVE, octave}; }
     static constexpr MusicElement Silence(NoteLength length)
     {
-        return MusicElement{ControlType::SILENCE, static_cast<uint8_t>(length)};
+        return MusicElement{ControlType::SILENCE, static_cast<def::Uint8>(length)};
     }
 
     ControlType controlType() const { return static_cast<ControlType>(code_ >> 4); }
-    uint8_t param() const { return code_ & 0x0F; }
-    int8_t noteDiff() const { return static_cast<int8_t>(param()) - 8; }
+    def::Uint8 param() const { return code_ & 0x0F; }
+    def::Int8 noteDiff() const { return static_cast<def::Int8>(param()) - 8; }
 
 private:
-    uint8_t code_;
+    def::Uint8 code_;
 };
 
 
-#endif  // SONG_H_
+#endif  // SONG_HPP_

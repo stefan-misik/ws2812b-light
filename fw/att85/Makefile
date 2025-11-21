@@ -41,10 +41,6 @@ SRC  =  \
     )  \
     animation_list.cpp
 
-SONGS =  \
-    silent_night  \
-    jingle_bells
-
 DEFINE    = F_CPU=$(DEF_FREQ)UL __$(DEF_MCU)__ LED_ORDER=$(LED_ORDER)
 INCLUDE   = . ../shared
 CPPFLAGS  =
@@ -60,13 +56,16 @@ OUT_LSS = $(OUT:.elf=.lss)
 
 ################################################################################
 
-.PHONY: all clean stats prog fuses
+.PHONY: all clean stats prog fuses songs
 
 all: $(OUT) $(OUT_HEX) $(OUT_LSS) stats
 
 include ../rules.mk
 
-music.cpp: $(addprefix songs/,$(addsuffix .inc,$(SONGS)))
+music.cpp: songs
+
+songs:
+	$(MAKE) -C ../shared/songs
 
 stats: $(OUT)
 	$(SZ) $(SIZEFLAGS) $<
@@ -86,6 +85,4 @@ $(OUT_LSS): $(OUT)
 
 clean:
 	$(RM) $(CLEANUP) $(OUT_HEX) $(OUT_LSS) songs/*.inc
-
-%.inc: %.tune
-	python songs/compose.py $< -o $@
+	$(MAKE) -C ../shared/songs clean
