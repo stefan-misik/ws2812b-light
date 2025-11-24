@@ -23,7 +23,7 @@ class Lights
 {
 public:
 
-    static const inline std::size_t ANIMATION_SLOT_CNT = 13;
+    static const inline std::size_t ANIMATION_SLOT_CNT = 14;
 
     Lights();
 

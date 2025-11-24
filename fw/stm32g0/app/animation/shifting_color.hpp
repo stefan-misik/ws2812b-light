@@ -12,7 +12,7 @@ class ShiftingColorAnimation final:
         public Animation
 {
 public:
-    static const inline std::uint8_t VARIANT_CNT = 5;
+    static const inline std::uint8_t VARIANT_CNT = 6;
 
     enum ParamId: std::uint32_t
     {

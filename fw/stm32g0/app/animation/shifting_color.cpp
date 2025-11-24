@@ -51,6 +51,13 @@ const Segment seq_4[] =
         {LedState{0x00, 0x00, 0x00}, 0, 0},
 };
 
+const Segment seq_5[] =
+{
+        {LedState{0x02, 0xF5, 0xC4}, 40, 20},
+        {LedState{0xE9, 0x45, 0xCB}, 40, 20},
+        {LedState{0x00, 0x00, 0x00}, 0, 0},
+};
+
 const Segment * const seqs[] =
 {
         seq_0,
@@ -58,6 +65,7 @@ const Segment * const seqs[] =
         seq_2,
         seq_3,
         seq_4,
+        seq_5,
         nullptr
 };
 
