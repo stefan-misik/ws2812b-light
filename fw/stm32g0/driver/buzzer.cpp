@@ -134,6 +134,12 @@ void setCompare(::TIM_TypeDef * tim, std::uint32_t channel, std::uint8_t value)
     }
 }
 
+inline void resetOutput(::TIM_TypeDef * tim, std::uint32_t channel)
+{
+    ::LL_TIM_OC_SetMode(tim, channel, LL_TIM_OCMODE_FORCED_INACTIVE);
+    ::LL_TIM_OC_SetMode(tim, channel, LL_TIM_OCMODE_TOGGLE);
+}
+
 
 }  // namespace
 
@@ -198,6 +204,10 @@ void Buzzer::playNote(MusicNote note)
     {
         ::LL_TIM_SetPrescaler(priv.tim, 2 << 12);
         ::LL_TIM_SetAutoReload(priv.tim, 0);
+
+        // Force toggling output-compare output into low state, otherwise ther's
+        // 50:50 chance that outputs stays high, causing buzzer to whine
+        resetOutput(priv.tim, priv.channel);
     }
 }
 
