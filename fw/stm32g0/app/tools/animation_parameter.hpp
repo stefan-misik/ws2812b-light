@@ -9,7 +9,6 @@
 #include <concepts>
 
 #include "app/animation.hpp"
-#include "stm32g070xx.h"
 
 
 /** @brief Type of set function behavior when reaching limits of the parameter value */
