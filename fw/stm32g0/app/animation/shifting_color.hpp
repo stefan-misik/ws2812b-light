@@ -51,7 +51,6 @@ private:
 
     Configuration config_;
     State state_;
-    std::uint8_t step_ = 0;
 };
 
 

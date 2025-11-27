@@ -201,7 +201,7 @@ bool ShiftingColorAnimation::setParamater(std::uint32_t param_id, int value, Cha
     case ParamId::VARIANT:
         config_.variant = setCyclicParameter<decltype(config_.variant), VARIANT_CNT - 1>(
             config_.variant, value, type);
-        step_ = 0;
+        state_.offset = 0;
         return true;
 
     default:
