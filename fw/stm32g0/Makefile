@@ -120,17 +120,17 @@ ifeq ($(strip $(DBG)),yes)
 LDFLAGS += -Wl,--defsym=_Fw_Offset=64K
 endif
 
-$(OUT): $(LDSCR)
-
 ################################################################################
 
 .PHONY: all clean songs
 
-all: $(OUT) $(OUT_HEX)
+all: $(OUT_HEX)
+
+# Make output binary depend on linker script
+$(OUT): $(LDSCR)
 
 include ../rules.mk
 
-#$(error $(OUT_HEX))
 $(OUT_HEX): $(OUT)
 	$(OCP) --strip-all $< -O ihex $@
 
