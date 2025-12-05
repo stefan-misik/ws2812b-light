@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Animation Test",
+            "type": "debugpy",
+            "request": "launch",
+            "preLaunchTask": "Build Debug",
+            "program": "${workspaceFolder}/animation_test.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "LLDB: Animation Test",
+            "type": "lldb",
+            "request": "launch",
+            "preLaunchTask": "Build Debug",
+            "program": "${command:python.interpreterPath}",
+            "args": [
+                "${workspaceFolder}/animation_test.py"
+            ]
+        }
+    ]
+}

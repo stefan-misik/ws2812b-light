@@ -5,6 +5,10 @@
 			"name": "✨ ws2812b-lights"
 		},
 		{
+			"path": "tool",
+			"name": "🧰 tool"
+		},
+		{
 			"path": "fw/stm32g0",
 			"name": "🟩 stm32g0"
 		},

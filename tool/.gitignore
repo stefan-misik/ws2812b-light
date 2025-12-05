@@ -1,3 +1,6 @@
 # Python environment
 .venv/
 venv/
+
+# Compiled Python dynamic module
+*.pyd
