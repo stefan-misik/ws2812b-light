@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "presentation": {
+        "panel": "dedicated",
+        "focus": true,
+        "revealProblems": "onProblem"
+    },
+    "tasks": [
+        {
+            "label": "Build Debug",
+            "type": "shell",
+            "command": "make -j8 -O DBG=yes",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "detail": "Compiles project in Debug mode"
+        }
+    ]
+}
