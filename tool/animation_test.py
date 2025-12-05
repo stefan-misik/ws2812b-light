@@ -1,15 +1,13 @@
 from abc import ABC, abstractmethod
 from math import ceil
-from dataclasses import dataclass
+from itertools import chain
+from functools import partial
 import tkinter as tk
 from tkinter import ttk
+import animations
 
 
-@dataclass
-class Color:
-    red: int
-    green: int
-    blue: int
+Color = animations.LedState
 
 
 def blend(first: Color, second: Color, num: int, den: int) -> Color:
@@ -25,7 +23,7 @@ def blend(first: Color, second: Color, num: int, den: int) -> Color:
 
 class Animation(ABC):
     @abstractmethod
-    def render(self, lights: list[Color]):
+    def render(self, lights: animations.LedStrip):
         pass
 
     @abstractmethod
@@ -43,7 +41,7 @@ class ColorGridModel(ABC):
         pass
 
     @abstractmethod
-    def render(self, lights: list[Color]) -> int:
+    def render(self, lights: animations.LedStrip) -> int:
         pass
 
     @abstractmethod
@@ -52,20 +50,22 @@ class ColorGridModel(ABC):
 
 
 class ColorGridView:
-    _ROW_LENGTH = 10
-    _ROW_COUNT = 10
-    _LIGHT_COUNT = _ROW_LENGTH * _ROW_COUNT
+    _ROW_LENGTH = 20
     _INTERVAL = 8  # ms
 
     def __init__(self, root, model: ColorGridModel):
         self._model = model
         self._root = root
         self._root.title("Color Grid Application")
-        self._lights = [Color(0, 0, 0) for _ in range(self._LIGHT_COUNT)]
+        self._led_strip = animations.LedStrip()
         self._is_playing = False
 
+        # Root frame
+        root_frame = ttk.Frame(root)
+        root_frame.pack(side=tk.TOP, fill=tk.BOTH)
+
         # Top Frame for controls
-        top_frame = ttk.Frame(root)
+        top_frame = ttk.Frame(root_frame)
         top_frame.pack(side=tk.TOP, fill=tk.X, pady=10)
 
         # Combobox for color schemes
@@ -80,7 +80,7 @@ class ColorGridView:
         ttk.Label(top_frame, text="Counter:").pack(side=tk.RIGHT, padx=5)
 
         # Mid Frame for controls
-        mid_frame = ttk.Frame(root)
+        mid_frame = ttk.Frame(root_frame)
         mid_frame.pack(side=tk.TOP, fill=tk.X, pady=10)
 
         # Buttons
@@ -94,22 +94,31 @@ class ColorGridView:
         random_btn.pack(side=tk.LEFT, expand=True, anchor=tk.W, padx=5)
 
         # Canvas for circles
-        self._canvas = tk.Canvas(root, width=400, height=400, bg="black", borderwidth=4, relief="groove")
+        self._canvas = tk.Canvas(
+            root_frame,
+            width=40 * self._ROW_LENGTH, height=65 * ceil(len(self._led_strip) / self._ROW_LENGTH),
+            bg="black", borderwidth=4, relief="groove"
+        )
         self._canvas.pack(pady=10)
         # Grid of circles
         self._light_circles = []
         padding = 10
+        ext_padding = 25
         circle_radius = 15
-        for i in range(ceil(self._ROW_COUNT)):
-            for j in range(self._ROW_LENGTH):
-                x = padding + j * (circle_radius * 2 + padding) + circle_radius
-                y = padding + i * (circle_radius * 2 + padding) + circle_radius
-                light = self._canvas.create_oval(
-                    x - circle_radius, y - circle_radius,
-                    x + circle_radius, y + circle_radius,
-                    fill="black", outline="gray"
-                )
-                self._light_circles.append(light)
+        for light_id in range(len(self._led_strip)):
+            row = light_id // self._ROW_LENGTH
+            row_start = row * self._ROW_LENGTH
+            row_pos = light_id - row_start
+            col = row_pos if 0 == (row & 0x1) else (self._ROW_LENGTH - 1 - row_pos)
+            row_section = 0 if 0 == row_pos else (2 if (self._ROW_LENGTH - 1) == row_pos else 1)
+            x = padding + col * (circle_radius * 2 + padding) + circle_radius
+            y = padding + row * (circle_radius * 2 + (ext_padding + padding)) + circle_radius + \
+                (row_section * ext_padding // 2)
+            light = self._canvas.create_oval(
+                x - circle_radius, y - circle_radius, x + circle_radius, y + circle_radius,
+                fill="black", outline="gray"
+            )
+            self._light_circles.append(light)
         self._render_frame()
 
     def _on_animation_change(self, event):
@@ -140,97 +149,38 @@ class ColorGridView:
             self._render_frame()
 
     def _render_frame(self):
-        count = self._model.render(self._lights)
+        count = self._model.render(self._led_strip)
         self._update_lights()
         self._frame_counter.set(count)
 
     def _update_lights(self):
-        for light_id, color in enumerate(self._lights):
-            row = light_id // self._ROW_LENGTH
-            row_start = row * self._ROW_LENGTH
-            row_pos = light_id - row_start
-            circle_pos = row_start + (row_pos if 0 == (0x1 & row) else self._ROW_LENGTH - row_pos - 1)
-            self._canvas.itemconfig(
-                self._light_circles[circle_pos], fill=f"#{color.red:02x}{color.green:02x}{color.blue:02x}"
-            )
+        for light_id, circle in enumerate(self._light_circles):
+            color = self._led_strip[light_id]
+            self._canvas.itemconfig(circle, fill=f"#{color.red:02x}{color.green:02x}{color.blue:02x}")
 
 
-class ShiftingColorAnimation(Animation):
-    @dataclass
-    class Segment:
-        color: Color
-        length: int
-        transition_length: int
+class NativeAnimation(Animation):
+    def __init__(self, anim_id: int):
+        self._anim_id = anim_id
+        storage = animations.AnimationStorage()
+        storage.change(self._anim_id)
+        self._anim = storage.get()
 
-    _SEQ = (
-        (
-            Segment(Color(0xFF, 0x00, 0x00), 25, 10),
-            Segment(Color(0x00, 0xFF, 0x00), 25, 10),
-            Segment(Color(0xC0, 0x5F, 0x00), 25, 10),
-            Segment(Color(0x00, 0x00, 0xFF), 25, 10),
-        ),
-    )
-
-    _FRACTION_BITS = 8
-
-
-    class _SequenceWalker:
-        def _make_segment(self):
-            seg = self._seq[self._id]
-            return ShiftingColorAnimation.Segment(
-                seg.color,
-                seg.length << ShiftingColorAnimation._FRACTION_BITS,
-                seg.transition_length << ShiftingColorAnimation._FRACTION_BITS,
-            )
-
-        def __init__(self, seq: tuple["ShiftingColorAnimation.Segment"]):
-            self._seq: tuple[ShiftingColorAnimation.Segment] = seq
-            self._id = 0
-            self._segment = self._make_segment()
-
-        def start(self, offset: int) -> int:
-            seg_len = sum(s.length for s in self._seq) << ShiftingColorAnimation._FRACTION_BITS
-            offset = offset % seg_len
-
-            # Rewind to correct segment
-            remaining = offset
-            seg_id = 0
-            seg_len = 0
-            while remaining > seg_len:
-                remaining -= seg_len
-                seg_id = seg_id - 1 if seg_id != 0 else len(self._seq) - 1
-                seg_len = self._seq[seg_id].length << ShiftingColorAnimation._FRACTION_BITS
-            self._id = seg_id
-            self._segment = self._make_segment()
-            self._segment.length = seg_len - remaining
-            return offset
-
-        def next(self) -> Color:
-            pass
-
-
-    def __init__(self, variant: int, speed: int = 3):
-        self._variant = variant
-        self._speed = speed
-        self._offset = 0
-
-    def render(self, lights: list[Color]):
-        for n, cl in enumerate(lights):
-            cl.red = 0xFF if n == self._offset else 0x00
-            cl.green = 0x00
-            cl.blue = 0x00
-        self._offset = (self._offset + 1) % len(lights)
+    def render(self, lights):
+        self._anim.render(lights)
 
     def reset(self):
-        self._offset = 0
+        storage = animations.AnimationStorage()
+        storage.change(self._anim_id)
+        self._anim = storage.get()
 
 
 class MyModel(ColorGridModel):
-    _ANIMATIONS = (
-        (
-            "Shifting Color (0)",
-            lambda: ShiftingColorAnimation(0)
-        ),
+    _ANIMATIONS = tuple(
+        chain(
+            ((f"Native animation {n}", partial(NativeAnimation, n)) for n in range(14)),
+            ()
+        )
     )
 
     def __init__(self):
@@ -244,7 +194,7 @@ class MyModel(ColorGridModel):
         self._animation = self._ANIMATIONS[anim_id][1]()
         self._count = 0
 
-    def render(self, lights: list[Color]) -> int:
+    def render(self, lights: animations.LedStrip) -> int:
         frame_id = self._count
         self._count += 1
         self._animation.render(lights)
