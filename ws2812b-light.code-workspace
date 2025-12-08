@@ -127,7 +127,7 @@
 				],
 				"command": "bear --output ${workspaceFolder}/compile_commands.json -- make -j8 -O DBG=yes",
 				"windows": {
-					"command": "make -j8 -O DBG=yes | compiledb --full-path -v -f -o ${workspaceFolder}/compile_commands.json"
+					"command": "make -j8 -O DBG=yes | compiledb --full-path -v -f -o '${workspaceFolder}/compile_commands.json'"
 				},
 				"group": {
 					"kind": "none",
