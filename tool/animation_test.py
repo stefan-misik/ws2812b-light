@@ -35,6 +35,10 @@ class Animation(ABC):
         pass
 
     @abstractmethod
+    def status(self) -> str:
+        pass
+
+    @abstractmethod
     def reset(self):
         pass
 
@@ -73,6 +77,8 @@ class ColorGridView:
         self._root.title("Color Grid Application")
         self._led_strip = animations.LedStrip()
         self._is_playing = False
+
+        style = ttk.Style()
 
         # Root frame
         root_frame = ttk.Frame(root)
@@ -123,6 +129,14 @@ class ColorGridView:
 
         random_btn = ttk.Button(mid_frame, text="⏸", command=self._on_pause)
         random_btn.pack(side=tk.LEFT, expand=True, anchor=tk.W, padx=5)
+
+        # Status text
+        self._status_txt = tk.Text(root_frame, width=90, height=5, state=tk.DISABLED)
+        self._status_txt.config(
+            bg=style.lookup('TLabel', 'background') or self._status_txt.cget('bg'),
+            fg=style.lookup('TLabel', 'foreground') or self._status_txt.cget('fg')
+        )
+        self._status_txt.pack(expand=True, pady=5)
 
         # Canvas for circles
         self._canvas = tk.Canvas(
@@ -208,16 +222,46 @@ class ColorGridView:
         count = self._model.render(self._led_strip)
         self._update_lights()
         self._frame_counter.set(count)
+        self._update_status()
+
+    def _update_status(self):
+        colors = " ".join(
+            f"#{color.red:02X}{color.green:02X}{color.blue:02X}" for color in (self._led_strip[n] for n in range(9))
+        )
+        anim_status = self._model.animation().status()
+        self._set_status("\n".join((anim_status, colors)) if len(anim_status) > 0 else colors)
 
     def _update_lights(self):
         for light_id, circle in enumerate(self._light_circles):
             color = self._led_strip[light_id]
             self._canvas.itemconfig(circle, fill=f"#{color.red:02x}{color.green:02x}{color.blue:02x}")
 
+    def _set_status(self, text: str):
+        self._status_txt.config(state=tk.NORMAL)
+        self._status_txt.delete(0.0, tk.END)
+        self._status_txt.insert(0.0,text)
+        self._status_txt.config(state=tk.DISABLED)
+
 
 class NativeAnimation(Animation):
+    class StateObserver(ABC):
+        @abstractmethod
+        def observe(self, state: memoryview) -> str:
+            pass
+
+
+    class DummyStateObserver(StateObserver):
+        def observe(self, state: memoryview) -> str:
+            return " ".join(f"{x:02X}" for x in state)
+
+    @classmethod
+    def _make_observer(cls, nim_id: int) -> StateObserver:
+        return cls.DummyStateObserver()
+
     def __init__(self, anim_id: int):
+        self._state = bytearray(1024)
         self._anim_id = anim_id
+        self._observer = self._make_observer(anim_id)
         self._storage = animations.AnimationStorage()
         self._storage.change(self._anim_id)
         self._anim = self._storage.get()
@@ -231,13 +275,16 @@ class NativeAnimation(Animation):
     def set_parameter(self, param_id: int, value: int) -> bool:
         return self._anim.set_parameter(param_id, value)
 
+    def status(self) -> str:
+        data_len = self._anim.store(self._state, animations.DataType.BOTH)
+        return self._observer.observe((memoryview(self._state))[:data_len])
+
     def reset(self):
-        data = bytearray(1024)
-        data_len = self._anim.store(data, animations.DataType.ONLY_CONFIG)
+        data_len = self._anim.store(self._state, animations.DataType.ONLY_CONFIG)
         self._storage.change(self._anim_id)
         self._anim = self._storage.get()
         if data_len > 0:
-            self._anim.restore((memoryview(data))[:data_len], animations.DataType.ONLY_CONFIG)
+            self._anim.restore((memoryview(self._state))[:data_len], animations.DataType.ONLY_CONFIG)
 
 
 class MyModel(ColorGridModel):
