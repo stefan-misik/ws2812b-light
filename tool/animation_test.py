@@ -27,6 +27,14 @@ class Animation(ABC):
         pass
 
     @abstractmethod
+    def get_parameter(self, param_id: int) -> int | None:
+        pass
+
+    @abstractmethod
+    def set_parameter(self, param_id: int, value: int) -> bool:
+        pass
+
+    @abstractmethod
     def reset(self):
         pass
 
@@ -48,10 +56,16 @@ class ColorGridModel(ABC):
     def reset(self):
         pass
 
+    @abstractmethod
+    def animation(self) -> Animation:
+        pass
+
 
 class ColorGridView:
     _ROW_LENGTH = 20
     _INTERVAL = 8  # ms
+    _BAD_PARAM_VALUE = -9999
+
 
     def __init__(self, root, model: ColorGridModel):
         self._model = model
@@ -78,6 +92,23 @@ class ColorGridView:
         ttk.Entry(top_frame, width=10, textvariable=self._frame_counter, state="readonly", justify=tk.RIGHT) \
             .pack(side=tk.RIGHT)
         ttk.Label(top_frame, text="Counter:").pack(side=tk.RIGHT, padx=5)
+
+        # Upper Frame for controls
+        upper_frame = ttk.Frame(root_frame)
+        upper_frame.pack(side=tk.TOP, fill=tk.X, pady=10)
+
+        # Parameter
+        ttk.Label(upper_frame, text="Parameters:", justify=tk.RIGHT) \
+            .pack(side=tk.LEFT, expand=True, anchor=tk.E, padx=5)
+        self._param_id_var = tk.IntVar(value=65536)
+        param_id_sb = ttk.Spinbox(upper_frame, from_=0, to=(1 << 32) - 1, increment=1, \
+            textvariable=self._param_id_var, command=self._on_param_id_change)
+        param_id_sb.pack(side=tk.LEFT, expand=False, anchor=tk.W, padx=5)
+
+        self._param_var = tk.IntVar(value=0)
+        param_sb = ttk.Spinbox(upper_frame, from_=-(1 << 31), to=(1 << 31) - 1, increment=1, \
+            textvariable=self._param_var, command=self._on_param_change)
+        param_sb.pack(side=tk.LEFT, expand=True, anchor=tk.W, padx=5)
 
         # Mid Frame for controls
         mid_frame = ttk.Frame(root_frame)
@@ -119,16 +150,29 @@ class ColorGridView:
                 fill="black", outline="gray"
             )
             self._light_circles.append(light)
-        self._render_frame()
+        self._reload()
 
     def _on_animation_change(self, event):
         self._model.set_animation(event.widget.current())
-        self._render_frame()
+        self._reload()
+
+    def _on_param_id_change(self):
+        self._read_param()
+
+    def _on_param_change(self):
+        success = self._model.animation().set_parameter(
+            self._param_id_var.get(), self._param_var.get()
+        )
+        if not success:
+            self._param_var.set(self._BAD_PARAM_VALUE)
+        else:
+            if not self._is_playing:
+                self._render_frame()
 
     def _on_stop(self):
         self._is_playing = False
         self._model.reset()
-        self._render_frame()
+        self._reload()
 
     def _on_play(self):
         if not self._is_playing:
@@ -148,6 +192,18 @@ class ColorGridView:
             self._root.after(self._INTERVAL, self._on_animate)
             self._render_frame()
 
+    def _reload(self):
+        if not self._is_playing:
+            self._render_frame()
+        self._read_param()
+
+    def _read_param(self):
+        value = self._model.animation().get_parameter(self._param_id_var.get())
+        if value is None:
+            self._param_var.set(self._BAD_PARAM_VALUE)
+            return
+        self._param_var.set(value)
+
     def _render_frame(self):
         count = self._model.render(self._led_strip)
         self._update_lights()
@@ -162,17 +218,26 @@ class ColorGridView:
 class NativeAnimation(Animation):
     def __init__(self, anim_id: int):
         self._anim_id = anim_id
-        storage = animations.AnimationStorage()
-        storage.change(self._anim_id)
-        self._anim = storage.get()
+        self._storage = animations.AnimationStorage()
+        self._storage.change(self._anim_id)
+        self._anim = self._storage.get()
 
     def render(self, lights):
         self._anim.render(lights)
 
+    def get_parameter(self, param_id: int) -> int | None:
+        return self._anim.get_parameter(param_id)
+
+    def set_parameter(self, param_id: int, value: int) -> bool:
+        return self._anim.set_parameter(param_id, value)
+
     def reset(self):
-        storage = animations.AnimationStorage()
-        storage.change(self._anim_id)
-        self._anim = storage.get()
+        data = bytearray(1024)
+        data_len = self._anim.store(data, animations.DataType.ONLY_CONFIG)
+        self._storage.change(self._anim_id)
+        self._anim = self._storage.get()
+        if data_len > 0:
+            self._anim.restore((memoryview(data))[:data_len], animations.DataType.ONLY_CONFIG)
 
 
 class MyModel(ColorGridModel):
@@ -203,6 +268,9 @@ class MyModel(ColorGridModel):
     def reset(self):
         self._animation.reset()
         self._count = 0
+
+    def animation(self) -> Animation:
+        return self._animation
 
 
 if __name__ == "__main__":
