@@ -1,10 +1,36 @@
 from abc import ABC, abstractmethod
-from math import ceil
+from math import ceil, floor
 from itertools import chain
 from functools import partial
 import tkinter as tk
 from tkinter import ttk
+import time
 import animations
+
+
+class PeriodicTimer:
+    __slots__ = '_start',
+
+    NOT_ELAPSED = 0
+    DONE = 1
+    MORE_PENDING = 2
+
+    @staticmethod
+    def _time() -> int:
+        return floor(time.perf_counter() * 1000.0) & 0xFFFFFFFF
+
+    def __init__(self):
+        self._start = self._time()
+
+    def reset(self, diff: int = 0) -> None:
+        self._start = self._time() + diff
+
+    def has_elapsed(self, period: int) -> int:
+        diff = (self._time() - self._start) & 0xFFFFFFFF
+        if diff < period:
+            return self.NOT_ELAPSED
+        self._start = (self._start + period) & 0xFFFFFFFF
+        return self.DONE if diff < (2 * period) else self.MORE_PENDING
 
 
 Color = animations.LedState
@@ -67,6 +93,7 @@ class ColorGridModel(ABC):
 
 class ColorGridView:
     _ROW_LENGTH = 20
+    _POLLING_INTERVAL = 3  # ms (must be shorter than actual animation interval)
     _INTERVAL = 8  # ms
     _BAD_PARAM_VALUE = -9999
 
@@ -77,6 +104,7 @@ class ColorGridView:
         self._root.title("Color Grid Application")
         self._led_strip = animations.LedStrip()
         self._is_playing = False
+        self._periodic_timer = PeriodicTimer()
 
         style = ttk.Style()
 
@@ -191,6 +219,7 @@ class ColorGridView:
     def _on_play(self):
         if not self._is_playing:
             self._is_playing = True
+            self._periodic_timer.reset(-self._INTERVAL)  # Ensure the frame is immediately rendered
             self._on_animate()
         else:
             self._is_playing = False
@@ -203,8 +232,13 @@ class ColorGridView:
 
     def _on_animate(self):
         if self._is_playing:
-            self._root.after(self._INTERVAL, self._on_animate)
-            self._render_frame()
+            self._root.after(self._POLLING_INTERVAL, self._on_animate)
+            while True:
+                timer_result = self._periodic_timer.has_elapsed(self._INTERVAL)
+                if PeriodicTimer.NOT_ELAPSED == timer_result:
+                    break
+                # Only render the frame onto the GUI when current frame is last one for the time
+                self._render_frame(do_update=(PeriodicTimer.DONE == timer_result))
 
     def _reload(self):
         if not self._is_playing:
@@ -218,11 +252,12 @@ class ColorGridView:
             return
         self._param_var.set(value)
 
-    def _render_frame(self):
+    def _render_frame(self, do_update: bool = True):
         count = self._model.render(self._led_strip)
-        self._update_lights()
-        self._frame_counter.set(count)
-        self._update_status()
+        if do_update:
+            self._update_lights()
+            self._frame_counter.set(count)
+            self._update_status()
 
     def _update_status(self):
         colors = " ".join(
