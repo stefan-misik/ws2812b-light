@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
 from math import ceil, floor
+from struct import Struct
 from itertools import chain
 from functools import partial
 import tkinter as tk
 from tkinter import ttk
 import time
+from typing import Any, Tuple, Iterable
 import animations
 
 
@@ -285,13 +287,60 @@ class NativeAnimation(Animation):
             pass
 
 
+    class StructStateObserver(StateObserver):
+        def __init__(self, structs: Tuple[Struct, ...], templates: Tuple[str, ...]) -> None:
+            self._structs = structs
+            self._templates = templates
+
+        def observe(self, state: memoryview) -> str:
+            def unpack_all(structs: Tuple[Struct, ...], data: memoryview) -> Iterable[Tuple[Any, ...]]:
+                offset = 0
+                for s in structs:
+                    yield s.unpack_from(data, offset)
+                    offset += s.size
+            return ", ".join(
+                template.format(value) for template, value in \
+                    zip(self._templates, chain(*unpack_all(self._structs, state)))
+            )
+
+    class ShiftingColorAnimationStateObserver(StateObserver):
+        _FRACTION_BITS = 4
+        _CONFIG_STRUCT = Struct("@BB")
+        _STATE_STRUCT = Struct("@I")
+
+        def observe(self, state: memoryview) -> str:
+            variant, speed = self._CONFIG_STRUCT.unpack_from(state, 0)
+            offset, = self._STATE_STRUCT.unpack_from(state, self._CONFIG_STRUCT.size)
+            return f"Variant: {variant}, Speed: {speed}, " \
+                f"Offset: {offset >> self._FRACTION_BITS:3} + " \
+                f"{offset & ((1 << self._FRACTION_BITS) - 1):3}/{1 << self._FRACTION_BITS}"
+
+
     class DummyStateObserver(StateObserver):
         def observe(self, state: memoryview) -> str:
             return " ".join(f"{x:02X}" for x in state)
 
     @classmethod
-    def _make_observer(cls, nim_id: int) -> StateObserver:
-        return cls.DummyStateObserver()
+    def _make_observer(cls, anim_id: int) -> StateObserver:
+        if 0 == anim_id:
+            return cls.StructStateObserver(
+                (Struct("@B"), ),
+                ("color ID: {}", )
+            )
+        elif 1 == anim_id:
+            return cls.StructStateObserver(
+                (Struct("@BBH"), ),
+                ("Space increment: {}", "Time Increment: {}", "Hue: {}")
+            )
+        elif 2 <= anim_id <= 5:
+            return cls.StructStateObserver(
+                (Struct("@BB"), ),
+                ("Variant: {}", "State: {}")
+            )
+        elif 8 <= anim_id <= 13:
+            return cls.ShiftingColorAnimationStateObserver()
+        else:
+            return cls.DummyStateObserver()
 
     def __init__(self, anim_id: int):
         self._state = bytearray(1024)
