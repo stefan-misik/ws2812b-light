@@ -310,7 +310,7 @@ class NativeAnimation(Animation):
             )
 
     class ShiftingColorAnimationStateObserver(StateObserver):
-        _FRACTION_BITS = 4
+        _FRACTION_BITS = 8
         _CONFIG_STRUCT = Struct("@BB")
         _STATE_STRUCT = Struct("@I")
 

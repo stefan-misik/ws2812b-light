@@ -73,118 +73,116 @@ const Segment * const seqs[] =
 static_assert(ShiftingColorAnimation::VARIANT_CNT == (sizeof(seqs) / sizeof(seqs[0])) - 1, "Fix variant count");
 
 
-class SegmentWalker
+class SequenceWalker
 {
 public:
-    SegmentWalker(std::uint8_t type):
-        start_(seqs[type]),
-        next_ptr_(start_ + 1),
-        current_()
-    {
-        readSegment(&current_, start_);
-        readSegment(&next_, next_ptr_);
-    }
+    static const inline std::uint8_t FRACTION_BITS = ShiftingColorAnimation::FRACTION_BITS;
 
-    void next()
+    SequenceWalker(const Segment * sequence):
+        begin_(sequence),
+        end_(findEnd(sequence)),
+        current_(sequence),
+        offset_(0ul)
+    { }
+
+    std::uint32_t rewind(std::uint32_t offset)
     {
-        if (0 == current_.length)
+        const std::uint32_t actual_offset = wrapByTotalLength(offset);
+
+        const Segment * segment = begin_;
+        std::uint32_t remaining = actual_offset;
+
+        while (0 != remaining)
         {
-            current_ = next_;
-            ++next_ptr_;
-            if (!readSegment(&next_, next_ptr_))
-            {
-                next_ptr_ = start_;
-                readSegment(&next_, next_ptr_);
-            }
+            segment = prev(segment);
+            const std::uint32_t segment_len = (segment->length << FRACTION_BITS);
+            if (remaining < segment_len)
+                break;
+            remaining -= segment_len;
         }
-        --current_.length;
+
+        current_ = segment;
+        offset_ = 0 == remaining ? 0 : (segment->length << FRACTION_BITS) - remaining;
+        return actual_offset;
     }
 
-    const LedState & color() const { return current_.color; }
-    LedSize transitionLength() const { return current_.transition_length + 1; }
-
-    bool isTransitioning() const
+    void step(LedState * color, std::uint32_t post_increment)
     {
-        return current_.length < current_.transition_length;
-    }
+        const std::uint32_t current_length = current_->length << FRACTION_BITS;
+        const std::uint32_t transition_length = current_->transition_length << FRACTION_BITS;
+        const std::uint32_t remaining = current_length - offset_;
+        const Segment * next_seg = next(current_);
 
-    LedSize transitionPosition() const
-    {
-        return current_.transition_length - current_.length;
-    }
+        *color = current_->color;
+        if (remaining < transition_length)
+            blendColors(color, next_seg->color, transition_length - remaining, transition_length);
 
-    const LedState & nextColor() const { return next_.color; }
+        std::uint32_t new_offset = offset_ + post_increment;
+        if (new_offset >= current_length)
+        {
+            new_offset = new_offset - current_length;
+            current_ = next_seg;
+        }
+        offset_ = new_offset;
+    }
 
 private:
-    const Segment * const start_;
-    const Segment * next_ptr_;
-    Segment current_;
-    Segment next_;
+    const Segment * const begin_;
+    const Segment * const end_;
+    const Segment * current_;
+    std::uint32_t offset_;
 
-    static bool readSegment(Segment * segment, const Segment * src_segment)
+    static const Segment * findEnd(const Segment * sequence)
     {
-        const LedSize length = src_segment->length;
-        if (0 == length)
-            return false;
+        const Segment * segment = sequence;
+        while (segment->length != 0)
+            ++segment;
+        return segment;
+    }
 
-        *segment = *src_segment;
-        return true;
+    std::uint32_t wrapByTotalLength(std::uint32_t offset) const
+    {
+        const std::uint32_t total_length = totalLength();
+        return offset % total_length;
+    }
+
+    std::uint32_t totalLength() const
+    {
+        std::uint32_t total = 0;
+        for (auto it = begin_; it != end_; ++it)
+            total += (it->length << FRACTION_BITS);
+        return total;
+    }
+
+    const Segment * next(const Segment * it) const
+    {
+        ++it;
+        if (it == end_)
+            return begin_;
+        return it;
+    }
+
+    const Segment * prev(const Segment * it) const
+    {
+        if (it == begin_)
+            return end_ - 1;
+        --it;
+        return it;
     }
 };
-
-
-template <std::size_t FB>
-inline std::uint32_t wholePartFixedPoint(std::uint32_t num)
-{
-    return num >> FB;
-}
-
-template <std::size_t FB>
-inline std::uint32_t fractionPartFixedPoint(std::uint32_t num)
-{
-    return num & (0xFFFFFFFFul >> (32 - FB));
-}
-
-template <std::size_t FB>
-inline std::uint32_t changeWholeFixedPoint(std::uint32_t num, std::uint32_t whole)
-{
-    return fractionPartFixedPoint<FB>(num) | (whole << FB);
-}
 
 }  // namespace
 
 
 void ShiftingColorAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
 {
-    LedSize pos = wholePartFixedPoint<FRACTION_BITS>(state_.offset);
-    const LedSize last = strip->prevId(pos);
-    SegmentWalker seg_w{config_.variant};
+    SequenceWalker seq_walker(seqs[config_.variant]);
 
-    while (true)
-    {
-        seg_w.next();
+    state_.offset = seq_walker.rewind(state_.offset + (config_.speed << 4));
 
-        LedState color = seg_w.color();
-        if (seg_w.isTransitioning())
-        {
-            blendColors(&color, seg_w.nextColor(),
-                seg_w.transitionPosition(), seg_w.transitionLength());
-        }
-        (*strip)[pos] = color;
+    for (auto & led : *strip)
+        seq_walker.step(&led, 1ul << FRACTION_BITS);
 
-        if (pos == last)
-            break;
-        pos = strip->nextId(pos);
-    }
-
-
-    {
-        std::uint32_t new_offset = state_.offset + config_.speed;
-        std::uint32_t new_pos = wholePartFixedPoint<FRACTION_BITS>(new_offset);
-        if (new_pos >= strip->led_count)
-            new_pos -= strip->led_count;
-        state_.offset = changeWholeFixedPoint<FRACTION_BITS>(new_offset, new_pos);
-    }
     (void) flags;
 }
 
