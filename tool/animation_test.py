@@ -3,6 +3,7 @@ from math import ceil, floor
 from struct import Struct
 from itertools import chain
 from functools import partial
+import argparse
 import tkinter as tk
 from tkinter import ttk
 import time
@@ -194,6 +195,11 @@ class ColorGridView:
                 fill="black", outline="gray"
             )
             self._light_circles.append(light)
+        self._reload()
+
+    def change_animation(self, anim_id: int):
+        self._animation.current(anim_id)
+        self._model.set_animation(anim_id)
         self._reload()
 
     def _on_animation_change(self, event):
@@ -404,9 +410,15 @@ class MyModel(ColorGridModel):
         return self._animation
 
 
+_ARGS = argparse.ArgumentParser(description="Animation tester")
+_ARGS.add_argument('-a', '--animation', help='Animation to select after start', type=int, required=False, default=0)
+
+
 if __name__ == "__main__":
     root = tk.Tk()
     style = ttk.Style()
     style.theme_use('alt')
     app = ColorGridView(root, MyModel())
+    args = _ARGS.parse_args()
+    app.change_animation(args.animation)
     root.mainloop()

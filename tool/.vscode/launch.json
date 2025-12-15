@@ -7,6 +7,9 @@
             "request": "launch",
             "preLaunchTask": "Build Debug",
             "program": "${workspaceFolder}/animation_test.py",
+            "args": [
+                "-a 13"
+            ],
             "console": "integratedTerminal"
         },
         {
@@ -16,7 +19,8 @@
             "preLaunchTask": "Build Debug",
             "program": "${command:python.interpreterPath}",
             "args": [
-                "${workspaceFolder}/animation_test.py"
+                "${workspaceFolder}/animation_test.py",
+                "-a 13"
             ]
         }
     ]
