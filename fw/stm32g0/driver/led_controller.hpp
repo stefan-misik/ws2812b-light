@@ -25,6 +25,14 @@ public:
 
     static const inline std::size_t MAX_DATA_LENGTH = 300;
 
+    static const inline std::uint32_t DEFAULT_INTENSITY = 0x60;
+
+    enum class LedOrder
+    {
+        ORDER_RGB = 0,
+        ORDER_GRB,
+    };
+
     LedController();
     ~LedController();
 
@@ -52,6 +60,14 @@ public:
      * @brief Handle the DMA interrupt
      */
     void maybeHandleDmaInterrupt();
+
+    /**
+     * @brief Configure LED driver
+     *
+     * @param order Order of LED components
+     * @param intensity Intensity of the LEDs (256 ~ 100%)
+     */
+    void configure(LedOrder order, std::uint32_t intensity = DEFAULT_INTENSITY);
 
 private:
     PolymorphicStorage<LedCorrection, 32> correction_;

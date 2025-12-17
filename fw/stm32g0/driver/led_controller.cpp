@@ -418,7 +418,7 @@ struct LedController::Private
 };
 
 LedController::LedController():
-    correction_(TypeTag<CommonLedCorrection<DimmingLedWriter<>>>{}, 0x60)
+    correction_(TypeTag<CommonLedCorrection<DimmingLedWriter<ComponentWriterRGB>>>{}, DEFAULT_INTENSITY)
 {
 }
 
@@ -505,6 +505,19 @@ void LedController::maybeHandleDmaInterrupt()
     }
 
     priv.data.readInto(half, &priv.dma_buffer);
+}
+
+void LedController::configure(LedOrder order, std::uint32_t intensity)
+{
+    switch (order)
+    {
+    case LedOrder::ORDER_RGB:
+        correction_.create<CommonLedCorrection<DimmingLedWriter<ComponentWriterRGB>>>(intensity);
+        break;
+    case LedOrder::ORDER_GRB:
+        correction_.create<CommonLedCorrection<DimmingLedWriter<ComponentWriterGRB>>>(intensity);
+        break;
+    }
 }
 
 }  // namespace driver
