@@ -81,8 +81,7 @@ public:
     SequenceWalker(const Segment * sequence):
         begin_(sequence),
         end_(findEnd(sequence)),
-        current_(sequence),
-        offset_(0ul)
+        current_(sequence)
     { }
 
     std::uint32_t rewind(std::uint32_t offset)
@@ -102,35 +101,48 @@ public:
         }
 
         current_ = segment;
-        offset_ = 0 == remaining ? 0 : (segment->length << FRACTION_BITS) - remaining;
+        state_.fill(segment);
+        if (0 != remaining)  // If remaining is 0, the whole segment is actually remaining
+            state_.remaining = remaining;
         return actual_offset;
     }
 
     void step(LedState * color, std::uint32_t post_increment)
     {
-        const std::uint32_t current_length = current_->length << FRACTION_BITS;
-        const std::uint32_t transition_length = current_->transition_length << FRACTION_BITS;
-        const std::uint32_t remaining = current_length - offset_;
+        const auto & state = state_;
         const Segment * next_seg = next(current_);
 
         *color = current_->color;
-        if (remaining < transition_length)
-            blendColors(color, next_seg->color, transition_length - remaining, transition_length);
+        if (state.remaining < state.transition_length)
+            blendColors(color, next_seg->color, state.transition_length - state.remaining, state.transition_length);
 
-        std::uint32_t new_offset = offset_ + post_increment;
-        if (new_offset >= current_length)
+
+        if (state.remaining <= post_increment)
         {
-            new_offset = new_offset - current_length;
+            post_increment -= state.remaining;
             current_ = next_seg;
+            state_.fill(next_seg);
         }
-        offset_ = new_offset;
+        state_.remaining -= post_increment;
     }
 
 private:
+    struct State
+    {
+        std::uint32_t remaining = 0ul;
+        std::uint32_t transition_length = 0ul;
+
+        void fill(const Segment * seg)
+        {
+            remaining = seg->length << FRACTION_BITS;
+            transition_length = seg->transition_length << FRACTION_BITS;
+        }
+    };
+
     const Segment * const begin_;
     const Segment * const end_;
     const Segment * current_;
-    std::uint32_t offset_;
+    State state_;
 
     static const Segment * findEnd(const Segment * sequence)
     {
