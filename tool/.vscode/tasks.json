@@ -8,16 +8,17 @@
     "tasks": [
         {
             "label": "Clean Project",
+            "detail": "Cleans all build files",
             "type": "shell",
             "command": "make clean",
             "group": {
                 "kind": "build",
                 "isDefault": false,
-            },
-            "detail": "Cleans all build files"
+            }
         },
         {
             "label": "Make Compile Commands",
+            "detail": "Compiles project in Debug mode and generates compile_commands.json",
             "type": "shell",
             "dependsOn": [
                 "Clean Project"
@@ -32,11 +33,11 @@
             },
             "problemMatcher": [
                 "$gcc"
-            ],
-            "detail": "Compiles project in Debug mode and generates compile_commands.json"
+            ]
         },
         {
             "label": "Build Debug",
+            "detail": "Compiles project in Debug mode",
             "type": "shell",
             "command": "make -j8 -O DBG=yes PYTHON=${command:python.interpreterPath}",
             "windows":{
@@ -51,8 +52,7 @@
             },
             "problemMatcher": [
                 "$gcc"
-            ],
-            "detail": "Compiles project in Debug mode"
+            ]
         }
     ]
 }

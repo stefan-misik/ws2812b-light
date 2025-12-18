@@ -72,10 +72,6 @@
 		],
 		// Project settings
 		"C_Cpp.intelliSenseEngine": "disabled",
-		"clangd.arguments": [
-			"--background-index",
-			"--query-driver=/usr/bin/arm-none-eabi-*"
-		],
 		"vsicons.associations.folders": [
 			{
 				"icon": "helper",
@@ -113,48 +109,6 @@
 			"cwd": "${fileWorkspaceFolder}"
 		},
 		"tasks": [
-			{
-				"label": "Clean Project",
-				"type": "shell",
-				"command": "make clean",
-				"group": {
-					"kind": "build",
-					"isDefault": false,
-				},
-				"detail": "Cleans all build files"
-			},
-			{
-				"label": "Make Compile Commands",
-				"type": "shell",
-				"dependsOn": [
-					"Clean Project"
-				],
-				"command": "bear --output ${workspaceFolder}/compile_commands.json -- make -j8 -O DBG=yes",
-				"windows": {
-					"command": "make -j8 -O DBG=yes | compiledb --full-path -v -f -o '${workspaceFolder}/compile_commands.json'"
-				},
-				"group": {
-					"kind": "none",
-					"isDefault": false
-				},
-				"problemMatcher": [
-					"$gcc"
-				],
-				"detail": "Compiles project in Debug mode and generates compile_commands.json"
-			},
-			{
-				"label": "Build Release",
-				"type": "shell",
-				"command": "make -j8 -O DBG=no",
-				"group": {
-					"kind": "build",
-					"isDefault": false
-				},
-				"problemMatcher": [
-					"$gcc"
-				],
-				"detail": "Compiles project in Release mode"
-			}
 		]
 	}
 }

@@ -18,14 +18,14 @@
         },
         {
             "label": "Make Compile Commands",
-            "detail": "Compiles project in Debug mode and generates compile_commands.json",
+            "detail": "Compiles project and generates compile_commands.json",
             "type": "shell",
             "dependsOn": [
                 "Clean Project"
             ],
-            "command": "bear --output ${workspaceFolder}/../../compile_commands.json -- make -j8 -O DBG=yes",
+            "command": "bear --output ${workspaceFolder}/../../compile_commands.json -- make -j8 -O",
             "windows": {
-                "command": "make -j8 -O DBG=yes | compiledb --full-path -v -f -o '${workspaceFolder}/../../compile_commands.json'"
+                "command": "make -j8 -O | compiledb --full-path -v -f -o '${workspaceFolder}/../../compile_commands.json'"
             },
             "group": {
                 "kind": "none",
@@ -36,23 +36,10 @@
             ]
         },
         {
-            "label": "Build Release",
-            "detail": "Compiles project in Release mode",
+            "label": "Build",
+            "detail": "Compiles project",
             "type": "shell",
-            "command": "make -j8 -O DBG=no",
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "problemMatcher": [
-                "$gcc"
-            ]
-        },
-        {
-            "label": "Build Debug",
-            "detail": "Compiles project in Debug mode",
-            "type": "shell",
-            "command": "make -j8 -O DBG=yes",
+            "command": "make -j8 -O",
             "group": {
                 "kind": "build",
                 "isDefault": true
