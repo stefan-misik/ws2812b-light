@@ -46,13 +46,16 @@ INCLUDE   = . ../shared
 CPPFLAGS  =
 CFLAGS    = -ggdb -Os -Wall -Wno-array-bounds -mmcu=$(MCU)
 CXXFLAGS  = -ggdb -Os -Wall -Wno-array-bounds -mmcu=$(MCU) -std=c++14 -fno-exceptions
-LDFLAGS   = -ggdb -Os -mmcu=$(MCU) -Wl,-Map=$(PROJ).map
+LDFLAGS   = -ggdb -Os -mmcu=$(MCU)
 LDLIBS    =
 SIZEFLAGS = -C --mcu=$(MCU)
-BUILDDIR = build
+BUILDDIR = _build
 OUT = $(BUILDDIR)/$(PROJ).elf
 OUT_HEX = $(OUT:.elf=.hex)
 OUT_LSS = $(OUT:.elf=.lss)
+
+# Generate map file
+LDFLAGS += -Wl,-Map=$(OUT:.elf=.map)
 
 ################################################################################
 
@@ -84,5 +87,5 @@ $(OUT_LSS): $(OUT)
 	$(ODP) -h -S $<  > $@
 
 clean:
-	$(RM) $(CLEANUP) $(OUT_HEX) $(OUT_LSS) songs/*.inc
+	$(RM) -r _build
 	$(MAKE) -C ../shared/songs clean

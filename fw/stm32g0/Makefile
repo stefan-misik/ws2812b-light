@@ -57,11 +57,11 @@ SRC  =  \
     )
 
 ifeq ($(strip $(DBG)),yes)
-BUILDDIR = Debug
+BUILDDIR = _build/debug
 OPTFLAGS = -Og
 DEBUGDEFINE = DEBUG
 else
-BUILDDIR = Release
+BUILDDIR = _build/release
 OPTFLAGS = -Og
 DEBUGDEFINE = NDEBUG
 endif
@@ -139,5 +139,5 @@ songs:
 	$(MAKE) -C ../shared/songs all
 
 clean:
-	$(RM) -r Debug/ Release/
+	$(RM) -r _build
 	$(MAKE) -C ../shared/songs clean

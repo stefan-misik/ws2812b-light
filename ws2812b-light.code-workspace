@@ -88,8 +88,7 @@
 			{
 				"icon": "dist",
 				"extensions": [
-					"Debug",
-					"Release"
+					"_build"
 				]
 			}
 		]

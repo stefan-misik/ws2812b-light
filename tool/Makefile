@@ -14,11 +14,11 @@ SRC =  \
     animations.cpp
 
 ifeq ($(strip $(DBG)),yes)
-BUILDDIR = Debug
+BUILDDIR = _build/debug
 OPTFLAGS = -Og
 DEBUGDEFINE = DEBUG
 else
-BUILDDIR = Release
+BUILDDIR = _build/release
 OPTFLAGS = -Og
 DEBUGDEFINE = NDEBUG
 endif
@@ -57,7 +57,7 @@ all: $(OUT)
 include ../fw/rules.mk
 
 clean:
-	$(RM) -r Debug/ Release/ $(INSTALL)
+	$(RM) -r _build/ $(INSTALL)
 
 stubs: $(STUBS)
 
