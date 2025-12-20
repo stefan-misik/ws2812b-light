@@ -108,6 +108,15 @@
 			"cwd": "${fileWorkspaceFolder}"
 		},
 		"tasks": [
+			{
+				"label": "Clean clangd",
+				"type": "shell",
+				"command": "rm -f -r .cache",
+				"options": {
+					"cwd": "${workspaceFolder}"
+				},
+				"problemMatcher": []
+			}
 		]
 	}
 }
