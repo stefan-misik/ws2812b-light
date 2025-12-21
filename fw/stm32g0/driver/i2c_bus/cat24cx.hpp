@@ -22,6 +22,11 @@ public:
     void createRequest(I2cBus * bus);
 
 private:
+    std::uint16_t waiting_ = 0;
+    std::uint16_t address_ = 0;
+
+    char buffer_[256];
+    char data_[1];
 };
 
 }  // namespace i2c
