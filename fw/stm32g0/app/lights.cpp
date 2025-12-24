@@ -59,6 +59,7 @@ void Lights::step(std::uint32_t current_time)
         default: break;
         }
         animation_->render(leds_.abstractPtr(), flags);
+        modifier_.modify(leds_.abstractPtr());
     }
     io_.statusLeds().update();
     io_.ledController().update(leds_.abstractPtr());
@@ -136,6 +137,9 @@ bool Lights::handleInputEvent(const Input::EventParam & e)
         return true;
     case Input::KeyId::KEY_X:
         music_.change(-1);
+        return true;
+    case Input::KeyId::KEY_0:
+        modifier_.next();
         return true;
     default:
         return false;
