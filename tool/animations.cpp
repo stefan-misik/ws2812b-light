@@ -78,6 +78,8 @@ PYBIND11_MODULE(animations, m)
 
 
     py::class_<AnimationStorage>(m, "AnimationStorage")
+        .def_readonly_static("ANIMATION_COUNT", &AnimationStorage::ANIMATION_COUNT)
+
         .def(py::init<>())
 
         .def("change", &AnimationStorage::change, py::arg("anim_id"))

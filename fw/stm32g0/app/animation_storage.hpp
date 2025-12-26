@@ -15,6 +15,8 @@ public:
     using AnimationId = AnimationRegister::AnimationId;
     using Storage = PolymorphicStorage<Animation, 64>;
 
+    static const inline std::size_t ANIMATION_COUNT = 14;
+
     AnimationStorage();
 
     Animation * get() { return storage_.get(); }

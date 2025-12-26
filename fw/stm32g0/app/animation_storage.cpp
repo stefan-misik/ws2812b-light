@@ -21,7 +21,11 @@ enum AnimationName: AnimationStorage::AnimationId
     ANIM_TWINKLE_LAST = ANIM_TWINKLE + (TwinkleAnimation::VARIANT_CNT - 1),
     ANIM_SHIFTING_COLOR,
     ANIM_SHIFTING_COLOR_LAST = ANIM_SHIFTING_COLOR + (ShiftingColorAnimation::VARIANT_CNT - 1),
+
+    ANIMATION_COUNT_,
 };
+
+static_assert(AnimationStorage::ANIMATION_COUNT == ANIMATION_COUNT_, "Check animation count");
 
 }  // namespace
 

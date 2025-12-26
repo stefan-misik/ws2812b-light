@@ -24,7 +24,7 @@ class Lights
 {
 public:
 
-    static const inline std::size_t ANIMATION_SLOT_CNT = 14;
+    static const inline std::size_t ANIMATION_SLOT_CNT = AnimationStorage::ANIMATION_COUNT;
 
     Lights();
 

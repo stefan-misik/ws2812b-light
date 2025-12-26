@@ -380,7 +380,8 @@ class NativeAnimation(Animation):
 class MyModel(ColorGridModel):
     _ANIMATIONS = tuple(
         chain(
-            ((f"Native animation {n}", partial(NativeAnimation, n)) for n in range(14)),
+            ((f"Native animation {n}", partial(NativeAnimation, n)) for n in \
+                range(animations.AnimationStorage.ANIMATION_COUNT)),
             ()
         )
     )
