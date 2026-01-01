@@ -5,6 +5,7 @@
 #include "app/animation/retro.hpp"
 #include "app/animation/twinkle.hpp"
 #include "app/animation/shifting_color.hpp"
+#include "app/animation/lights.hpp"
 #include "app/animation.hpp"
 
 
@@ -21,6 +22,8 @@ enum AnimationName: AnimationStorage::AnimationId
     ANIM_TWINKLE_LAST = ANIM_TWINKLE + (TwinkleAnimation::VARIANT_CNT - 1),
     ANIM_SHIFTING_COLOR,
     ANIM_SHIFTING_COLOR_LAST = ANIM_SHIFTING_COLOR + (ShiftingColorAnimation::VARIANT_CNT - 1),
+    ANIM_LIGHTS,
+    ANIM_LIGHTS_LAST = ANIM_LIGHTS + ((LightsAnimation::VARIANT_CNT * 2) - 1),
 
     ANIMATION_COUNT_,
 };
@@ -64,6 +67,17 @@ void AnimationStorage::change(AnimationId id)
         {
             const std::uint8_t variant_id = id - ANIM_SHIFTING_COLOR;
             storage_->setParamater(ShiftingColorAnimation::VARIANT, variant_id);
+        }
+        break;
+    case ANIM_LIGHTS ... ANIM_LIGHTS_LAST:
+        storage_.create<LightsAnimation>();
+        {
+            const std::uint8_t modifier = id - ANIM_LIGHTS;
+            const std::uint8_t variant_id = modifier >= LightsAnimation::VARIANT_CNT ?
+                modifier - LightsAnimation::VARIANT_CNT : modifier;
+            const bool is_synchronized = modifier >= LightsAnimation::VARIANT_CNT;
+            storage_->setParamater(LightsAnimation::VARIANT, variant_id);
+            storage_->setParamater(LightsAnimation::SYNCHRONIZED, is_synchronized);
         }
         break;
     }

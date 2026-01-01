@@ -45,6 +45,7 @@ SRC  =  \
             retro.cpp  \
             twinkle.cpp  \
             shifting_color.cpp  \
+            lights.cpp  \
         )  \
         music.cpp  \
         animation_storage.cpp  \
