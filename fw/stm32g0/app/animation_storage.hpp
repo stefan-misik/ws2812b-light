@@ -13,7 +13,7 @@ class AnimationStorage
 {
 public:
     using AnimationId = AnimationRegister::AnimationId;
-    using Storage = PolymorphicStorage<Animation, 64>;
+    using Storage = PolymorphicStorage<Animation, 256>;
 
     static const inline std::size_t ANIMATION_COUNT = 14;
 
