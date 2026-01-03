@@ -350,10 +350,9 @@ class NativeAnimation(Animation):
 
     def __init__(self, anim_id: int):
         self._state = bytearray(1024)
-        self._anim_id = anim_id
         self._observer = self._make_observer(anim_id)
         self._storage = animations.AnimationStorage()
-        self._storage.change(self._anim_id)
+        self._storage.change(anim_id)
         self._anim = self._storage.get()
 
     def render(self, lights):
@@ -371,7 +370,7 @@ class NativeAnimation(Animation):
 
     def reset(self):
         data_len = self._anim.store(self._state, animations.DataType.ONLY_CONFIG)
-        self._storage.change(self._anim_id)
+        self._storage.initialize_current_slot()
         self._anim = self._storage.get()
         if data_len > 0:
             self._anim.restore((memoryview(self._state))[:data_len], animations.DataType.ONLY_CONFIG)
@@ -381,7 +380,7 @@ class MyModel(ColorGridModel):
     _ANIMATIONS = tuple(
         chain(
             ((f"Native animation {n}", partial(NativeAnimation, n)) for n in \
-                range(animations.AnimationStorage.ANIMATION_COUNT)),
+                range(animations.AnimationStorage.SLOT_COUNT)),
             ()
         )
     )

@@ -11,25 +11,15 @@ namespace
 
 inline std::size_t changeAnimation(std::size_t current, int dir)
 {
-    return setCyclicParameter<std::size_t, Lights::ANIMATION_SLOT_CNT - 1>(current, dir,
+    return setCyclicParameter<std::size_t, AnimationStorage::SLOT_COUNT - 1>(current, dir,
         Animation::ChangeType::RELATIVE);
 }
 
 }  // namespace
 
 
-Lights::Lights():
-        current_register_(0u)
+Lights::Lights()
 {
-    {
-        std::size_t animation_id = 0ul;
-        for (auto & anim : animation_file_)
-        {
-            anim.setAnimationId(animation_id++);
-            anim.reset();
-        }
-    }
-    animation_.change(animation_file_[current_register_].animationId());
 }
 
 bool Lights::initialize()
@@ -150,15 +140,7 @@ bool Lights::handleInputEvent(const Input::EventParam & e)
 
 void Lights::switchAnimation(int dir)
 {
-    const std::size_t next_id = changeAnimation(current_register_, dir);
-    if (next_id == current_register_)
-        return;
-
-    animation_file_[current_register_].store(animation_.get(), Animation::DataType::BOTH);
-
-    auto & reg = animation_file_[next_id];
-    animation_.change(reg.animationId());
-    reg.restore(animation_.get(), Animation::DataType::BOTH);
-    current_register_ = next_id;
+    const std::size_t next_id = changeAnimation(animation_.slotId(), dir);
+    animation_.change(next_id);
 }
 

@@ -12,7 +12,6 @@
 #include "app/event_queue.hpp"
 #include "app/input.hpp"
 #include "led_strip.hpp"
-#include "app/animation_register.hpp"
 #include "app/music.hpp"
 #include "app/led_strip_modifier.hpp"
 
@@ -23,9 +22,6 @@
 class Lights
 {
 public:
-
-    static const inline std::size_t ANIMATION_SLOT_CNT = AnimationStorage::ANIMATION_COUNT;
-
     Lights();
 
     /**
@@ -56,14 +52,11 @@ public:
 private:
     Io io_;
 
-    std::size_t current_register_;
     AnimationStorage animation_;
 
     EventQueue event_queue_;
     Input input_;
     LedStrip<100> leds_;
-
-    std::array<AnimationRegister, ANIMATION_SLOT_CNT> animation_file_;
 
     Music music_;
 

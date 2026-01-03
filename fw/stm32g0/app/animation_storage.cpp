@@ -12,73 +12,147 @@
 namespace
 {
 
-enum AnimationName: AnimationStorage::AnimationId
+using AnimationId = AnimationStorage::Register::AnimationId;
+using AnimationSlotId = AnimationStorage::AnimationSlotId;
+
+enum AnimationName: AnimationId
 {
     ANIM_COLOR,
     ANIM_RAINBOW,
     ANIM_RETRO,
-    ANIM_RETRO_LAST = ANIM_RETRO + (RetroAnimation::VARIANT_CNT - 1),
     ANIM_TWINKLE,
-    ANIM_TWINKLE_LAST = ANIM_TWINKLE + (TwinkleAnimation::VARIANT_CNT - 1),
     ANIM_SHIFTING_COLOR,
-    ANIM_SHIFTING_COLOR_LAST = ANIM_SHIFTING_COLOR + (ShiftingColorAnimation::VARIANT_CNT - 1),
     ANIM_LIGHTS,
-    ANIM_LIGHTS_LAST = ANIM_LIGHTS + ((LightsAnimation::VARIANT_CNT * 2) - 1),
-
-    ANIMATION_COUNT_,
 };
 
-static_assert(AnimationStorage::ANIMATION_COUNT == ANIMATION_COUNT_, "Check animation count");
+enum AnimationSlotName: AnimationSlotId
+{
+    ANIM_SLOT_COLOR,
+    ANIM_SLOT_RAINBOW,
+    ANIM_SLOT_RETRO,
+    ANIM_SLOT_RETRO_LAST = ANIM_SLOT_RETRO + (RetroAnimation::VARIANT_CNT - 1),
+    ANIM_SLOT_TWINKLE,
+    ANIM_SLOT_TWINKLE_LAST = ANIM_SLOT_TWINKLE + (TwinkleAnimation::VARIANT_CNT - 1),
+    ANIM_SLOT_SHIFTING_COLOR,
+    ANIM_SLOT_SHIFTING_COLOR_LAST = ANIM_SLOT_SHIFTING_COLOR + (ShiftingColorAnimation::VARIANT_CNT - 1),
+    ANIM_SLOT_LIGHTS,
+    ANIM_SLOT_LIGHTS_LAST = ANIM_SLOT_LIGHTS + ((LightsAnimation::VARIANT_CNT * 2) - 1),
+
+    ANIM_SLOT_COUNT_,
+};
+
+static_assert(AnimationStorage::SLOT_COUNT == AnimationSlotName::ANIM_SLOT_COUNT_, "Check animation count");
+
+void makeAnimation(AnimationStorage::Storage * storage, AnimationId id)
+{
+    switch (id)
+    {
+        case ANIM_COLOR: storage->create<ColorAnimation>(); return;
+        case ANIM_RAINBOW: storage->create<RainbowAnimation>(); return;
+        case ANIM_RETRO: storage->create<RetroAnimation>(); return;
+        case ANIM_TWINKLE: storage->create<TwinkleAnimation>(); return;
+        case ANIM_SHIFTING_COLOR: storage->create<ShiftingColorAnimation>(); return;
+        case ANIM_LIGHTS: storage->create<LightsAnimation>(); return;
+    }
+    // Default
+    storage->create<ColorAnimation>();
+}
+
+AnimationId makeDefaultSlot(AnimationStorage::Storage * storage, AnimationSlotId slot_id)
+{
+    switch (slot_id)
+    {
+    case ANIM_SLOT_COLOR:
+    default:
+        makeAnimation(storage, ANIM_COLOR);
+        return ANIM_COLOR;
+
+    case ANIM_SLOT_RAINBOW:
+        makeAnimation(storage, ANIM_RAINBOW);
+        return ANIM_RAINBOW;
+
+    case ANIM_SLOT_RETRO ... ANIM_SLOT_RETRO_LAST:
+        makeAnimation(storage, ANIM_RETRO);
+        {
+            const std::uint8_t variant_id = slot_id - ANIM_SLOT_RETRO;
+            (*storage)->setParamater(RetroAnimation::VARIANT, variant_id);
+        }
+        return ANIM_RETRO;
+
+    case ANIM_SLOT_TWINKLE ... ANIM_SLOT_TWINKLE_LAST:
+        makeAnimation(storage, ANIM_TWINKLE);
+        {
+            const std::uint8_t variant_id = slot_id - ANIM_SLOT_TWINKLE;
+            (*storage)->setParamater(TwinkleAnimation::VARIANT, variant_id);
+        }
+        return ANIM_TWINKLE;
+
+    case ANIM_SLOT_SHIFTING_COLOR ... ANIM_SLOT_SHIFTING_COLOR_LAST:
+        makeAnimation(storage, ANIM_SHIFTING_COLOR);
+        {
+            const std::uint8_t variant_id = slot_id - ANIM_SLOT_SHIFTING_COLOR;
+            (*storage)->setParamater(ShiftingColorAnimation::VARIANT, variant_id);
+        }
+        return ANIM_SHIFTING_COLOR;
+
+    case ANIM_SLOT_LIGHTS ... ANIM_SLOT_LIGHTS_LAST:
+        makeAnimation(storage, ANIM_LIGHTS);
+        {
+            const std::uint8_t modifier = slot_id - ANIM_SLOT_LIGHTS;
+            const std::uint8_t variant_id = modifier >= LightsAnimation::VARIANT_CNT ?
+                modifier - LightsAnimation::VARIANT_CNT : modifier;
+            const bool is_synchronized = modifier >= LightsAnimation::VARIANT_CNT;
+            (*storage)->setParamater(LightsAnimation::VARIANT, variant_id);
+            (*storage)->setParamater(LightsAnimation::SYNCHRONIZED, is_synchronized);
+        }
+        return ANIM_LIGHTS;
+    }
+}
 
 }  // namespace
 
 AnimationStorage::AnimationStorage():
-    storage_{TypeTag<RainbowAnimation>{}}
+    slot_id_(0),
+    storage_{TypeTag<ColorAnimation>{}}  // Whatever
 {
+    initialize();
+
+    // Load the animation
+    auto & reg = slots_[slot_id_];
+    makeAnimation(&storage_, reg.animationId());
+    reg.restore(storage_.get(), Animation::DataType::BOTH);
 }
 
-void AnimationStorage::change(AnimationId id)
+void AnimationStorage::initialize()
 {
-    switch (id)
+    Storage tmp_storage(TypeTag<ColorAnimation>{});
+    for (AnimationSlotId slot_id = 0; slot_id != SLOT_COUNT; ++slot_id)
     {
-    case ANIM_COLOR:
-    default:
-        storage_.create<ColorAnimation>();
-        break;
-    case ANIM_RAINBOW:
-        storage_.create<RainbowAnimation>();
-        break;
-    case ANIM_RETRO ... ANIM_RETRO_LAST:
-        storage_.create<RetroAnimation>();
-        {
-            const std::uint8_t variant_id = id - ANIM_RETRO;
-            storage_->setParamater(RetroAnimation::VARIANT, variant_id);
-        }
-        break;
-    case ANIM_TWINKLE ... ANIM_TWINKLE_LAST:
-        storage_.create<TwinkleAnimation>();
-        {
-            const std::uint8_t variant_id = id - ANIM_TWINKLE;
-            storage_->setParamater(TwinkleAnimation::VARIANT, variant_id);
-        }
-        break;
-    case ANIM_SHIFTING_COLOR ... ANIM_SHIFTING_COLOR_LAST:
-        storage_.create<ShiftingColorAnimation>();
-        {
-            const std::uint8_t variant_id = id - ANIM_SHIFTING_COLOR;
-            storage_->setParamater(ShiftingColorAnimation::VARIANT, variant_id);
-        }
-        break;
-    case ANIM_LIGHTS ... ANIM_LIGHTS_LAST:
-        storage_.create<LightsAnimation>();
-        {
-            const std::uint8_t modifier = id - ANIM_LIGHTS;
-            const std::uint8_t variant_id = modifier >= LightsAnimation::VARIANT_CNT ?
-                modifier - LightsAnimation::VARIANT_CNT : modifier;
-            const bool is_synchronized = modifier >= LightsAnimation::VARIANT_CNT;
-            storage_->setParamater(LightsAnimation::VARIANT, variant_id);
-            storage_->setParamater(LightsAnimation::SYNCHRONIZED, is_synchronized);
-        }
-        break;
+        const auto anim_id = makeDefaultSlot(&tmp_storage, slot_id);
+        auto & slot = slots_[slot_id];
+        slot.setAnimationId(anim_id);
+        slot.store(tmp_storage.get(), Animation::DataType::BOTH);
     }
+}
+
+void AnimationStorage::initializeCurrentSlot()
+{
+    makeDefaultSlot(&storage_, slot_id_);
+    slots_[slot_id_].store(storage_.get(), Animation::DataType::BOTH);
+}
+
+bool AnimationStorage::change(AnimationSlotId new_slot_id)
+{
+    if (new_slot_id == slot_id_)
+        return true;
+    if (new_slot_id >= SLOT_COUNT)
+        return false;
+
+    slots_[slot_id_].store(storage_.get(), Animation::DataType::BOTH);
+
+    auto & reg = slots_[new_slot_id];
+    makeAnimation(&storage_, reg.animationId());
+    reg.restore(storage_.get(), Animation::DataType::BOTH);
+    slot_id_ = new_slot_id;
+    return true;
 }
