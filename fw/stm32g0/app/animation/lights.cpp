@@ -13,56 +13,7 @@ namespace
 
 using LedFlags = LightsAnimation::LedFlags;
 
-constexpr const inline LedState SENTINEL = {0u, 0u, 0u};
-
-// 'constexpr' in following array definitions ensures that array is placed in
-// FLASH, i.e. constexpr LedState constructors are used
-constexpr const LedState variant_0[] = {
-    LedState{0x55, 0x55, 0x55},
-    LedState{0xFF, 0x00, 0x00},
-    SENTINEL
-};
-constexpr const LedState variant_1[] = {
-    LedState{0xFF, 0x00, 0x00},
-    LedState{0x00, 0xFF, 0x00},
-    LedState{0xC0, 0x5F, 0x00},
-    LedState{0x00, 0x00, 0xFF},
-    SENTINEL
-};
-constexpr const LedState variant_2[] = {
-    LedState{0x3F, 0x1C, 0x00},
-    LedState{0xFF, 0x8F, 0x00},
-    SENTINEL
-};
-constexpr const LedState variant_3[] = {
-    LedState{0x00, 0xFF, 0x00},
-    LedState{0xFF, 0x00, 0x00},
-    SENTINEL
-};
-constexpr const LedState variant_4[] = {
-    LedState{0x00, 0x00, 0xFF},
-    LedState{0xC0, 0x5F, 0x00},
-    SENTINEL
-};
-constexpr const LedState variant_5[] = {
-    LedState{0x02, 0xF5, 0xC4},
-    LedState{0xE9, 0x45, 0xCB},
-    SENTINEL
-};
-
-constexpr const LedState * const variants[LightsAnimation::VARIANT_CNT] = {
-    variant_0, variant_1, variant_2, variant_3, variant_4, variant_5
-};
-
 const std::uint16_t FULL_STATE = 0xFFFFul;
-
-inline std::size_t variantLength(const LedState * sequence)
-{
-    const auto * pos = sequence;
-    while (SENTINEL != *pos)
-        ++pos;
-    return pos - sequence;
-}
 
 template <typename... Ts>
 inline std::size_t findResetBit(const LedFlags * begin, const LedFlags * const end, std::size_t reset_bit_count,
@@ -102,15 +53,13 @@ void LightsAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
     if (strip->led_count > MAX_STRIP_SIZE)
         return;  // Can not render this
 
-    const LedState * const variant = variants[config_.variant];
-    const std::size_t variant_length = variantLength(variant);
     // Render individual lights
     {
         auto flags = flags_.begin();
         for (auto & led: *strip)
         {
             const auto pos = flags->position();
-            led = variant[pos];
+            led = config_.theme[pos];
             ++flags;
         }
     }
@@ -129,8 +78,8 @@ void LightsAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
         LedFlags & flags = flags_[transition.ledId()];
 
         // Blend the colors
-        const auto next_pos_value = flags.nextValue(variant_length);
-        const LedState & next_color = variant[next_pos_value];
+        const auto next_pos_value = flags.nextValue(config_.theme_length);
+        const LedState & next_color = config_.theme[next_pos_value];
         transition.step(static_cast<std::uint16_t>(config_.speed) << 8, FULL_STATE);
         blendColors(&led, next_color, transition.state(), FULL_STATE);
 
@@ -175,7 +124,7 @@ void LightsAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
         // This code might be called multiple times when switching from not synchronized to synchronized, when LEDs are
         // in random states. But it will stabilize and once it has, this works fine, as by switching to next position
         // here, all LEDs suddenly become available, and this code is not executed until next transition.
-        state_.synchronized_pos = LedFlags::next(state_.synchronized_pos, variant_length);
+        state_.synchronized_pos = LedFlags::next(state_.synchronized_pos, config_.theme_length);
     }
     (void)flags;
 }
@@ -184,16 +133,24 @@ bool LightsAnimation::setParamater(std::uint32_t param_id, int value, ChangeType
 {
     switch (param_id)
     {
+    case Animation::ParamId::COLOR_THEME_LENGTH:
+        if (ChangeType::ABSOLUTE != type)
+            return false;
+        if (static_cast<std::size_t>(value) > COLOR_THEME_MAX_LENGTH)
+            return false;
+        config_.theme_length = static_cast<std::uint8_t>(value);
+        return true;
+
+    case Animation::ParamId::COLOR_THEME_FIRST...Animation::ParamId::COLOR_THEME_FIRST + COLOR_THEME_MAX_LENGTH:
+        if (ChangeType::ABSOLUTE != type)
+            return false;
+        config_.theme[param_id - Animation::ParamId::COLOR_THEME_FIRST] = ColorParam::parse(value);
+        return true;
+
     case Animation::ParamId::SECONDARY:
     case ParamId::SPEED:
         config_.speed = setCyclicParameter<decltype(config_.speed), 16, 1>(
             config_.speed, value, type);
-        return true;
-
-    case ParamId::VARIANT:
-        config_.variant = setCyclicParameter<decltype(config_.variant), VARIANT_CNT - 1>(
-            config_.variant, value, type);
-        reset();
         return true;
 
     case ParamId::SYNCHRONIZED:
@@ -213,12 +170,15 @@ std::optional<int> LightsAnimation::getParameter(std::uint32_t param_id)
 {
     switch (param_id)
     {
+    case Animation::ParamId::COLOR_THEME_LENGTH:
+        return static_cast<int>(config_.theme_length);
+
+    case Animation::ParamId::COLOR_THEME_FIRST...Animation::ParamId::COLOR_THEME_FIRST + COLOR_THEME_MAX_LENGTH:
+        return ColorParam::make(config_.theme[param_id - Animation::ParamId::COLOR_THEME_FIRST]);
+
     case Animation::ParamId::SECONDARY:
     case ParamId::SPEED:
         return static_cast<int>(config_.speed);
-
-    case ParamId::VARIANT:
-        return static_cast<int>(config_.variant);
 
     case ParamId::SYNCHRONIZED:
         return static_cast<int>(config_.synchronized);

@@ -32,6 +32,13 @@ struct LedState
             red(red), green(green), blue(blue)
     { }
 
+    constexpr uint32_t color() const
+    {
+        return static_cast<uint32_t>(red) << 16 |
+            static_cast<uint32_t>(green) << 8 |
+            static_cast<uint32_t>(blue) << 0;
+    }
+
     constexpr LedState & operator =(const LedState &) = default;
     constexpr LedState & operator =(LedState &&) = default;
 

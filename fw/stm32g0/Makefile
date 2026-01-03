@@ -40,6 +40,9 @@ SRC  =  \
             ir_remote.cpp  \
         )  \
         $(addprefix animation/,  \
+            $(addprefix tools/,  \
+                color_themes.cpp  \
+            )  \
             color.cpp  \
             rainbow.cpp  \
             retro.cpp  \

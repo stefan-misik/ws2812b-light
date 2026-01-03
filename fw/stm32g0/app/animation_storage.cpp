@@ -1,5 +1,6 @@
 #include "app/animation_storage.hpp"
 
+#include "app/animation/tools/color_themes.hpp"
 #include "app/animation/color.hpp"
 #include "app/animation/rainbow.hpp"
 #include "app/animation/retro.hpp"
@@ -36,7 +37,7 @@ enum AnimationSlotName: AnimationSlotId
     ANIM_SLOT_SHIFTING_COLOR,
     ANIM_SLOT_SHIFTING_COLOR_LAST = ANIM_SLOT_SHIFTING_COLOR + (ShiftingColorAnimation::VARIANT_CNT - 1),
     ANIM_SLOT_LIGHTS,
-    ANIM_SLOT_LIGHTS_LAST = ANIM_SLOT_LIGHTS + ((LightsAnimation::VARIANT_CNT * 2) - 1),
+    ANIM_SLOT_LIGHTS_LAST = ANIM_SLOT_LIGHTS + ((COLOR_THEME_COUNT * 2) - 1),
 
     ANIM_SLOT_COUNT_,
 };
@@ -99,10 +100,10 @@ AnimationId makeDefaultSlot(AnimationStorage::Storage * storage, AnimationSlotId
         makeAnimation(storage, ANIM_LIGHTS);
         {
             const std::uint8_t modifier = slot_id - ANIM_SLOT_LIGHTS;
-            const std::uint8_t variant_id = modifier >= LightsAnimation::VARIANT_CNT ?
-                modifier - LightsAnimation::VARIANT_CNT : modifier;
-            const bool is_synchronized = modifier >= LightsAnimation::VARIANT_CNT;
-            (*storage)->setParamater(LightsAnimation::VARIANT, variant_id);
+            const auto theme_id = static_cast<ColorTheme>(modifier >= COLOR_THEME_COUNT ?
+                modifier - COLOR_THEME_COUNT : modifier);
+            const bool is_synchronized = modifier >= COLOR_THEME_COUNT;
+            applyColorTheme(storage->get(), theme_id);
             (*storage)->setParamater(LightsAnimation::SYNCHRONIZED, is_synchronized);
         }
         return ANIM_LIGHTS;

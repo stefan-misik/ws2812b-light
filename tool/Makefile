@@ -10,6 +10,7 @@ ORIG_PROJ = ../fw/stm32g0
 SRC =  \
     $(ORIG_PROJ)/app/tools/color.cpp  \
     $(ORIG_PROJ)/app/animation_storage.cpp  \
+    $(ORIG_PROJ)/app/animation/tools/color_themes.cpp  \
     $(wildcard $(ORIG_PROJ)/app/animation/*.cpp)  \
     animations.cpp
 

@@ -46,7 +46,24 @@ public:
         PRIMARY,
         SECONDARY,
 
+        COLOR_THEME_LENGTH = 0x100ul,
+        COLOR_THEME_FIRST,
+
         FIRST_CUSTOM_ID_ = 0x10000ul,
+    };
+
+    /** @brief Helper functions for changing color parameters */
+    struct ColorParam
+    {
+        static constexpr int make(const LedState & color)
+        {
+            return static_cast<int>(color.color());
+        }
+
+        static constexpr LedState parse(int value)
+        {
+            return LedState(static_cast<std::uint32_t>(value));
+        }
     };
 
     /**

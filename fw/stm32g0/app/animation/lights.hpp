@@ -14,12 +14,11 @@ class LightsAnimation final:
         public Animation
 {
 public:
-    static const inline std::uint8_t VARIANT_CNT = 6;
     static const inline LedSize MAX_STRIP_SIZE = 128;
 
     enum ParamId: std::uint32_t
     {
-        VARIANT = Animation::ParamId::FIRST_CUSTOM_ID_,
+        UNUSED_0_ = Animation::ParamId::FIRST_CUSTOM_ID_,
         SPEED,
         SYNCHRONIZED,
     };
@@ -118,10 +117,12 @@ public:
 
 private:
     static const inline std::size_t MAX_TRANSITIONS = 16;
+    static const inline std::size_t COLOR_THEME_MAX_LENGTH = 8;
 
     struct Configuration
     {
-        std::uint8_t variant = 0;
+        std::uint8_t theme_length;
+        std::array<LedState, COLOR_THEME_MAX_LENGTH> theme;
         std::uint8_t speed = 3;
         bool synchronized = false;
     };
