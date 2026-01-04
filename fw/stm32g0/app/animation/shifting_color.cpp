@@ -14,73 +14,14 @@ namespace
 using Segment = ShiftingColorAnimation::Segment;
 
 
-const Segment seq_0[] =
-{
-        {LedState{0xFF, 0x00, 0x00}, 30, 30},
-        {LedState{0x55, 0x55, 0x55}, 70, 30},
-        {LedState{0x00, 0x00, 0x00}, 0, 0},
-};
-
-const Segment seq_1[] =
-{
-        {LedState{0xFF, 0x00, 0x00}, 25, 10},
-        {LedState{0x00, 0xFF, 0x00}, 25, 10},
-        {LedState{0xC0, 0x5F, 0x00}, 25, 10},
-        {LedState{0x00, 0x00, 0xFF}, 25, 10},
-        {LedState{0x00, 0x00, 0x00}, 0, 0},
-};
-
-const Segment seq_2[] =
-{
-        {LedState{0xFF, 0x8F, 0x00}, 30, 30},
-        {LedState{0x3F, 0x1C, 0x00}, 70, 30},
-        {LedState{0x00, 0x00, 0x00}, 0, 0},
-};
-
-const Segment seq_3[] =
-{
-        {LedState{0xFF, 0x00, 0x00}, 25, 25},
-        {LedState{0x00, 0xFF, 0x00}, 25, 25},
-        {LedState{0x00, 0x00, 0x00}, 0, 0},
-};
-
-const Segment seq_4[] =
-{
-        {LedState{0xC0, 0x5F, 0x00}, 25, 10},
-        {LedState{0x00, 0x00, 0xFF}, 25, 10},
-        {LedState{0x00, 0x00, 0x00}, 0, 0},
-};
-
-const Segment seq_5[] =
-{
-        {LedState{0x02, 0xF5, 0xC4}, 40, 20},
-        {LedState{0xE9, 0x45, 0xCB}, 40, 20},
-        {LedState{0x00, 0x00, 0x00}, 0, 0},
-};
-
-const Segment * const seqs[] =
-{
-        seq_0,
-        seq_1,
-        seq_2,
-        seq_3,
-        seq_4,
-        seq_5,
-        nullptr
-};
-
-
-static_assert(ShiftingColorAnimation::VARIANT_CNT == (sizeof(seqs) / sizeof(seqs[0])) - 1, "Fix variant count");
-
-
 class SequenceWalker
 {
 public:
     static const inline std::uint8_t FRACTION_BITS = ShiftingColorAnimation::FRACTION_BITS;
 
-    SequenceWalker(const Segment * sequence):
+    SequenceWalker(const Segment * sequence, std::uint8_t length):
         begin_(sequence),
-        end_(findEnd(sequence)),
+        end_(sequence + length),
         current_(sequence)
     { }
 
@@ -94,7 +35,7 @@ public:
         while (0 != remaining)
         {
             segment = prev(segment);
-            const std::uint32_t segment_len = (segment->length << FRACTION_BITS);
+            const std::uint32_t segment_len = (segment->length.length << FRACTION_BITS);
             if (remaining < segment_len)
                 break;
             remaining -= segment_len;
@@ -134,8 +75,8 @@ private:
 
         void fill(const Segment * seg)
         {
-            remaining = seg->length << FRACTION_BITS;
-            transition_length = seg->transition_length << FRACTION_BITS;
+            remaining = seg->length.length << FRACTION_BITS;
+            transition_length = seg->length.transition << FRACTION_BITS;
         }
     };
 
@@ -143,14 +84,6 @@ private:
     const Segment * const end_;
     const Segment * current_;
     State state_;
-
-    static const Segment * findEnd(const Segment * sequence)
-    {
-        const Segment * segment = sequence;
-        while (segment->length != 0)
-            ++segment;
-        return segment;
-    }
 
     std::uint32_t wrapByTotalLength(std::uint32_t offset) const
     {
@@ -162,7 +95,7 @@ private:
     {
         std::uint32_t total = 0;
         for (auto it = begin_; it != end_; ++it)
-            total += (it->length << FRACTION_BITS);
+            total += (it->length.length << FRACTION_BITS);
         return total;
     }
 
@@ -188,7 +121,7 @@ private:
 
 void ShiftingColorAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
 {
-    SequenceWalker seq_walker(seqs[config_.variant]);
+    SequenceWalker seq_walker(config_.theme.cbegin(), config_.theme_length);
 
     state_.offset = seq_walker.rewind(state_.offset + (config_.speed << 4));
 
@@ -202,16 +135,30 @@ bool ShiftingColorAnimation::setParamater(std::uint32_t param_id, int value, Cha
 {
     switch (param_id)
     {
+    case Animation::ParamId::COLOR_THEME_LENGTH:
+        if (ChangeType::ABSOLUTE != type)
+            return false;
+        if (static_cast<std::size_t>(value) > COLOR_THEME_MAX_LENGTH)
+            return false;
+        config_.theme_length = static_cast<std::uint8_t>(value);
+        return true;
+
+    case Animation::ParamId::COLOR_THEME_FIRST...Animation::ParamId::COLOR_THEME_FIRST + COLOR_THEME_MAX_LENGTH:
+        if (ChangeType::ABSOLUTE != type)
+            return false;
+        config_.theme[param_id - Animation::ParamId::COLOR_THEME_FIRST].color = ColorParam::parse(value);
+        return true;
+
     case Animation::ParamId::SECONDARY:
     case ParamId::SPEED:
         config_.speed = setCyclicParameter<decltype(config_.speed), 16, 1>(
             config_.speed, value, type);
         return true;
 
-    case ParamId::VARIANT:
-        config_.variant = setCyclicParameter<decltype(config_.variant), VARIANT_CNT - 1>(
-            config_.variant, value, type);
-        state_.offset = 0;
+    case ParamId::LENGTHS_FIRST...ParamId::LENGTHS_LAST:
+        if (ChangeType::ABSOLUTE != type)
+            return false;
+        config_.theme[param_id - ParamId::LENGTHS_FIRST].length = LengthsParam::parse(value);
         return true;
 
     default:
@@ -224,12 +171,18 @@ std::optional<int> ShiftingColorAnimation::getParameter(std::uint32_t param_id)
 {
     switch (param_id)
     {
+    case Animation::ParamId::COLOR_THEME_LENGTH:
+        return static_cast<int>(config_.theme_length);
+
+    case Animation::ParamId::COLOR_THEME_FIRST...Animation::ParamId::COLOR_THEME_FIRST + COLOR_THEME_MAX_LENGTH:
+        return ColorParam::make(config_.theme[param_id - Animation::ParamId::COLOR_THEME_FIRST].color);
+
     case Animation::ParamId::SECONDARY:
     case ParamId::SPEED:
         return static_cast<int>(config_.speed);
 
-    case ParamId::VARIANT:
-        return static_cast<int>(config_.variant);
+    case ParamId::LENGTHS_FIRST...ParamId::LENGTHS_LAST:
+        return LengthsParam::make(config_.theme[param_id - ParamId::LENGTHS_FIRST].length);
 
     default:
         return {};

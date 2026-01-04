@@ -311,14 +311,28 @@ class NativeAnimation(Animation):
 
     class ShiftingColorAnimationStateObserver(StateObserver):
         _FRACTION_BITS = 8
-        _CONFIG_STRUCT = Struct("@BB")
+        _MAX_SEGMENT_COUNT = 8
+        _LENGTH_STRUCT = Struct("@B")
+        _SEGMENT_STRUCT = Struct("@BBBBB")
+        _SPEED_STRUCT = Struct("@B")
         _STATE_STRUCT = Struct("@I")
 
         def observe(self, state: memoryview) -> str:
-            variant, speed = self._CONFIG_STRUCT.unpack_from(state, 0)
-            offset, = self._STATE_STRUCT.unpack_from(state, self._CONFIG_STRUCT.size)
-            return f"Variant: {variant}, Speed: {speed}, " \
-                f"Offset: {offset >> self._FRACTION_BITS:3} + " \
+            state_pos = 0
+            segment_cnt,  = self._LENGTH_STRUCT.unpack_from(state, state_pos)
+            state_pos += self._LENGTH_STRUCT.size
+            segments = []
+            for segment_n in range(self._MAX_SEGMENT_COUNT):
+                segments.append(self._SEGMENT_STRUCT.unpack_from(state, state_pos))
+                state_pos += self._SEGMENT_STRUCT.size
+            speed, = self._SPEED_STRUCT.unpack_from(state, state_pos)
+            state_pos += self._SPEED_STRUCT.size
+            offset, = self._STATE_STRUCT.unpack_from(state, state_pos)
+            return f"SgCnt: {segment_cnt}, " + \
+                " ".join(f"(R:{red:02X} G:{green:02X} B:{blue:02X} L:{length} T:{trans})" for \
+                    red, green, blue, length, trans in segments[:segment_cnt]) + ", " + \
+                f"Speed: {speed}, " + \
+                f"Offset: {offset >> self._FRACTION_BITS:3} + " + \
                 f"{offset & ((1 << self._FRACTION_BITS) - 1):3}/{1 << self._FRACTION_BITS}"
 
 

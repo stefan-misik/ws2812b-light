@@ -5,27 +5,53 @@
 #ifndef APP_ANIMATION_SHIFTING_COLOR_HPP_
 #define APP_ANIMATION_SHIFTING_COLOR_HPP_
 
+#include <array>
+
 #include "app/animation.hpp"
 
 
 class ShiftingColorAnimation final:
         public Animation
 {
+private:
+    static const inline std::size_t COLOR_THEME_MAX_LENGTH = 8;
+
 public:
-    static const inline std::uint8_t VARIANT_CNT = 6;
     static const inline std::size_t FRACTION_BITS = 8;
 
     enum ParamId: std::uint32_t
     {
-        VARIANT = Animation::ParamId::FIRST_CUSTOM_ID_,
+        UNUSED_0_ = Animation::ParamId::FIRST_CUSTOM_ID_,
         SPEED,
+        LENGTHS_FIRST,
+        LENGTHS_LAST = LENGTHS_FIRST + (COLOR_THEME_MAX_LENGTH - 1),
+    };
+
+    struct Lengths
+    {
+        std::uint8_t length;
+        std::uint8_t transition;
     };
 
     struct Segment
     {
         LedState color;
-        LedSize length;
-        LedSize transition_length;
+        Lengths length;
+    };
+
+    /** @brief Helper functions for changing lengths parameters */
+    struct LengthsParam
+    {
+        static constexpr int make(const Lengths & Lengths)
+        {
+            return static_cast<int>((static_cast<std::uint32_t>(Lengths.transition) << 8) |
+                (static_cast<std::uint32_t>(Lengths.length) << 0));
+        }
+
+        static constexpr Lengths parse(int value)
+        {
+            return Lengths(static_cast<std::uint32_t>(value) >> 0, static_cast<std::uint32_t>(value) >> 8);
+        }
     };
 
     void render(AbstractLedStrip * strip, Flags<RenderFlag> flags) override;
@@ -39,7 +65,8 @@ public:
 private:
     struct Configuration
     {
-        std::uint8_t variant = 0;
+        std::uint8_t theme_length;
+        std::array<Segment, COLOR_THEME_MAX_LENGTH> theme;
         std::uint8_t speed = 3;
     };
 

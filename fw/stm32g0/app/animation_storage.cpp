@@ -1,5 +1,7 @@
 #include "app/animation_storage.hpp"
 
+#include <initializer_list>
+
 #include "app/animation/tools/color_themes.hpp"
 #include "app/animation/color.hpp"
 #include "app/animation/rainbow.hpp"
@@ -35,7 +37,7 @@ enum AnimationSlotName: AnimationSlotId
     ANIM_SLOT_TWINKLE,
     ANIM_SLOT_TWINKLE_LAST = ANIM_SLOT_TWINKLE + (TwinkleAnimation::VARIANT_CNT - 1),
     ANIM_SLOT_SHIFTING_COLOR,
-    ANIM_SLOT_SHIFTING_COLOR_LAST = ANIM_SLOT_SHIFTING_COLOR + (ShiftingColorAnimation::VARIANT_CNT - 1),
+    ANIM_SLOT_SHIFTING_COLOR_LAST = ANIM_SLOT_SHIFTING_COLOR + (COLOR_THEME_COUNT - 1),
     ANIM_SLOT_LIGHTS,
     ANIM_SLOT_LIGHTS_LAST = ANIM_SLOT_LIGHTS + ((COLOR_THEME_COUNT * 2) - 1),
 
@@ -57,6 +59,88 @@ void makeAnimation(AnimationStorage::Storage * storage, AnimationId id)
     }
     // Default
     storage->create<ColorAnimation>();
+}
+
+template <typename T>
+inline int makeParameter(const T & value)
+{
+    return 0;
+    (void)value;
+}
+
+template <>
+inline int makeParameter(const ShiftingColorAnimation::Lengths & lengths)
+{
+    return ShiftingColorAnimation::LengthsParam::make(lengths);
+}
+
+template <typename T, std::uint32_t FIRST_P, std::uint32_t COUNT_P = Animation::ParamId::RESERVED_>
+bool setParameters(Animation * animation, std::initializer_list<T> lengths)
+{
+    if constexpr (Animation::ParamId::RESERVED_ != COUNT_P)
+    {
+        if (!animation->setParamater(COUNT_P, static_cast<int>(lengths.size())))
+            return false;
+    }
+
+    std::uint32_t param_id = FIRST_P;
+    for (const auto & l : lengths)
+    {
+        if (!animation->setParamater(param_id, makeParameter(l)))
+            return false;
+        ++param_id;
+    }
+    return true;
+}
+
+bool applyThemeLengths(Animation * animation, ColorTheme theme)
+{
+    using Lengths = ShiftingColorAnimation::Lengths;
+
+    switch (theme)
+    {
+        case ColorTheme::CANDY_CANE:
+            return setParameters<Lengths, ShiftingColorAnimation::ParamId::LENGTHS_FIRST>(animation, {
+                {70, 30},
+                {30, 30},
+            });
+
+        case ColorTheme::BASIC_FOUR_COLORS:
+            return setParameters<Lengths, ShiftingColorAnimation::ParamId::LENGTHS_FIRST>(animation, {
+                {25, 10},
+                {25, 10},
+                {25, 10},
+                {25, 10},
+            });
+
+        case ColorTheme::GOLDEN:
+            return setParameters<Lengths, ShiftingColorAnimation::ParamId::LENGTHS_FIRST>(animation, {
+                {70, 30},
+                {30, 30},
+            });
+
+        case ColorTheme::GREEN_AND_RED:
+            return setParameters<Lengths, ShiftingColorAnimation::ParamId::LENGTHS_FIRST>(animation, {
+                {25, 25},
+                {25, 25},
+            });
+
+        case ColorTheme::NIGHT_SKY:
+            return setParameters<Lengths, ShiftingColorAnimation::ParamId::LENGTHS_FIRST>(animation, {
+                {25, 10},
+                {25, 10},
+            });
+
+        case ColorTheme::ICE_AND_MAGENTA:
+            return setParameters<Lengths, ShiftingColorAnimation::ParamId::LENGTHS_FIRST>(animation, {
+                {50, 25},
+                {50, 25},
+            });
+
+        case ColorTheme::COUNT_:
+            break;
+    }
+    return false;
 }
 
 AnimationId makeDefaultSlot(AnimationStorage::Storage * storage, AnimationSlotId slot_id)
@@ -91,8 +175,9 @@ AnimationId makeDefaultSlot(AnimationStorage::Storage * storage, AnimationSlotId
     case ANIM_SLOT_SHIFTING_COLOR ... ANIM_SLOT_SHIFTING_COLOR_LAST:
         makeAnimation(storage, ANIM_SHIFTING_COLOR);
         {
-            const std::uint8_t variant_id = slot_id - ANIM_SLOT_SHIFTING_COLOR;
-            (*storage)->setParamater(ShiftingColorAnimation::VARIANT, variant_id);
+            const auto theme_id = static_cast<ColorTheme>(slot_id - ANIM_SLOT_SHIFTING_COLOR);
+            applyColorTheme(storage->get(), theme_id);
+            applyThemeLengths(storage->get(), theme_id);
         }
         return ANIM_SHIFTING_COLOR;
 
