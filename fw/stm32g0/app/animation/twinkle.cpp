@@ -10,41 +10,31 @@
 namespace
 {
 
-constexpr const inline LedState SENTINEL = {0u, 0u, 0u};
+using KeyFrame = TwinkleAnimation::KeyFrame;
 
-// 'constexpr' in following array definitions ensures that array is placed in
-// FLASH, i.e. constexpr LedState constructors are used
-constexpr const LedState sequence_sparks[] = {
-    LedState{0x47300D},
-    LedState{0xFFFFFF},
-    LedState{0xEDCC9C},
-    LedState{0xDEA34A},
-    LedState{0xA8711F},
-    LedState{0x704B15},
-    SENTINEL
-};
 
-constexpr const LedState sequence_shimmer[] = {
-    LedState{0x47300D},
+bool getColor(LedState * color, std::span<const KeyFrame> key_frames, std::uint32_t pos)
+{
+    std::uint32_t remaining = pos;
+    const auto * prev_color = &(key_frames.back().color);
+    for (const auto & key_frame : key_frames)
+    {
+        if (remaining <= key_frame.length)
+        {
+            // Blend the previous color with current color
+            *color = *prev_color;
+            blendColors(color, key_frame.color, remaining, key_frame.length);
+            return true;
+        }
+        else
+        {
+            remaining -= key_frame.length;
+            prev_color = &(key_frame.color);
+        }
+    }
+    return false;
+}
 
-    LedState{0x2F2009},
-    LedState{0x1A1105},
-
-    LedState{0x040301},
-
-    LedState{0x1A1105},
-    LedState{0x2F2009},
-
-    SENTINEL
-};
-
-const LedState * all_sequences[] = {
-    sequence_sparks,
-    sequence_shimmer
-};
-
-static_assert((sizeof(all_sequences) / sizeof(all_sequences[0])) == TwinkleAnimation::VARIANT_CNT,
-    "Check variant count");
 
 }  // namespace
 
@@ -52,19 +42,19 @@ static_assert((sizeof(all_sequences) / sizeof(all_sequences[0])) == TwinkleAnima
 void TwinkleAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
 {
     ++(step_);
-    if (5 != step_)
-        return;
-    step_ = 0;
-
-    const LedState * sequence = all_sequences[config_.variant];
+    if (5 == step_)
+        step_ = 0;
+    // This is to limit the number of new blinks
+    const bool allow_new = (0 == step_);
 
     // Paint background
     {
-        const LedState & bg_color = sequence[0];
+        const LedState & bg_color = config_.key_frames[0].color;
         for (auto & led: *strip)
             led = bg_color;
     }
 
+    const std::span<const KeyFrame> key_frames{config_.key_frames.begin(), config_.key_frame_count};
     const std::uint16_t mask = flags.isFlagSet(RenderFlag::NOTE_CHANGED) ? 0x7F : (0x7FFF >> config_.frequency);
 
     for (uint8_t pos = 0; pos != State::BLINK_CNT; ++pos)
@@ -72,6 +62,8 @@ void TwinkleAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
         auto & blink = state_.blinks[pos];
         if (blink.isDone())
         {
+            if (!allow_new)
+                continue;
             const uint16_t num = (static_cast<uint16_t>(std::rand()) & mask);
             if (num < strip->led_count)
                 blink.start(num);
@@ -81,11 +73,8 @@ void TwinkleAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
         else
             blink.next();
 
-        const LedState color = sequence[blink.position() + 1];
-        if (color == SENTINEL)
+        if (!getColor(strip->begin() + blink.led(), key_frames, blink.position() + 1u))
             blink.done();
-        else
-            (*strip)[blink.led()] = color;
     }
 }
 
@@ -99,9 +88,18 @@ bool TwinkleAnimation::setParamater(std::uint32_t param_id, int value, ChangeTyp
             config_.frequency, value, type);
         return true;
 
-    case ParamId::VARIANT:
-        config_.variant = setCyclicParameter<decltype(config_.variant), VARIANT_CNT - 1>(
-            config_.variant, value, type);
+    case ParamId::KEY_FRAME_COUNT:
+        if (ChangeType::ABSOLUTE != type)
+            return false;
+        if (static_cast<std::size_t>(value) > MAX_KEY_FRAME_COUNT)
+            return false;
+        config_.key_frame_count = static_cast<std::uint8_t>(value);
+        return true;
+
+    case ParamId::KEY_FRAME_FIRST...ParamId::KEY_FRAME_LAST:
+        if (ChangeType::ABSOLUTE != type)
+            return false;
+        config_.key_frames[param_id - ParamId::KEY_FRAME_FIRST] = KeyFrameParam::parse(value);
         return true;
 
     default:
@@ -118,8 +116,11 @@ std::optional<int> TwinkleAnimation::getParameter(std::uint32_t param_id)
     case ParamId::FREQUENCY:
         return static_cast<int>(config_.frequency);
 
-    case ParamId::VARIANT:
-        return static_cast<int>(config_.variant);
+    case ParamId::KEY_FRAME_COUNT:
+        return static_cast<int>(config_.key_frame_count);
+
+    case ParamId::KEY_FRAME_FIRST...ParamId::KEY_FRAME_LAST:
+        return KeyFrameParam::make(config_.key_frames[param_id - ParamId::KEY_FRAME_FIRST]);
 
     default:
         return {};

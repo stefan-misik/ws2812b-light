@@ -1,5 +1,6 @@
 #include "app/animation_storage.hpp"
 
+#include <utility>
 #include <initializer_list>
 
 #include "app/animation/tools/color_themes.hpp"
@@ -35,7 +36,7 @@ enum AnimationSlotName: AnimationSlotId
     ANIM_SLOT_RETRO,
     ANIM_SLOT_RETRO_LAST = ANIM_SLOT_RETRO + (RetroAnimation::VARIANT_CNT - 1),
     ANIM_SLOT_TWINKLE,
-    ANIM_SLOT_TWINKLE_LAST = ANIM_SLOT_TWINKLE + (TwinkleAnimation::VARIANT_CNT - 1),
+    ANIM_SLOT_TWINKLE_LAST = ANIM_SLOT_TWINKLE + (2 - 1),
     ANIM_SLOT_SHIFTING_COLOR,
     ANIM_SLOT_SHIFTING_COLOR_LAST = ANIM_SLOT_SHIFTING_COLOR + (COLOR_THEME_COUNT - 1),
     ANIM_SLOT_LIGHTS,
@@ -74,6 +75,12 @@ inline int makeParameter(const ShiftingColorAnimation::Lengths & lengths)
     return ShiftingColorAnimation::LengthsParam::make(lengths);
 }
 
+template <>
+inline int makeParameter(const TwinkleAnimation::KeyFrame & kf)
+{
+    return TwinkleAnimation::KeyFrameParam::make(kf);
+}
+
 template <typename T, std::uint32_t FIRST_P, std::uint32_t COUNT_P = Animation::ParamId::RESERVED_>
 bool setParameters(Animation * animation, std::initializer_list<T> lengths)
 {
@@ -91,6 +98,49 @@ bool setParameters(Animation * animation, std::initializer_list<T> lengths)
         ++param_id;
     }
     return true;
+}
+
+namespace anim
+{
+
+inline bool setParameter(Animation * animation, std::uint32_t offset, const TwinkleAnimation::KeyFrame & kf)
+{
+    return animation->setParamater(offset, TwinkleAnimation::KeyFrameParam::make(kf));
+}
+
+template <typename... Ts>
+inline bool applyKeyFrames(Animation * animation, Ts &&... args)
+{
+    return applyParameterGroup<TwinkleAnimation::ParamId::KEY_FRAME_COUNT, TwinkleAnimation::ParamId::KEY_FRAME_FIRST>(
+        animation, std::forward<Ts>(args)...);
+}
+
+}  // namespace anim
+
+bool applyKeyFrames(Animation * animation, std::uint32_t variant)
+{
+    using KeyFrame = TwinkleAnimation::KeyFrame;
+    static const auto FIRST_PARAM = TwinkleAnimation::ParamId::KEY_FRAME_FIRST;
+    static const auto PARAM_COUNT = TwinkleAnimation::ParamId::KEY_FRAME_COUNT;
+
+    switch (variant)
+    {
+    default:
+    case 0:
+        return setParameters<KeyFrame, FIRST_PARAM, PARAM_COUNT>(animation, {
+            KeyFrame{LedState{0x47300D}, 0u},
+            KeyFrame{LedState{0xFFFFFF}, 5u},
+            KeyFrame{LedState{0xEDCC9C}, 5u},
+            KeyFrame{LedState{0x47300D}, 20u}
+        });
+
+    case 1:
+        return setParameters<KeyFrame, FIRST_PARAM, PARAM_COUNT>(animation, {
+            KeyFrame{LedState{0x47300D}, 0u},
+            KeyFrame{LedState{0x040301}, 15u},
+            KeyFrame{LedState{0x47300D}, 15u}
+        });
+    }
 }
 
 bool applyThemeLengths(Animation * animation, ColorTheme theme)
@@ -168,7 +218,7 @@ AnimationId makeDefaultSlot(AnimationStorage::Storage * storage, AnimationSlotId
         makeAnimation(storage, ANIM_TWINKLE);
         {
             const std::uint8_t variant_id = slot_id - ANIM_SLOT_TWINKLE;
-            (*storage)->setParamater(TwinkleAnimation::VARIANT, variant_id);
+            applyKeyFrames(storage->get(), variant_id);
         }
         return ANIM_TWINKLE;
 

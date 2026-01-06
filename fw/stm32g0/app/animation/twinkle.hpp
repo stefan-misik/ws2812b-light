@@ -5,19 +5,46 @@
 #ifndef APP_ANIMATION_TWINKLE_HPP_
 #define APP_ANIMATION_TWINKLE_HPP_
 
+#include <span>
+#include <array>
+
 #include "app/animation.hpp"
 
 
 class TwinkleAnimation final:
         public Animation
 {
-public:
-    static const inline std::uint8_t VARIANT_CNT = 2;
+private:
+    static const inline std::size_t MAX_KEY_FRAME_COUNT = 8;
 
+public:
     enum ParamId: std::uint32_t
     {
-        VARIANT = Animation::ParamId::FIRST_CUSTOM_ID_,
+        UNUSED_0_ = Animation::ParamId::FIRST_CUSTOM_ID_,
         FREQUENCY,
+        KEY_FRAME_COUNT,
+        KEY_FRAME_FIRST,
+        KEY_FRAME_LAST = KEY_FRAME_FIRST + (MAX_KEY_FRAME_COUNT - 1),
+    };
+
+    struct KeyFrame
+    {
+        LedState color;
+        std::uint8_t length;
+    };
+
+    /** @brief Helper functions for changing key frames */
+    struct KeyFrameParam
+    {
+        static constexpr int make(const KeyFrame & key_frame)
+        {
+            return static_cast<int>(key_frame.color.color() | (static_cast<std::uint32_t>(key_frame.length) << 24));
+        }
+
+        static constexpr KeyFrame parse(int value)
+        {
+            return KeyFrame(LedState(static_cast<std::uint32_t>(value)), static_cast<std::uint32_t>(value) >> 24);
+        }
     };
 
     void render(AbstractLedStrip * strip, Flags<RenderFlag> flags) override;
@@ -33,7 +60,7 @@ private:
     {
     public:
         bool isDone() const { return 0 == state_; }
-        std::uint8_t position() const { return state_ - 1; }
+        std::uint16_t position() const { return state_ - 1; }
         void next() { ++state_; }
         void done() { state_ = 0; }
 
@@ -43,12 +70,13 @@ private:
 
     private:
         LedSize led_;
-        std::uint8_t state_;
+        std::uint16_t state_;
     };
 
     struct Configuration
     {
-        std::uint8_t variant = 0;
+        std::uint8_t key_frame_count = 0;
+        std::array<KeyFrame, MAX_KEY_FRAME_COUNT> key_frames;
         std::uint8_t frequency = 3;
     };
 
