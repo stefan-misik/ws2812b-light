@@ -14,7 +14,7 @@ class Animation:
     def store(self, buffer: collections.abc.Buffer, type: DataType) -> int:
         ...
 class AnimationStorage:
-    SLOT_COUNT: typing.ClassVar[int] = 26
+    SLOT_COUNT: typing.ClassVar[int] = 27
     def __init__(self) -> None:
         ...
     def change(self, anim_id: typing.SupportsInt) -> bool:

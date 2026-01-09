@@ -36,7 +36,7 @@ enum AnimationSlotName: AnimationSlotId
     ANIM_SLOT_RETRO,
     ANIM_SLOT_RETRO_LAST = ANIM_SLOT_RETRO + (RetroAnimation::VARIANT_CNT - 1),
     ANIM_SLOT_TWINKLE,
-    ANIM_SLOT_TWINKLE_LAST = ANIM_SLOT_TWINKLE + (2 - 1),
+    ANIM_SLOT_TWINKLE_LAST = ANIM_SLOT_TWINKLE + (3 - 1),
     ANIM_SLOT_SHIFTING_COLOR,
     ANIM_SLOT_SHIFTING_COLOR_LAST = ANIM_SLOT_SHIFTING_COLOR + (COLOR_THEME_COUNT - 1),
     ANIM_SLOT_LIGHTS,
@@ -139,6 +139,14 @@ bool applyKeyFrames(Animation * animation, std::uint32_t variant)
             KeyFrame{LedState{0x47300D}, 0u},
             KeyFrame{LedState{0x040301}, 15u},
             KeyFrame{LedState{0x47300D}, 15u}
+        });
+
+    case 2:
+        return setParameters<KeyFrame, FIRST_PARAM, PARAM_COUNT>(animation, {
+            KeyFrame{getColor(ColorId::BLUE), 0u},
+            KeyFrame{getColor(ColorId::YELLOW), 15u},
+            KeyFrame{getColor(ColorId::YELLOW), 25u},
+            KeyFrame{getColor(ColorId::BLUE), 50u},
         });
     }
 }

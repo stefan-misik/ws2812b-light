@@ -357,7 +357,7 @@ class NativeAnimation(Animation):
                 (Struct("@BB"), ),
                 ("Variant: {}", "State: {}")
             )
-        elif 8 <= anim_id <= 13:
+        elif 9 <= anim_id <= 14:
             return cls.ShiftingColorAnimationStateObserver()
         else:
             return cls.DummyStateObserver()

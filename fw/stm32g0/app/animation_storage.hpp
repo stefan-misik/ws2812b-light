@@ -55,7 +55,7 @@ public:
     using AnimationSlotId = std::uint16_t;
     using Storage = PolymorphicStorage<Animation, 256>;
 
-    static const inline std::size_t SLOT_COUNT = 26;
+    static const inline std::size_t SLOT_COUNT = 27;
 
     AnimationStorage();
 

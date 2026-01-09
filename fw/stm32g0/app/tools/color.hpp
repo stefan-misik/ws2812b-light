@@ -32,6 +32,18 @@ extern const LedState standard_colors[];
 /**
  * @brief Get the standard color value
  *
+ * @param id ID of the color to get
+
+ * @return Color with given ID
+ */
+inline const LedState & getColor(ColorId id)
+{
+    return standard_colors[static_cast<std::size_t>(id)];
+}
+
+/**
+ * @brief Get the standard color value
+ *
  * @param[out] value Variable to obtain color with given ID
  * @param id ID of the color to get
  */
