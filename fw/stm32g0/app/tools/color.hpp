@@ -27,7 +27,25 @@ enum class ColorId: std::uint8_t
 };
 static const inline std::uint8_t COLOR_COUNT = static_cast<std::uint8_t>(ColorId::COUNT_);
 
-extern const LedState standard_colors[];
+/** @brief Color values storage */
+struct StandardColors
+{
+    static constexpr const LedState values[COLOR_COUNT] =
+    {
+        {0x00, 0x00, 0x00},
+        {0x9A, 0x9A, 0x9A},
+        {0xFF, 0xa0, 0x30},
+
+        {0xFF, 0x00, 0x00},
+        {0x00, 0xFF, 0x00},
+        {0xC0, 0x5F, 0x00},
+        {0x00, 0x00, 0xFF},
+
+        {0x00, 0x7F, 0x7F},
+        {0x7F, 0x00, 0x7F},
+    };
+};
+
 
 /**
  * @brief Get the standard color value
@@ -36,9 +54,9 @@ extern const LedState standard_colors[];
 
  * @return Color with given ID
  */
-inline const LedState & getColor(ColorId id)
+inline constexpr const LedState & getColor(ColorId id)
 {
-    return standard_colors[static_cast<std::size_t>(id)];
+    return StandardColors::values[static_cast<std::size_t>(id)];
 }
 
 /**
@@ -49,7 +67,7 @@ inline const LedState & getColor(ColorId id)
  */
 inline void getColor(LedState * value, ColorId id)
 {
-    *value = standard_colors[static_cast<std::size_t>(id)];
+    *value = StandardColors::values[static_cast<std::size_t>(id)];
 }
 
 /**
