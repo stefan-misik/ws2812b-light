@@ -1,8 +1,10 @@
 #include "app/animation_storage.hpp"
 
 #include <utility>
-#include <initializer_list>
 
+#include "app/tools/color.hpp"
+#include "app/animation.hpp"
+#include "app/animation/tools/animation_tools.hpp"
 #include "app/animation/tools/color_themes.hpp"
 #include "app/animation/color.hpp"
 #include "app/animation/rainbow.hpp"
@@ -10,7 +12,6 @@
 #include "app/animation/twinkle.hpp"
 #include "app/animation/shifting_color.hpp"
 #include "app/animation/lights.hpp"
-#include "app/animation.hpp"
 
 
 namespace
@@ -62,72 +63,22 @@ void makeAnimation(AnimationStorage::Storage * storage, AnimationId id)
     storage->create<ColorAnimation>();
 }
 
-template <typename T>
-inline int makeParameter(const T & value)
-{
-    return 0;
-    (void)value;
-}
-
-template <>
-inline int makeParameter(const ShiftingColorAnimation::Lengths & lengths)
-{
-    return ShiftingColorAnimation::LengthsParam::make(lengths);
-}
-
-template <>
-inline int makeParameter(const TwinkleAnimation::KeyFrame & kf)
-{
-    return TwinkleAnimation::KeyFrameParam::make(kf);
-}
-
-template <typename T, std::uint32_t FIRST_P, std::uint32_t COUNT_P = Animation::ParamId::RESERVED_>
-bool setParameters(Animation * animation, std::initializer_list<T> lengths)
-{
-    if constexpr (Animation::ParamId::RESERVED_ != COUNT_P)
-    {
-        if (!animation->setParamater(COUNT_P, static_cast<int>(lengths.size())))
-            return false;
-    }
-
-    std::uint32_t param_id = FIRST_P;
-    for (const auto & l : lengths)
-    {
-        if (!animation->setParamater(param_id, makeParameter(l)))
-            return false;
-        ++param_id;
-    }
-    return true;
-}
-
-namespace anim
-{
-
-inline bool setParameter(Animation * animation, std::uint32_t offset, const TwinkleAnimation::KeyFrame & kf)
-{
-    return animation->setParamater(offset, TwinkleAnimation::KeyFrameParam::make(kf));
-}
-
-template <typename... Ts>
-inline bool applyKeyFrames(Animation * animation, Ts &&... args)
-{
-    return applyParameterGroup<TwinkleAnimation::ParamId::KEY_FRAME_COUNT, TwinkleAnimation::ParamId::KEY_FRAME_FIRST>(
-        animation, std::forward<Ts>(args)...);
-}
-
-}  // namespace anim
-
 bool applyKeyFrames(Animation * animation, std::uint32_t variant)
 {
     using KeyFrame = TwinkleAnimation::KeyFrame;
-    static const auto FIRST_PARAM = TwinkleAnimation::ParamId::KEY_FRAME_FIRST;
-    static const auto PARAM_COUNT = TwinkleAnimation::ParamId::KEY_FRAME_COUNT;
+    auto apply = [](Animation * animation, std::initializer_list<KeyFrame> lengths)
+    {
+        static const auto FIRST_PARAM = TwinkleAnimation::ParamId::KEY_FRAME_FIRST;
+        static const auto PARAM_COUNT = TwinkleAnimation::ParamId::KEY_FRAME_COUNT;
+        return setParameterGroup<KeyFrame, TwinkleAnimation::KeyFrameParam, FIRST_PARAM, PARAM_COUNT>(animation,
+            lengths);
+    };
 
     switch (variant)
     {
     default:
     case 0:
-        return setParameters<KeyFrame, FIRST_PARAM, PARAM_COUNT>(animation, {
+        return apply(animation, {
             KeyFrame{LedState{0x47300D}, 0u},
             KeyFrame{LedState{0xFFFFFF}, 5u},
             KeyFrame{LedState{0xEDCC9C}, 5u},
@@ -135,14 +86,14 @@ bool applyKeyFrames(Animation * animation, std::uint32_t variant)
         });
 
     case 1:
-        return setParameters<KeyFrame, FIRST_PARAM, PARAM_COUNT>(animation, {
+        return apply(animation, {
             KeyFrame{LedState{0x47300D}, 0u},
             KeyFrame{LedState{0x040301}, 15u},
             KeyFrame{LedState{0x47300D}, 15u}
         });
 
     case 2:
-        return setParameters<KeyFrame, FIRST_PARAM, PARAM_COUNT>(animation, {
+        return apply(animation, {
             KeyFrame{getColor(ColorId::BLUE), 0u},
             KeyFrame{getColor(ColorId::YELLOW), 15u},
             KeyFrame{getColor(ColorId::YELLOW), 25u},
@@ -154,17 +105,22 @@ bool applyKeyFrames(Animation * animation, std::uint32_t variant)
 bool applyThemeLengths(Animation * animation, ColorTheme theme)
 {
     using Lengths = ShiftingColorAnimation::Lengths;
+    auto apply = [](Animation * animation, std::initializer_list<Lengths> lengths)
+    {
+        static const auto FIRST_PARAM = ShiftingColorAnimation::ParamId::LENGTHS_FIRST;
+        return setParameterGroup<Lengths, ShiftingColorAnimation::LengthsParam, FIRST_PARAM>(animation, lengths);
+    };
 
     switch (theme)
     {
         case ColorTheme::CANDY_CANE:
-            return setParameters<Lengths, ShiftingColorAnimation::ParamId::LENGTHS_FIRST>(animation, {
+            return apply(animation, {
                 {70, 30},
                 {30, 30},
             });
 
         case ColorTheme::BASIC_FOUR_COLORS:
-            return setParameters<Lengths, ShiftingColorAnimation::ParamId::LENGTHS_FIRST>(animation, {
+            return apply(animation, {
                 {25, 10},
                 {25, 10},
                 {25, 10},
@@ -172,25 +128,25 @@ bool applyThemeLengths(Animation * animation, ColorTheme theme)
             });
 
         case ColorTheme::GOLDEN:
-            return setParameters<Lengths, ShiftingColorAnimation::ParamId::LENGTHS_FIRST>(animation, {
+            return apply(animation, {
                 {70, 30},
                 {30, 30},
             });
 
         case ColorTheme::GREEN_AND_RED:
-            return setParameters<Lengths, ShiftingColorAnimation::ParamId::LENGTHS_FIRST>(animation, {
+            return apply(animation, {
                 {25, 25},
                 {25, 25},
             });
 
         case ColorTheme::NIGHT_SKY:
-            return setParameters<Lengths, ShiftingColorAnimation::ParamId::LENGTHS_FIRST>(animation, {
+            return apply(animation, {
                 {25, 10},
                 {25, 10},
             });
 
         case ColorTheme::ICE_AND_MAGENTA:
-            return setParameters<Lengths, ShiftingColorAnimation::ParamId::LENGTHS_FIRST>(animation, {
+            return apply(animation, {
                 {50, 25},
                 {50, 25},
             });
