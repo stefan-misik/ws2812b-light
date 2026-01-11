@@ -93,4 +93,19 @@ PYBIND11_MODULE(animations, m)
 
         .def("get", py::overload_cast<>(&AnimationStorage::get),
             py::return_value_policy::reference_internal);
+
+    using AnimationSlotName = AnimationStorage::AnimationSlotName;
+    py::enum_<AnimationStorage::AnimationSlotName>(m, "AnimationSlotName")
+        .value("COLOR", AnimationSlotName::ANIM_SLOT_COLOR)
+        .value("COLOR_LAST", AnimationSlotName::ANIM_SLOT_COLOR_LAST)
+        .value("RAINBOW", AnimationSlotName::ANIM_SLOT_RAINBOW)
+        .value("RAINBOW_LAST", AnimationSlotName::ANIM_SLOT_RAINBOW_LAST)
+        .value("RETRO", AnimationSlotName::ANIM_SLOT_RETRO)
+        .value("RETRO_LAST", AnimationSlotName::ANIM_SLOT_RETRO_LAST)
+        .value("TWINKLE", AnimationSlotName::ANIM_SLOT_TWINKLE)
+        .value("TWINKLE_LAST", AnimationSlotName::ANIM_SLOT_TWINKLE_LAST)
+        .value("SHIFTING_COLOR", AnimationSlotName::ANIM_SLOT_SHIFTING_COLOR)
+        .value("SHIFTING_COLOR_LAST", AnimationSlotName::ANIM_SLOT_SHIFTING_COLOR_LAST)
+        .value("LIGHTS", AnimationSlotName::ANIM_SLOT_LIGHTS)
+        .value("LIGHTS_LAST", AnimationSlotName::ANIM_SLOT_LIGHTS_LAST);
 }

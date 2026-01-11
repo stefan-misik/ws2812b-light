@@ -342,25 +342,39 @@ class NativeAnimation(Animation):
 
     @classmethod
     def _make_observer(cls, anim_id: int) -> StateObserver:
-        if 0 == anim_id:
+        if animations.AnimationSlotName.COLOR.value == anim_id:
             return cls.StructStateObserver(
                 (Struct("@B"), ),
                 ("color ID: {}", )
             )
-        elif 1 == anim_id:
+        elif animations.AnimationSlotName.RAINBOW.value == anim_id:
             return cls.StructStateObserver(
                 (Struct("@BBH"), ),
                 ("Space increment: {}", "Time Increment: {}", "Hue: {}")
             )
-        elif 2 <= anim_id <= 5:
+        elif animations.AnimationSlotName.RETRO.value <= anim_id <= animations.AnimationSlotName.RETRO_LAST.value:
             return cls.StructStateObserver(
                 (Struct("@BB"), ),
                 ("Variant: {}", "State: {}")
             )
-        elif 9 <= anim_id <= 14:
+        elif animations.AnimationSlotName.SHIFTING_COLOR.value <= anim_id <= \
+                animations.AnimationSlotName.SHIFTING_COLOR_LAST.value:
             return cls.ShiftingColorAnimationStateObserver()
         else:
             return cls.DummyStateObserver()
+
+    @staticmethod
+    def name(anim_id: int) -> str:
+        for n in range(anim_id, -1, -1):
+            try:
+                e = animations.AnimationSlotName(n)
+                if e.name == "???":
+                    raise ValueError()  # Enums exported from C++ do not raise ValueError on their own
+                if not e.name.endswith("_LAST"):
+                    return f"{e.name} ({anim_id - n})"
+            except ValueError:
+                pass
+        return f"Native animation {anim_id}"
 
     def __init__(self, anim_id: int):
         self._state = bytearray(1024)
@@ -393,7 +407,7 @@ class NativeAnimation(Animation):
 class MyModel(ColorGridModel):
     _ANIMATIONS = tuple(
         chain(
-            ((f"Native animation {n}", partial(NativeAnimation, n)) for n in \
+            ((NativeAnimation.name(n), partial(NativeAnimation, n)) for n in \
                 range(animations.AnimationStorage.SLOT_COUNT)),
             ()
         )
