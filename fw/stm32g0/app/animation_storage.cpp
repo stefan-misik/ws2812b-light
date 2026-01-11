@@ -5,7 +5,6 @@
 #include "app/tools/color.hpp"
 #include "app/animation.hpp"
 #include "app/animation/tools/animation_tools.hpp"
-#include "app/animation/tools/color_themes.hpp"
 #include "app/animation/color.hpp"
 #include "app/animation/rainbow.hpp"
 #include "app/animation/retro.hpp"
@@ -19,6 +18,7 @@ namespace
 
 using AnimationId = AnimationStorage::Register::AnimationId;
 using AnimationSlotId = AnimationStorage::AnimationSlotId;
+using AnimationSlotName = AnimationStorage::AnimationSlotName;
 
 enum AnimationName: AnimationId
 {
@@ -30,23 +30,11 @@ enum AnimationName: AnimationId
     ANIM_LIGHTS,
 };
 
-enum AnimationSlotName: AnimationSlotId
-{
-    ANIM_SLOT_COLOR,
-    ANIM_SLOT_RAINBOW,
-    ANIM_SLOT_RETRO,
-    ANIM_SLOT_RETRO_LAST = ANIM_SLOT_RETRO + (RetroAnimation::VARIANT_CNT - 1),
-    ANIM_SLOT_TWINKLE,
-    ANIM_SLOT_TWINKLE_LAST = ANIM_SLOT_TWINKLE + (3 - 1),
-    ANIM_SLOT_SHIFTING_COLOR,
-    ANIM_SLOT_SHIFTING_COLOR_LAST = ANIM_SLOT_SHIFTING_COLOR + (COLOR_THEME_COUNT - 1),
-    ANIM_SLOT_LIGHTS,
-    ANIM_SLOT_LIGHTS_LAST = ANIM_SLOT_LIGHTS + ((COLOR_THEME_COUNT * 2) - 1),
+static_assert(
+    RetroAnimation::VARIANT_CNT ==
+    (static_cast<AnimationSlotId>(AnimationSlotName::ANIM_SLOT_RETRO_LAST) -
+    static_cast<AnimationSlotId>(AnimationSlotName::ANIM_SLOT_RETRO) + 1u), "Check Retro Animation variant count");
 
-    ANIM_SLOT_COUNT_,
-};
-
-static_assert(AnimationStorage::SLOT_COUNT == AnimationSlotName::ANIM_SLOT_COUNT_, "Check animation count");
 
 void makeAnimation(AnimationStorage::Storage * storage, AnimationId id)
 {
@@ -159,46 +147,49 @@ bool applyThemeLengths(Animation * animation, ColorTheme theme)
 
 AnimationId makeDefaultSlot(AnimationStorage::Storage * storage, AnimationSlotId slot_id)
 {
-    switch (slot_id)
+    switch (static_cast<AnimationSlotName>(slot_id))
     {
-    case ANIM_SLOT_COLOR:
+    case AnimationSlotName::ANIM_SLOT_COLOR ... AnimationSlotName::ANIM_SLOT_COLOR_LAST:
     default:
         makeAnimation(storage, ANIM_COLOR);
         return ANIM_COLOR;
 
-    case ANIM_SLOT_RAINBOW:
+    case AnimationSlotName::ANIM_SLOT_RAINBOW ... AnimationSlotName::ANIM_SLOT_RAINBOW_LAST:
         makeAnimation(storage, ANIM_RAINBOW);
         return ANIM_RAINBOW;
 
-    case ANIM_SLOT_RETRO ... ANIM_SLOT_RETRO_LAST:
+    case AnimationSlotName::ANIM_SLOT_RETRO ... AnimationSlotName::ANIM_SLOT_RETRO_LAST:
         makeAnimation(storage, ANIM_RETRO);
         {
-            const std::uint8_t variant_id = slot_id - ANIM_SLOT_RETRO;
+            const std::uint8_t variant_id = slot_id -
+                static_cast<AnimationSlotId>(AnimationSlotName::ANIM_SLOT_RETRO);
             (*storage)->setParamater(RetroAnimation::VARIANT, variant_id);
         }
         return ANIM_RETRO;
 
-    case ANIM_SLOT_TWINKLE ... ANIM_SLOT_TWINKLE_LAST:
+    case AnimationSlotName::ANIM_SLOT_TWINKLE ... AnimationSlotName::ANIM_SLOT_TWINKLE_LAST:
         makeAnimation(storage, ANIM_TWINKLE);
         {
-            const std::uint8_t variant_id = slot_id - ANIM_SLOT_TWINKLE;
+            const std::uint8_t variant_id = slot_id -
+                static_cast<AnimationSlotId>(AnimationSlotName::ANIM_SLOT_TWINKLE);
             applyKeyFrames(storage->get(), variant_id);
         }
         return ANIM_TWINKLE;
 
-    case ANIM_SLOT_SHIFTING_COLOR ... ANIM_SLOT_SHIFTING_COLOR_LAST:
+    case AnimationSlotName::ANIM_SLOT_SHIFTING_COLOR ... AnimationSlotName::ANIM_SLOT_SHIFTING_COLOR_LAST:
         makeAnimation(storage, ANIM_SHIFTING_COLOR);
         {
-            const auto theme_id = static_cast<ColorTheme>(slot_id - ANIM_SLOT_SHIFTING_COLOR);
+            const auto theme_id = static_cast<ColorTheme>(slot_id -
+                static_cast<AnimationSlotId>(AnimationSlotName::ANIM_SLOT_SHIFTING_COLOR));
             applyColorTheme(storage->get(), theme_id);
             applyThemeLengths(storage->get(), theme_id);
         }
         return ANIM_SHIFTING_COLOR;
 
-    case ANIM_SLOT_LIGHTS ... ANIM_SLOT_LIGHTS_LAST:
+    case AnimationSlotName::ANIM_SLOT_LIGHTS ... AnimationSlotName::ANIM_SLOT_LIGHTS_LAST:
         makeAnimation(storage, ANIM_LIGHTS);
         {
-            const std::uint8_t modifier = slot_id - ANIM_SLOT_LIGHTS;
+            const std::uint8_t modifier = slot_id - static_cast<AnimationSlotId>(AnimationSlotName::ANIM_SLOT_LIGHTS);
             const auto theme_id = static_cast<ColorTheme>(modifier >= COLOR_THEME_COUNT ?
                 modifier - COLOR_THEME_COUNT : modifier);
             const bool is_synchronized = modifier >= COLOR_THEME_COUNT;

@@ -9,6 +9,7 @@
 
 #include "tools/polymorphic_storage.hpp"
 #include "app/animation.hpp"
+#include "app/animation/tools/color_themes.hpp"
 
 
 /**
@@ -55,7 +56,25 @@ public:
     using AnimationSlotId = std::uint16_t;
     using Storage = PolymorphicStorage<Animation, 256>;
 
-    static const inline std::size_t SLOT_COUNT = 27;
+    enum AnimationSlotName: AnimationSlotId
+    {
+        ANIM_SLOT_COLOR,
+        ANIM_SLOT_COLOR_LAST = ANIM_SLOT_COLOR,
+        ANIM_SLOT_RAINBOW,
+        ANIM_SLOT_RAINBOW_LAST = ANIM_SLOT_RAINBOW,
+        ANIM_SLOT_RETRO,
+        ANIM_SLOT_RETRO_LAST = ANIM_SLOT_RETRO + (4 - 1),
+        ANIM_SLOT_TWINKLE,
+        ANIM_SLOT_TWINKLE_LAST = ANIM_SLOT_TWINKLE + (3 - 1),
+        ANIM_SLOT_SHIFTING_COLOR,
+        ANIM_SLOT_SHIFTING_COLOR_LAST = ANIM_SLOT_SHIFTING_COLOR + (COLOR_THEME_COUNT - 1),
+        ANIM_SLOT_LIGHTS,
+        ANIM_SLOT_LIGHTS_LAST = ANIM_SLOT_LIGHTS + ((COLOR_THEME_COUNT * 2) - 1),
+
+        ANIM_SLOT_COUNT_,
+    };
+
+    static const inline std::size_t SLOT_COUNT = static_cast<std::size_t>(AnimationSlotName::ANIM_SLOT_COUNT_);
 
     AnimationStorage();
 
@@ -71,6 +90,10 @@ public:
 
     AnimationSlotId slotId() const { return slot_id_; }
     bool change(AnimationSlotId new_slot_id);
+    bool change(AnimationSlotName new_slot_name)
+    {
+        return change(static_cast<AnimationSlotId>(new_slot_name));
+    }
 
 private:
     AnimationSlotId slot_id_;

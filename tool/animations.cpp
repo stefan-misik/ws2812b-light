@@ -88,7 +88,8 @@ PYBIND11_MODULE(animations, m)
 
         .def("slot_id", &AnimationStorage::slotId)
 
-        .def("change", &AnimationStorage::change, py::arg("anim_id"))
+        .def("change", py::overload_cast<AnimationStorage::AnimationSlotId>(&AnimationStorage::change),
+            py::arg("anim_id"))
 
         .def("get", py::overload_cast<>(&AnimationStorage::get),
             py::return_value_policy::reference_internal);
