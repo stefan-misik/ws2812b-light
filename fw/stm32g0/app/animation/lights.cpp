@@ -96,6 +96,8 @@ void LightsAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
         }
     }
 
+    spawn_counter_.step(static_cast<std::uint16_t>(config_.speed) << 10, FULL_STATE);
+
     // Add new LED in case there are available LEDs and transitions
     const auto * const flags_end = flags_.cbegin() + strip->led_count;
     const std::size_t available_led_cnt = config_.synchronized ?
@@ -103,10 +105,10 @@ void LightsAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
         countAvailableLeds(flags_.cbegin(), flags_end);
     if (0 != available_led_cnt && nullptr != free_transition)
     {
-        const std::size_t led_offset = static_cast<std::size_t>(std::rand()) % (available_led_cnt << 4);
-        // Only add new led with some probability
-        if (led_offset < available_led_cnt)
+        if (spawn_counter_.value() == FULL_STATE)
         {
+            spawn_counter_.reset();
+            const std::size_t led_offset = static_cast<std::size_t>(std::rand()) % available_led_cnt;
             const LedSize new_led_pos = config_.synchronized ?
                 findResetBit(flags_.cbegin(), flags_end, led_offset, state_.synchronized_pos) :
                 findResetBit(flags_.cbegin(), flags_end, led_offset);

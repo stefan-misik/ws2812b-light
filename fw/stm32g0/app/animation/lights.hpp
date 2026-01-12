@@ -78,9 +78,29 @@ public:
     public:
         static constexpr const LedSize INVALID_LED_ID = 0xFFFFul;
 
+        class LimittedCounter
+        {
+        public:
+            void reset() { value_ = 0; }
+            std::uint16_t value() const { return value_; }
+
+            void step(std::uint16_t step_size, std::uint16_t end_value)
+            {
+                const std::uint16_t remaining = end_value - value_;
+                if (remaining < step_size)
+                    value_ = end_value;
+                else
+                    value_ += step_size;
+            }
+
+        private:
+            std::uint16_t value_ = 0;
+        };
+
+
         bool isValid() const { return INVALID_LED_ID != led_id_; }
         LedSize ledId() const { return led_id_; }
-        std::uint16_t state() const { return state_; }
+        std::uint16_t state() const { return state_.value(); }
 
         void reset()
         {
@@ -90,21 +110,17 @@ public:
         void start(LedSize led_id)
         {
             led_id_ = led_id;
-            state_ = 0;
+            state_.reset();
         }
 
         void step(std::uint16_t step_size, std::uint16_t end_state)
         {
-            const std::uint16_t remaining = end_state - state_;
-            if (remaining < step_size)
-                state_ = end_state;
-            else
-                state_ += step_size;
+            state_.step(step_size, end_state);
         }
 
     private:
         LedSize led_id_ = INVALID_LED_ID;
-        std::uint16_t state_ = 0;
+        LimittedCounter state_;
     };
 
     void render(AbstractLedStrip * strip, Flags<RenderFlag> flags) override;
@@ -137,6 +153,8 @@ private:
 
     std::array<Transition, MAX_TRANSITIONS> transitions_;
     std::array<LedFlags, MAX_STRIP_SIZE> flags_;
+
+    Transition::LimittedCounter spawn_counter_;
 
     void reset()
     {
