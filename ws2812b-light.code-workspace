@@ -9,6 +9,10 @@
 			"name": "🧰 tool"
 		},
 		{
+			"path": "fw/tests",
+			"name": "🧪 tests"
+		},
+		{
 			"path": "fw/stm32g0",
 			"name": "🟩 stm32g0"
 		},
