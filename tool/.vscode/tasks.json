@@ -36,7 +36,7 @@
             ]
         },
         {
-            "label": "Build Debug",
+            "label": "Build Tests",
             "detail": "Compiles project in Debug mode",
             "type": "shell",
             "command": "make -j8 -O DBG=yes PYTHON=${command:python.interpreterPath}",
