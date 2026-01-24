@@ -1,0 +1,25 @@
+{
+    "testMate.cpp.test.advancedExecutables": [
+        {
+            "pattern": "_build/tests.exe",
+            "runTask": {
+                "before": [
+                    "Build Tests"
+                ]
+            },
+            "dependsOn": [
+                "test.cpp"
+            ]
+        }
+    ],
+    "testMate.cpp.debug.configTemplate": {
+        "type": "lldb",
+        "NIMode": "lldb",
+        "program": "${exec}",
+        "args": "${argsArray}",
+        "cwd": "${cwd}",
+        "env": "${envObj}",
+        "environment": "${envObjArray}",
+        "sourceFileMap": "${sourceFileMapObj}",
+    }
+}

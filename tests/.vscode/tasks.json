@@ -7,8 +7,8 @@
     },
     "tasks": [
         {
-            "label": "Clean Project",
-            "detail": "Cleans all build files",
+            "label": "Clean Tests",
+            "detail": "Cleans all test files",
             "type": "shell",
             "command": "make clean",
             "group": {
@@ -23,9 +23,9 @@
             "dependsOn": [
                 "Clean Project"
             ],
-            "command": "bear --output ${workspaceFolder}/../compile_commands.json -- make -j8 -O DBG=yes PYTHON=${command:python.interpreterPath}",
+            "command": "bear --output ${workspaceFolder}/../compile_commands.json -- make -j8 -O",
             "windows": {
-                "command": "make -j8 -O DBG=yes PYTHON=\\''${command:python.interpreterPath}'\\' | compiledb --full-path -v -f -o '${workspaceFolder}/../compile_commands.json'"
+                "command": "make -j8 -O | compiledb --full-path -v -f -o '${workspaceFolder}/../compile_commands.json'"
             },
             "group": {
                 "kind": "none",
@@ -37,11 +37,11 @@
         },
         {
             "label": "Build Tests",
-            "detail": "Compiles project in Debug mode",
+            "detail": "Compiles tests",
             "type": "shell",
-            "command": "make -j8 -O DBG=yes PYTHON=${command:python.interpreterPath}",
+            "command": "make -j8 -O",
             "windows":{
-                "command": "make -j8 -O DBG=yes PYTHON=\\''${command:python.interpreterPath}'\\'"
+                "command": "make -j8 -O"
             },
             "group": {
                 "kind": "build",
