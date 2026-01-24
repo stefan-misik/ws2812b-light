@@ -1,0 +1,58 @@
+{
+    "version": "2.0.0",
+    "presentation": {
+        "panel": "dedicated",
+        "focus": true,
+        "revealProblems": "onProblem"
+    },
+    "tasks": [
+        {
+            "label": "Clean Unit Tests",
+            "detail": "Cleans all test files",
+            "type": "shell",
+            "command": "make clean",
+            "group": {
+                "kind": "build",
+                "isDefault": false,
+            }
+        },
+        {
+            "label": "Make Compile Commands",
+            "detail": "Compiles project in Debug mode and generates compile_commands.json",
+            "type": "shell",
+            "dependsOn": [
+                "Clean Project"
+            ],
+            "command": "bear --output ${workspaceFolder}/../compile_commands.json -- make -j8 -O",
+            "windows": {
+                "command": "make -j8 -O | compiledb --full-path -v -f -o '${workspaceFolder}/../compile_commands.json'"
+            },
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "Build Unit Tests",
+            "detail": "Compiles tests",
+            "type": "shell",
+            "command": "make -j8 -O",
+            "windows": {
+                "command": "make -j8 -O"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        }
+    ]
+}
