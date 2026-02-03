@@ -1,8 +1,12 @@
 PROJ = tests
 
+define test_source
+$1 $(wildcard ../stm32g0/$1)
+endef
+
 # Sources
 SRC =  \
-    test.cpp
+    $(call test_source,app/storage/block_counter.cpp)
 
 BUILDDIR = _build
 OPTFLAGS = -Og

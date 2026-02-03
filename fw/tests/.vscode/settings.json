@@ -8,7 +8,7 @@
                 ]
             },
             "dependsOn": [
-                "test.cpp"
+                "app/storage/block_counter.cpp",
             ]
         }
     ],
