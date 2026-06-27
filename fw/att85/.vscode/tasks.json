@@ -20,12 +20,9 @@
             "label": "Make Compile Commands",
             "detail": "Compiles project and generates compile_commands.json",
             "type": "shell",
-            "dependsOn": [
-                "Clean Project"
-            ],
-            "command": "bear --output ${workspaceFolder}/../../compile_commands.json -- make -j8 -O",
+            "command": "bear --output ${workspaceFolder}/../../compile_commands.json -- make -n -B NO_DEPS=yes",
             "windows": {
-                "command": "make -j8 -O | compiledb --full-path -v -f -o '${workspaceFolder}/../../compile_commands.json'"
+                "command": "make -n -B NO_DEPS=yes | compiledb --full-path -v -f -o '${workspaceFolder}/../../compile_commands.json'"
             },
             "group": {
                 "kind": "none",
