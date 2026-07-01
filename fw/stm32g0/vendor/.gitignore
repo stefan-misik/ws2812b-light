@@ -1,5 +1,5 @@
-# STM Drivers
-STM32Cube*
+# Any directory under vendor/
+/*/
 
 # Downloaded packages
 *.tar.gz

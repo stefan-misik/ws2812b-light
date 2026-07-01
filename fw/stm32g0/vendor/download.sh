@@ -9,4 +9,5 @@ github_get() {
 }
 
 github_get STMicroelectronics STM32CubeG0 v1.6.2
+github_get olikraus u8g2 2.37.1
 

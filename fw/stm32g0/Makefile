@@ -116,6 +116,14 @@ SRC += $(wildcard $(addsuffix .c,$(addprefix $(VENDOR_STM_DRIVER)/Src/stm32g0xx_
 )))
 DEFINE += USE_FULL_LL_DRIVER
 
+# Vendor u8g2 library
+VENDOR_U8G2 = vendor/u8g2
+VENDOR_U8G2_EXCLUDE_PATTERNS =  \
+    csrc/u8x8_d_%
+INCLUDE += $(addprefix $(VENDOR_U8G2)/,csrc cppsrc)
+SRC += $(filter-out $(addprefix $(VENDOR_U8G2)/,$(VENDOR_U8G2_EXCLUDE_PATTERNS)),$(wildcard  \
+    $(addprefix $(VENDOR_U8G2)/,csrc/*.c cppsrc/*.cpp)))
+
 OUT = $(BUILDDIR)/$(PROJ).elf
 OUT_HEX = $(OUT:.elf=.hex)
 
