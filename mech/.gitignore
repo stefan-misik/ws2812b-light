@@ -1,2 +1,6 @@
 # Backup file
 *.FCBak
+
+# Generated files
+*.stl
+*.gcode
