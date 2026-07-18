@@ -2,6 +2,53 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Debug with OpenOCD",
+            "preLaunchTask": "Build Debug",
+            "cwd": "${workspaceFolder}",
+            "executable": "_build/debug/ws2812b-light.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "configFiles": [
+                "interface-stlink-swd.cfg",
+                "target-stm32g0x.cfg"
+            ],
+            "searchDir": ["${workspaceFolder}/.vscode/openocd"],
+            "postLaunchCommands": [
+                "monitor halt",
+                "set $sp = &_estack",
+                "set $pc = &Reset_Handler",
+            ],
+            "postResetCommands": [
+                "monitor halt",
+                "set $sp = &_estack",
+                "set $pc = &Reset_Handler",
+            ],
+            "postRestartCommands": [
+                "monitor halt",
+                "set $sp = &_estack",
+                "set $pc = &Reset_Handler",
+            ],
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none"
+        },
+        {
+            "name": "Run Release with OpenOCD",
+            "preLaunchTask": "Build Release",
+            "cwd": "${workspaceFolder}",
+            "executable": "_build/release/ws2812b-light.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "configFiles": [
+                "interface-stlink-swd.cfg",
+                "target-stm32g0x.cfg"
+            ],
+            "searchDir": ["${workspaceFolder}/.vscode/openocd"],
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none"
+        },
+        {
             "name": "Debug with ST-Link",
             "preLaunchTask": "Build Debug",
             "cwd": "${workspaceFolder}",
