@@ -12,6 +12,7 @@
 #include "driver/buzzer.hpp"
 #include "driver/i2c_bus.hpp"
 #include "driver/i2c_bus/cat24cx.hpp"
+#include "driver/i2c_bus/u8g2_display.hpp"
 #include "driver/cpu_usage.hpp"
 
 
@@ -30,6 +31,7 @@ public:
     driver::Buzzer & buzzer() { return buzzer_; }
     driver::I2cBus & i2cBus() { return i2c_bus_; }
     driver::i2c::Cat24cx & eeprom() { return eeprom_; }
+    driver::i2c::U8g2Display & display() { return display_; }
     driver::CpuUsage & cpuUsage() { return cpu_usage_; }
 
     /**
@@ -45,6 +47,7 @@ private:
     driver::Buzzer buzzer_;
     driver::I2cBus i2c_bus_;
     driver::i2c::Cat24cx eeprom_;
+    driver::i2c::U8g2Display display_;
     driver::CpuUsage cpu_usage_;
 };
 
