@@ -32,6 +32,7 @@ void U8g2Display::initialize(I2cBus * bus, std::uint8_t address)
 {
     bus_ = bus;
     address_ = I2cBus::Address(address);
+    init_phase_ = true;
 
     // Set up u8g2 in full frame buffer mode for SSD1306 128x64 I2C
     u8g2_SetupDisplay(
@@ -41,18 +42,24 @@ void U8g2Display::initialize(I2cBus * bus, std::uint8_t address)
         byteCb,
         gpioDelayCb
     );
+
+    // Store pointer to this instance for use in static callbacks
+    u8g2_.u8x8.user_ptr = this;
+
     u8g2_SetupBuffer(
         &u8g2_,
-        u8g2_.tile_buf_ptr,  // Will be set by SetupBuffer
+        &tile_buf_ptr_,
         U8G2_FULL_BUFFER_TILE_HEIGHT,
         u8g2_ll_hvline_vertical_top_lsb,
         U8G2_R0
     );
 
-    // Power-up the display via u8g2 (sends init commands)
+    // Power-up the display via u8g2 (sends init commands synchronously)
     u8g2_InitDisplay(&u8g2_);
     u8g2_SetPowerSave(&u8g2_, 0);
     u8g2_ClearBuffer(&u8g2_);
+
+    init_phase_ = false;
 }
 
 void U8g2Display::handleResponse(const I2cBus::Transaction * transaction)
@@ -117,27 +124,65 @@ void U8g2Display::requestUpdate()
 
 uint8_t U8g2Display::byteCb(u8x8_t * u8x8, uint8_t msg, uint8_t arg_int, void * arg_ptr)
 {
-    // For the full frame buffer mode with async I2C, the byte-level callback
-    // is mainly used during initialization (synchronous command sending).
-    // During normal operation, we bypass u8g2's transfer mechanism and send
-    // the frame buffer directly via I2C transactions in createRequest().
-
-    (void)u8x8;
-    (void)arg_int;
-    (void)arg_ptr;
+    auto * self = static_cast<U8g2Display *>(u8x8->user_ptr);
 
     switch (msg)
     {
     case U8X8_MSG_BYTE_INIT:
+        break;
+
     case U8X8_MSG_BYTE_SET_DC:
+        // DC bit is encoded in the I2C control byte
+        break;
+
     case U8X8_MSG_BYTE_START_TRANSFER:
-    case U8X8_MSG_BYTE_END_TRANSFER:
+        if (self != nullptr)
+            self->init_buf_pos_ = 0;
         break;
 
     case U8X8_MSG_BYTE_SEND:
-        // During init, commands are sent synchronously.
-        // In this example, init commands are handled by the I2C bus
-        // in the application's main loop.
+        if (self != nullptr && self->init_phase_)
+        {
+            // Buffer bytes during initialization for synchronous sending
+            const auto * data = static_cast<const std::uint8_t *>(arg_ptr);
+            for (std::uint8_t i = 0; i < arg_int && self->init_buf_pos_ < INIT_BUF_SIZE; ++i)
+            {
+                self->init_buf_[self->init_buf_pos_++] = data[i];
+            }
+        }
+        break;
+
+    case U8X8_MSG_BYTE_END_TRANSFER:
+        if (self != nullptr && self->init_phase_ && self->bus_ != nullptr && self->init_buf_pos_ > 0)
+        {
+            // Send buffered init data synchronously via I2C bus
+            auto * transaction = self->bus_->allocate();
+            if (transaction != nullptr)
+            {
+                auto * local = static_cast<std::uint8_t *>(transaction->localBuffer());
+                const std::size_t copy_size =
+                    (self->init_buf_pos_ <= I2cBus::Transaction::STORAGE_SIZE)
+                    ? self->init_buf_pos_
+                    : I2cBus::Transaction::STORAGE_SIZE;
+                std::memcpy(local, self->init_buf_, copy_size);
+
+                if (self->init_buf_pos_ <= I2cBus::Transaction::STORAGE_SIZE)
+                {
+                    transaction->write(self->address_, self->init_buf_pos_);
+                }
+                else
+                {
+                    transaction->write(
+                        self->address_,
+                        copy_size,
+                        self->init_buf_ + copy_size,
+                        self->init_buf_pos_ - copy_size
+                    );
+                }
+                self->bus_->enqueue(transaction);
+            }
+            self->init_buf_pos_ = 0;
+        }
         break;
     }
 

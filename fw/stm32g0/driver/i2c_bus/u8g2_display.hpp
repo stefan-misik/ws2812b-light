@@ -100,6 +100,13 @@ private:
     /** @brief u8g2 GPIO and delay callback */
     static uint8_t gpioDelayCb(u8x8_t * u8x8, uint8_t msg, uint8_t arg_int, void * arg_ptr);
 
+    /** @brief Frame buffer storage */
+    static constexpr std::size_t BUFFER_SIZE = DISPLAY_WIDTH * DISPLAY_HEIGHT / 8;
+    std::uint8_t buffer_[BUFFER_SIZE]{};
+
+    /** @brief Tile buffer row pointer required by u8g2 */
+    std::uint8_t * tile_buf_ptr_ = buffer_;
+
     u8g2_t u8g2_{};
     I2cBus * bus_ = nullptr;
     I2cBus::Address address_;
@@ -107,6 +114,12 @@ private:
     bool update_pending_ = false;
     bool sending_ = false;
     std::uint16_t send_offset_ = 0;
+
+    /** @brief Temporary buffer for synchronous init byte sending */
+    static constexpr std::size_t INIT_BUF_SIZE = 32;
+    std::uint8_t init_buf_[INIT_BUF_SIZE]{};
+    std::uint8_t init_buf_pos_ = 0;
+    bool init_phase_ = false;
 };
 
 }  // namespace i2c
