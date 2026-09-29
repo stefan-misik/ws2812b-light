@@ -11,6 +11,7 @@
 #include "app/animation/twinkle.hpp"
 #include "app/animation/shifting_color.hpp"
 #include "app/animation/lights.hpp"
+#include "app/animation/comet.hpp"
 
 
 namespace
@@ -28,6 +29,7 @@ enum AnimationName: AnimationId
     ANIM_TWINKLE,
     ANIM_SHIFTING_COLOR,
     ANIM_LIGHTS,
+    ANIM_COMET,
 };
 
 static_assert(
@@ -46,6 +48,7 @@ void makeAnimation(AnimationStorage::Storage * storage, AnimationId id)
         case ANIM_TWINKLE: storage->create<TwinkleAnimation>(); return;
         case ANIM_SHIFTING_COLOR: storage->create<ShiftingColorAnimation>(); return;
         case ANIM_LIGHTS: storage->create<LightsAnimation>(); return;
+        case ANIM_COMET: storage->create<CometAnimation>(); return;
     }
     // Default
     storage->create<ColorAnimation>();
@@ -197,6 +200,10 @@ AnimationId makeDefaultSlot(AnimationStorage::Storage * storage, AnimationSlotId
             (*storage)->setParamater(LightsAnimation::SYNCHRONIZED, is_synchronized);
         }
         return ANIM_LIGHTS;
+
+    case AnimationSlotName::ANIM_SLOT_COMET ... AnimationSlotName::ANIM_SLOT_COMET_LAST:
+        makeAnimation(storage, ANIM_COMET);
+        return ANIM_COMET;
     }
 }
 
