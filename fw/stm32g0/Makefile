@@ -51,6 +51,7 @@ SRC  =  \
             lights.cpp  \
             comet.cpp  \
             fire.cpp  \
+            meteor.cpp  \
         )  \
         music.cpp  \
         animation_storage.cpp  \
