@@ -42,3 +42,6 @@ compile_commands.json
 
 # Ignore log files
 *.log
+
+# Python bytecode cache
+__pycache__/
