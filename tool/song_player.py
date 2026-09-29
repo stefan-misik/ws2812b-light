@@ -55,6 +55,13 @@ _LENGTH_TICKS = {
 _REFERENCE_NOTE_ID = compose.Note(4, compose.Tone.TONE_A).note_id()
 _REFERENCE_FREQUENCY = 440.0
 
+# The firmware (see `DIVIDE_FACTOR` in `fw/att85/music.h` and `fw/stm32g0/app/music.hpp`)
+# subdivides every tick into this many steps, and silences the buzzer one step before a
+# note's duration actually elapses ("Stop the note just before end of last section" in
+# `fw/att85/music.cpp` / `fw/stm32g0/app/music.cpp`). This carves out a short, fixed-size
+# staccato gap at the end of every note, so consecutive notes never sound truly legato.
+_DIVIDE_FACTOR = 8
+
 SAMPLE_RATE = 44100
 
 
@@ -102,7 +109,13 @@ def build_playback_sequence(elements: list, bpm: float) -> list:
 
         elif isinstance(el, compose.NativeNote):
             duration_s = _LENGTH_TICKS[el.length] * tick_duration_s
-            sequence.append(PlaybackStep(el.original.sorn_name(), note_frequency(el.original), duration_s))
+            gap_s = tick_duration_s / _DIVIDE_FACTOR
+            sequence.append(
+                PlaybackStep(el.original.sorn_name(), note_frequency(el.original), duration_s - gap_s)
+            )
+            # Short staccato pause, matching the firmware silencing the buzzer one step
+            # before the note's duration actually elapses.
+            sequence.append(PlaybackStep('-', 0.0, gap_s))
             position += 1
 
         elif isinstance(el, compose.Silence):
