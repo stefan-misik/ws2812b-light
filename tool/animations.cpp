@@ -109,5 +109,7 @@ PYBIND11_MODULE(animations, m)
         .value("LIGHTS", AnimationSlotName::ANIM_SLOT_LIGHTS)
         .value("LIGHTS_LAST", AnimationSlotName::ANIM_SLOT_LIGHTS_LAST)
         .value("COMET", AnimationSlotName::ANIM_SLOT_COMET)
-        .value("COMET_LAST", AnimationSlotName::ANIM_SLOT_COMET_LAST);
+        .value("COMET_LAST", AnimationSlotName::ANIM_SLOT_COMET_LAST)
+        .value("FIRE", AnimationSlotName::ANIM_SLOT_FIRE)
+        .value("FIRE_LAST", AnimationSlotName::ANIM_SLOT_FIRE_LAST);
 }

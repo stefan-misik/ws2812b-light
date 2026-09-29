@@ -50,6 +50,7 @@ SRC  =  \
             shifting_color.cpp  \
             lights.cpp  \
             comet.cpp  \
+            fire.cpp  \
         )  \
         music.cpp  \
         animation_storage.cpp  \
