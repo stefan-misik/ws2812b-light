@@ -23,5 +23,15 @@
                 "-a 14"
             ]
         }
+        {
+            "name": "Python Debugger: Song Player",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/song_player.py",
+            "args": [
+                "silent_night"
+            ],
+            "console": "integratedTerminal"
+        },
     ]
 }

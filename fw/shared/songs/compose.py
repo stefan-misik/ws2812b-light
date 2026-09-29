@@ -191,7 +191,7 @@ class NativeSetOctave(NamedTuple):
     octave: int
 
 
-NativeSongElementType = Union[NativeNote, NativeSetOctave, Silence, Comment]
+NativeSongElementType = Union[NativeNote, NativeSetOctave, LoopControl, Silence, Comment]
 
 
 def convert_to_native(parser: SongParser) -> List[NativeSongElementType]:
