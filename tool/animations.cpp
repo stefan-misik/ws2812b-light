@@ -107,5 +107,13 @@ PYBIND11_MODULE(animations, m)
         .value("SHIFTING_COLOR", AnimationSlotName::ANIM_SLOT_SHIFTING_COLOR)
         .value("SHIFTING_COLOR_LAST", AnimationSlotName::ANIM_SLOT_SHIFTING_COLOR_LAST)
         .value("LIGHTS", AnimationSlotName::ANIM_SLOT_LIGHTS)
-        .value("LIGHTS_LAST", AnimationSlotName::ANIM_SLOT_LIGHTS_LAST);
+        .value("LIGHTS_LAST", AnimationSlotName::ANIM_SLOT_LIGHTS_LAST)
+        .value("COMET", AnimationSlotName::ANIM_SLOT_COMET)
+        .value("COMET_LAST", AnimationSlotName::ANIM_SLOT_COMET_LAST)
+        .value("FIRE", AnimationSlotName::ANIM_SLOT_FIRE)
+        .value("FIRE_LAST", AnimationSlotName::ANIM_SLOT_FIRE_LAST)
+        .value("METEOR", AnimationSlotName::ANIM_SLOT_METEOR)
+        .value("METEOR_LAST", AnimationSlotName::ANIM_SLOT_METEOR_LAST)
+        .value("BOUNCE", AnimationSlotName::ANIM_SLOT_BOUNCE)
+        .value("BOUNCE_LAST", AnimationSlotName::ANIM_SLOT_BOUNCE_LAST);
 }

@@ -49,6 +49,10 @@ SRC  =  \
             twinkle.cpp  \
             shifting_color.cpp  \
             lights.cpp  \
+            comet.cpp  \
+            fire.cpp  \
+            meteor.cpp  \
+            bounce.cpp  \
         )  \
         music.cpp  \
         animation_storage.cpp  \
