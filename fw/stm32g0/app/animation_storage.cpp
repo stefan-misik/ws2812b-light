@@ -14,6 +14,7 @@
 #include "app/animation/comet.hpp"
 #include "app/animation/fire.hpp"
 #include "app/animation/meteor.hpp"
+#include "app/animation/bounce.hpp"
 
 
 namespace
@@ -34,6 +35,7 @@ enum AnimationName: AnimationId
     ANIM_COMET,
     ANIM_FIRE,
     ANIM_METEOR,
+    ANIM_BOUNCE,
 };
 
 static_assert(
@@ -55,6 +57,7 @@ void makeAnimation(AnimationStorage::Storage * storage, AnimationId id)
         case ANIM_COMET: storage->create<CometAnimation>(); return;
         case ANIM_FIRE: storage->create<FireAnimation>(); return;
         case ANIM_METEOR: storage->create<MeteorAnimation>(); return;
+        case ANIM_BOUNCE: storage->create<BounceAnimation>(); return;
     }
     // Default
     storage->create<ColorAnimation>();
@@ -218,6 +221,10 @@ AnimationId makeDefaultSlot(AnimationStorage::Storage * storage, AnimationSlotId
     case AnimationSlotName::ANIM_SLOT_METEOR ... AnimationSlotName::ANIM_SLOT_METEOR_LAST:
         makeAnimation(storage, ANIM_METEOR);
         return ANIM_METEOR;
+
+    case AnimationSlotName::ANIM_SLOT_BOUNCE ... AnimationSlotName::ANIM_SLOT_BOUNCE_LAST:
+        makeAnimation(storage, ANIM_BOUNCE);
+        return ANIM_BOUNCE;
     }
 }
 
