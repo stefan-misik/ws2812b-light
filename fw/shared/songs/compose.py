@@ -57,6 +57,10 @@ class Silence(NamedTuple):
     length: NoteLength
 
 
+class Legato(NamedTuple):
+    pass
+
+
 class LoopControl(NamedTuple):
     count: int
 
@@ -68,16 +72,20 @@ class Comment(NamedTuple):
     value: str
 
 
-SongElementType = Union[NoteWithLength, Silence, LoopControl, Comment]
+SongElementType = Union[NoteWithLength, Silence, Legato, LoopControl, Comment]
 
 
 class ParsingError(RuntimeError):
-    def __init__(self, pos: int):
+    def __init__(self, pos: int, message: str = "Unknown"):
         self._pos = pos
+        self._message = message
         super().__init__(f'Tone parsing error at character {pos}')
 
     def position(self) -> int:
         return self._pos
+
+    def message(self) -> str:
+        return self._message
 
 
 class SongParser:
@@ -110,7 +118,7 @@ class SongParser:
     }
 
     _ELEMENT_RE = re.compile(
-        r"\s*((//[^\n]*)\n|((?:1|2|4|8|16)\.?)(#?[cdefgab][0-9]|-)|([0-9]{1,2})\[|])",
+        r"\s*((//[^\n]*)\n|((?:1|2|4|8|16)\.?)(#?[cdefgab][0-9]|-)|([0-9]{1,2})\[|]|(_))",
         re.MULTILINE
     )
 
@@ -150,35 +158,37 @@ class SongParser:
                 )
         elif 17 == present_groups:
             return LoopControl(self._parse_int(found.group(5))), parsed_length
+        elif 33 == present_groups:
+            return Legato(), parsed_length
         elif 1 == present_groups:
             if ']' == found.group(1):
                 return LoopControl(-1), parsed_length
         # If not parsed, raise error
-        raise ParsingError(self._pos)
+        raise ParsingError(self._pos, "unexpected element")
 
     def _parse_note_length(self, s: str) -> NoteLength:
         nl = self._LENGTHS.get(s)
         if None is nl:
-            raise ParsingError(self._pos)
+            raise ParsingError(self._pos, f"invalid note length '{s}'")
         return nl
 
     def _parse_note_tone(self, s: str) -> Tone:
         tone = self._TONES.get(s)
         if None is tone:
-            raise ParsingError(self._pos)
+            raise ParsingError(self._pos, f"invalid note tone '{s}'")
         return tone
 
     def _parse_int(self, s: str) -> int:
         try:
             return int(s)
         except ValueError:
-            raise ParsingError(self._pos)
+            raise ParsingError(self._pos, f"invalid integer '{s}'")
 
     def _parse_comment(self, s: str) -> Comment:
         if s.startswith('//'):
             return Comment(s)
         else:
-            raise ParsingError(self._pos)
+            raise ParsingError(self._pos, f"invalid comment '{s}'")
 
 
 class NativeNote(NamedTuple):
@@ -191,14 +201,26 @@ class NativeSetOctave(NamedTuple):
     octave: int
 
 
-NativeSongElementType = Union[NativeNote, NativeSetOctave, LoopControl, Silence, Comment]
+class NativeLegato(NamedTuple):
+    count: int
+
+
+NativeSongElementType = Union[NativeNote, NativeSetOctave, NativeLegato, LoopControl, Silence, Comment]
 
 
 def convert_to_native(parser: SongParser) -> List[NativeSongElementType]:
     elements = []
     current_note = INVALID_NOTE  # Ensure set octave at start
+    legato_index = None
+    pending_legato_note = False
     for el in parser:
         if isinstance(el, NoteWithLength):
+            if pending_legato_note:
+                pending_legato_note = False
+            elif legato_index is not None:
+                if elements[legato_index].count == 0x0F:
+                    elements.append(NativeLegato(0))  # Terminate indefinite legato
+                legato_index = None
             diff = el.note.note_id() - current_note.note_id()
             if diff > 7 or diff < -8:
                 current_note = Note(el.note.octave + (1 if el.note.tone.value > 7 else 0), Tone.TONE_C)
@@ -206,6 +228,17 @@ def convert_to_native(parser: SongParser) -> List[NativeSongElementType]:
                 diff = el.note.note_id() - current_note.note_id()
             elements.append(NativeNote(el.length, diff, el.note))
             current_note = el.note
+        elif isinstance(el, Legato):
+            previous_el = elements[-1] if len(elements) > 0 else None
+            if not isinstance(previous_el, NativeNote) and not isinstance(previous_el, Silence):
+                raise ParsingError(parser._pos, "legato must follow a note or silence")
+            if legato_index is None:
+                elements[-1] = NativeLegato(1)
+                legato_index = len(elements) - 1
+                elements.append(previous_el)
+            elif elements[legato_index].count < 0x0F:
+                elements[legato_index] = NativeLegato(elements[legato_index].count + 1)
+            pending_legato_note = True
         elif isinstance(el, LoopControl):
             elements.append(el)
             if not el.is_end():
@@ -224,6 +257,8 @@ def native_to_lines(native: List[NativeSongElementType]) -> List[str]:
             )
         elif isinstance(el, NativeSetOctave):
             lines.append(f"    MusicElement::SetOctave({el.octave}),\n")
+        elif isinstance(el, NativeLegato):
+            lines.append(f"    MusicElement::Legato({el.count}),\n")
         elif isinstance(el, Silence):
             lines.append(f"    MusicElement::Silence(NoteLength::{el.length.name}),\n")
         elif isinstance(el, LoopControl):
@@ -263,7 +298,7 @@ def main():
         native = convert_to_native(SongParser(song_text))
     except ParsingError as e:
         line_no = song_text.count('\n', 0, e.position())
-        print(f'Error on line {line_no}', file=sys.stderr)
+        print(f'Error on line {line_no}: {e.message()}', file=sys.stderr)
         sys.exit(255)
 
     out_file = open_file_for_writing(args.out)

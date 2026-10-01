@@ -60,6 +60,8 @@ private:
     int8_t current_song_id_ = 0;
     const uint8_t * position_ = nullptr;
 
+    uint8_t legato_notes_ = 0;
+
     uint8_t loop_id_ = INVALID_LOOP_ID;
     LoopState loops_[MAX_NESTED_LOOPS];
 
@@ -71,6 +73,7 @@ private:
     void reset()
     {
         remaining_duration_ = 0;
+        legato_notes_ = 0;
         loop_id_ = INVALID_LOOP_ID;
     }
 };

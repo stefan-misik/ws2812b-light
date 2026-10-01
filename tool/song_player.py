@@ -88,6 +88,7 @@ def build_playback_sequence(elements: list, bpm: float) -> List[PlaybackStep]:
 
     sequence = []
     loop_stack = []  # each entry: [remaining_count, body_start_index]
+    legato_notes = 0
     position = 0
     while position < len(elements):
         el = elements[position]
@@ -99,15 +100,21 @@ def build_playback_sequence(elements: list, bpm: float) -> List[PlaybackStep]:
             duration = _LENGTH_TICKS[el.length] * tick_duration
             # Short staccato pause, matching the firmware silencing the buzzer one step
             # before the note's duration actually elapses.
-            gap = tick_duration / _DIVIDE_FACTOR
+            gap = 0.0 if legato_notes else tick_duration / _DIVIDE_FACTOR
             sequence.append(
                 PlaybackStep(el.original, duration, gap)
             )
+            if legato_notes > 0 and legato_notes < 0x0F:
+                legato_notes -= 1
             position += 1
 
         elif isinstance(el, compose.Silence):
             duration = _LENGTH_TICKS[el.length] * tick_duration
             sequence.append(PlaybackStep(None, duration))
+            position += 1
+
+        elif isinstance(el, compose.NativeLegato):
+            legato_notes = el.count
             position += 1
 
         elif isinstance(el, compose.LoopControl):
@@ -163,7 +170,7 @@ def print_sequence(name: str, sequence: list) -> None:
     print(f"== {name} ({len(sequence)} steps) ==")
     for step in sequence:
         name = step.note.sorn_name() if step.note is not None else "-"
-        print(f"  {name:>4}  {step.duration * 1000:6.1f} ms")
+        print(f"  {name:>4}  {step.duration * 1000:6.1f} ms, {step.gap * 1000:6.1f}")
 
 
 def discover_songs() -> list:

@@ -128,7 +128,7 @@ auto Music::play() -> Result
 
     case DIVIDE_FACTOR - 2:
         // Stop the note just before end of last section
-        if (1 == remaining_duration_)
+        if (1 == remaining_duration_ && 0 == legato_notes_)
             stopNote();
         // no break
 
@@ -162,6 +162,7 @@ auto Music::play() -> Result
             case MusicElement::CONTROL_FLOW_TERMINATE:
                 duration = 64;
                 position_ = song_start - 1;
+                legato_notes_ = 0;
                 loop_id_ = INVALID_LOOP_ID;
                 break;
 
@@ -203,9 +204,15 @@ auto Music::play() -> Result
             duration = getNoteDuration(static_cast<NoteLength>(el.param()));
             break;
 
+        case MusicElement::ControlType::LEGATO:
+            legato_notes_ = el.param();
+            break;
+
         default:
             current_note_ += el.noteDiff();
             duration = getNoteDuration(MusicElement::toNoteLength(control));
+            if (0 != legato_notes_ && MusicElement::ControlLegatoParam::CONTROL_LEGATO_INDEFINITE != legato_notes_)
+                --legato_notes_;
             playNote(current_note_.octave(), current_note_.tone());
             result = Result::CHANGE;
             break;
