@@ -57,6 +57,10 @@ class Silence(NamedTuple):
     length: NoteLength
 
 
+class Legato(NamedTuple):
+    pass
+
+
 class LoopControl(NamedTuple):
     count: int
 
@@ -68,7 +72,7 @@ class Comment(NamedTuple):
     value: str
 
 
-SongElementType = Union[NoteWithLength, Silence, LoopControl, Comment]
+SongElementType = Union[NoteWithLength, Silence, Legato, LoopControl, Comment]
 
 
 class ParsingError(RuntimeError):
@@ -110,7 +114,7 @@ class SongParser:
     }
 
     _ELEMENT_RE = re.compile(
-        r"\s*((//[^\n]*)\n|((?:1|2|4|8|16)\.?)(#?[cdefgab][0-9]|-)|([0-9]{1,2})\[|])",
+        r"\s*((//[^\n]*)\n|((?:1|2|4|8|16)\.?)(#?[cdefgab][0-9]|-)|([0-9]{1,2})\[|]|(_))",
         re.MULTILINE
     )
 
@@ -150,6 +154,8 @@ class SongParser:
                 )
         elif 17 == present_groups:
             return LoopControl(self._parse_int(found.group(5))), parsed_length
+        elif 33 == present_groups:
+            return Legato(), parsed_length
         elif 1 == present_groups:
             if ']' == found.group(1):
                 return LoopControl(-1), parsed_length
@@ -191,27 +197,62 @@ class NativeSetOctave(NamedTuple):
     octave: int
 
 
-NativeSongElementType = Union[NativeNote, NativeSetOctave, LoopControl, Silence, Comment]
+class NativeLegato(NamedTuple):
+    count: int
+
+
+NativeSongElementType = Union[NativeNote, NativeSetOctave, NativeLegato, LoopControl, Silence, Comment]
 
 
 def convert_to_native(parser: SongParser) -> List[NativeSongElementType]:
     elements = []
     current_note = INVALID_NOTE  # Ensure set octave at start
+    last_note_index = None
+    legato_index = None
+    legato_awaiting_note = False
     for el in parser:
         if isinstance(el, NoteWithLength):
+            if legato_awaiting_note:
+                legato_awaiting_note = False
+            else:
+                legato_index = None
             diff = el.note.note_id() - current_note.note_id()
             if diff > 7 or diff < -8:
                 current_note = Note(el.note.octave + (1 if el.note.tone.value > 7 else 0), Tone.TONE_C)
                 elements.append(NativeSetOctave(current_note.octave))
                 diff = el.note.note_id() - current_note.note_id()
             elements.append(NativeNote(el.length, diff, el.note))
+            last_note_index = len(elements) - 1
             current_note = el.note
+        elif isinstance(el, Legato):
+            if last_note_index is None:
+                raise ParsingError(parser._pos)
+            if legato_index is None:
+                elements.insert(last_note_index, NativeLegato(1))
+                legato_index = last_note_index
+                last_note_index += 1
+            elif elements[legato_index].count < 0x0E:
+                elements[legato_index] = NativeLegato(elements[legato_index].count + 1)
+            else:
+                elements.insert(last_note_index, NativeLegato(1))
+                legato_index = last_note_index
+                last_note_index += 1
+            legato_awaiting_note = True
         elif isinstance(el, LoopControl):
             elements.append(el)
             if not el.is_end():
                 current_note = INVALID_NOTE  # Force Set Octave after loop start
+            last_note_index = None
+            legato_index = None
+            legato_awaiting_note = False
         elif isinstance(el, Silence) or isinstance(el, Comment):
             elements.append(el)
+            if isinstance(el, Silence):
+                last_note_index = None
+                legato_index = None
+                legato_awaiting_note = False
+    if legato_awaiting_note:
+        raise ParsingError(parser._pos)
     return elements
 
 
@@ -224,6 +265,8 @@ def native_to_lines(native: List[NativeSongElementType]) -> List[str]:
             )
         elif isinstance(el, NativeSetOctave):
             lines.append(f"    MusicElement::SetOctave({el.octave}),\n")
+        elif isinstance(el, NativeLegato):
+            lines.append(f"    MusicElement::Legato({el.count}),\n")
         elif isinstance(el, Silence):
             lines.append(f"    MusicElement::Silence(NoteLength::{el.length.name}),\n")
         elif isinstance(el, LoopControl):

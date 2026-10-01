@@ -51,6 +51,7 @@ public:
         FLOW = 0,
         SET_OCTAVE,
         SILENCE,
+        LEGATO,
 
         CONTROL_COUNT_,
     };
@@ -59,6 +60,12 @@ public:
     {
         CONTROL_FLOW_TERMINATE = 0,
         CONTROL_FLOW_LOOP_END = 0x0F,
+    };
+
+    enum ControlLegatoParam: def::Uint8
+    {
+        CONTROL_LEGATO_TERMINATE = 0,
+        CONTROL_LEGATO_INDEFINITE = 0x0F,
     };
 
     static const def::Uint8 NOTE_START = static_cast<def::Uint8>(ControlType::CONTROL_COUNT_);
@@ -94,6 +101,10 @@ public:
     static constexpr MusicElement Silence(NoteLength length)
     {
         return MusicElement{ControlType::SILENCE, static_cast<def::Uint8>(length)};
+    }
+    static constexpr MusicElement Legato(def::Uint8 count)
+    {
+        return MusicElement{ControlType::LEGATO, count};
     }
 
     ControlType controlType() const { return static_cast<ControlType>(code_ >> 4); }
