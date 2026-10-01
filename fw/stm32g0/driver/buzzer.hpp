@@ -36,6 +36,14 @@ public:
      */
     void playNote(MusicNote note);
 
+    /**
+     * @brief Stop playing the current note
+     */
+    void stopNote()
+    {
+        playNote(MusicNote::InvalidNote());
+    }
+
 private:
     struct Private;
     Hidden<Private, 8> p_;

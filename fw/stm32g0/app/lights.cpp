@@ -94,7 +94,7 @@ Music::Result Lights::handleMusic()
     case Music::Result::NONE:
     case Music::Result::STOPPED:
     case Music::Result::PRE_CHANGE:
-        io_.buzzer().playNote(MusicNote::InvalidNote());
+        io_.buzzer().stopNote();
         break;
     case Music::Result::PLAYING:
         break;
