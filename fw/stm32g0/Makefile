@@ -124,6 +124,7 @@ VENDOR_U8G2_EXCLUDE_PATTERNS =  \
 INCLUDE += $(addprefix $(VENDOR_U8G2)/,csrc cppsrc)
 SRC += $(filter-out $(addprefix $(VENDOR_U8G2)/,$(VENDOR_U8G2_EXCLUDE_PATTERNS)),$(wildcard  \
     $(addprefix $(VENDOR_U8G2)/,csrc/*.c cppsrc/*.cpp)))
+SRC += $(VENDOR_U8G2)/csrc/u8x8_d_ssd1306_128x64_noname.c
 
 OUT = $(BUILDDIR)/$(PROJ).elf
 OUT_HEX = $(OUT:.elf=.hex)

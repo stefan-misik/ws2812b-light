@@ -7,6 +7,9 @@
 
 #include <cstdint>
 #include <cstddef>
+
+#include <u8g2.h>
+
 #include "driver/i2c_bus.hpp"
 
 
@@ -32,6 +35,11 @@ public:
     I2cBus::Address address() const { return I2cBus::Address(0x3C); }
 
     /**
+     * @brief Configure u8g2 to render directly into this driver's framebuffer.
+     */
+    void initialize();
+
+    /**
      * @brief Handle completed I2C transaction response
      *
      * @param transaction Completed transaction
@@ -52,10 +60,22 @@ public:
      * containing 128 bytes (one per column). Each byte represents 8 vertical
      * pixels, with the LSB being the topmost pixel.
      *
-     * @return Pointer to the framebuffer
+    * @return Pointer to the u8g2-managed framebuffer, or nullptr before
+    *         initialize() has completed
      */
     std::uint8_t * framebuffer() { return framebuffer_; }
     const std::uint8_t * framebuffer() const { return framebuffer_; }
+
+    /**
+     * @brief Get the u8g2 drawing context.
+     *
+     * Draw with the regular u8g2 APIs, then call sendBuffer() to schedule the
+     * resulting framebuffer for asynchronous transfer.
+     */
+    u8g2_t * u8g2() { return &u8g2_; }
+
+    /** @brief Schedule the u8g2 framebuffer for asynchronous transfer. */
+    void sendBuffer() { markDirty(); }
 
     /**
      * @brief Mark framebuffer as dirty, triggering a transfer on next
@@ -92,7 +112,15 @@ private:
     bool dirty_ = false;
     bool pending_ = false;
 
-    std::uint8_t framebuffer_[FRAMEBUFFER_SIZE] = {};
+    u8g2_t u8g2_ = {};
+    std::uint8_t * framebuffer_ = nullptr;
+
+    static std::uint8_t u8g2ByteCallback(u8x8_t * u8x8, std::uint8_t message,
+                                          std::uint8_t argument, void * data);
+    static std::uint8_t u8g2GpioAndDelayCallback(u8x8_t * u8x8,
+                                                  std::uint8_t message,
+                                                  std::uint8_t argument,
+                                                  void * data);
 };
 
 }  // namespace i2c

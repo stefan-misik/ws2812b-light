@@ -185,14 +185,51 @@ static constexpr std::size_t INIT_SEQUENCE_COUNT = sizeof(INIT_SEQUENCE) / sizeo
 }  // namespace
 
 
+std::uint8_t Ssd1306::u8g2ByteCallback(u8x8_t * u8x8, std::uint8_t message,
+                                        std::uint8_t argument, void * data)
+{
+    // Framebuffer transfer is performed asynchronously by createRequest().
+    (void)u8x8;
+    (void)message;
+    (void)argument;
+    (void)data;
+    return 1;
+}
+
+std::uint8_t Ssd1306::u8g2GpioAndDelayCallback(u8x8_t * u8x8,
+                                                std::uint8_t message,
+                                                std::uint8_t argument,
+                                                void * data)
+{
+    // This display has no separately controlled reset pin or delays.
+    (void)u8x8;
+    (void)message;
+    (void)argument;
+    (void)data;
+    return 1;
+}
+
+void Ssd1306::initialize()
+{
+    u8g2_Setup_ssd1306_i2c_128x64_noname_f(
+        &u8g2_, &u8g2_cb_r0, u8g2ByteCallback, u8g2GpioAndDelayCallback);
+    framebuffer_ = u8g2_GetBufferPtr(&u8g2_);
+    u8g2_ClearBuffer(&u8g2_);
+}
+
+
 void Ssd1306::clear()
 {
-    std::memset(framebuffer_, 0, FRAMEBUFFER_SIZE);
+    if (nullptr != framebuffer_)
+        u8g2_ClearBuffer(&u8g2_);
 }
 
 void Ssd1306::setPixel(std::size_t x, std::size_t y, bool on)
 {
     if (x >= WIDTH || y >= HEIGHT)
+        return;
+
+    if (nullptr == framebuffer_)
         return;
 
     const std::size_t page = y / 8;

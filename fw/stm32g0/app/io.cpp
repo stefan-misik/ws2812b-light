@@ -10,6 +10,7 @@ bool Io::initialize()
     keypad_.initialize();
     buzzer_.initialize(driver::TimerId::TIM_16, 1);
     i2c_bus_.initialize(driver::I2cId::I2C_1, driver::DmaChannelId::DMA_3, 16);
+    display_.initialize();
     cpu_usage_.initialize(driver::TimerId::TIM_6);
 
     return true;
