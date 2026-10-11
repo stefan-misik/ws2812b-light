@@ -1,11 +1,5 @@
 # Commands
 
-# Check for parameters of build
-IS_DRY_RUN := $(if $(findstring n,$(firstword $(MAKEFLAGS))),yes,)
-
-# Skip build and inclusion of dependency files *.d
-NO_DEPS ?=
-
 MKDIR = mkdir
 ifneq ($(TOOLCHAIN_PREFIX),)
 AR  = $(TOOLCHAIN_PREFIX)-ar
@@ -99,7 +93,7 @@ endif
 # Rules
 
 # Pull in dependency info (only if we are not cleaning)
-ifeq ($(filter clean,$(MAKECMDGOALS))$(filter yes,$(NO_DEPS)),)
+ifeq ($(filter clean,$(MAKECMDGOALS)),)
     -include $(DEP)
 endif
 
@@ -118,7 +112,7 @@ $(OUT): $(OUT).objlst $(EXTDEP)
 
 # Object list file
 $(OUT).objlst: $(OBJ)
-	$(if $(IS_DRY_RUN),,$(file >$@,$^))
+	$(file >$@,$^)
 
 # Files to be cleaned-up on 'make clean'
 CLEANUP += $(OUT) $(OUT).objlst $(OBJ) $(DEP)
