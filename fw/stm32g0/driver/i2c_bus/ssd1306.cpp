@@ -25,47 +25,158 @@ static constexpr std::uint8_t DATA_PREFIX = 0x40;
 /**
  * @brief Initialization command sequences
  *
- * Each sequence is: {length, cmd_byte_0, cmd_byte_1, ...}
+ * Each command owns its payload in a fixed-size buffer. The longest command
+ * sequence currently used sets the page and column addresses in three bytes.
  * Sent as I2C write: [address] [0x00 (command prefix)] [cmd bytes...]
  * The command prefix is placed in the transaction's local buffer, and the
  * command payload is in the remote buffer.
  */
-struct InitCmd
+struct Command
 {
-    const std::uint8_t * data;
+    std::uint8_t data[3];
     std::uint8_t size;
 };
 
-static constexpr std::uint8_t INIT_DISPLAY_OFF[] = { 0xAE };
-static constexpr std::uint8_t INIT_SET_MUX_RATIO[] = { 0xA8, 63 };
-static constexpr std::uint8_t INIT_SET_DISPLAY_OFFSET[] = { 0xD3, 0x00 };
-static constexpr std::uint8_t INIT_SET_START_LINE[] = { 0x40 };
-static constexpr std::uint8_t INIT_SET_SEG_REMAP[] = { 0xA1 };
-static constexpr std::uint8_t INIT_SET_COM_SCAN_DIR[] = { 0xC8 };
-static constexpr std::uint8_t INIT_SET_COM_PINS[] = { 0xDA, 0x12 };
-static constexpr std::uint8_t INIT_SET_CONTRAST[] = { 0x81, 0x7F };
-static constexpr std::uint8_t INIT_ENTIRE_DISPLAY_ON[] = { 0xA4 };
-static constexpr std::uint8_t INIT_SET_NORMAL_DISPLAY[] = { 0xA6 };
-static constexpr std::uint8_t INIT_SET_CLK_DIV[] = { 0xD5, 0x80 };
-static constexpr std::uint8_t INIT_SET_CHARGE_PUMP[] = { 0x8D, 0x14 };
-static constexpr std::uint8_t INIT_SET_MEMORY_MODE[] = { 0x20, 0x02 };  // Page addressing mode
-static constexpr std::uint8_t INIT_DISPLAY_ON[] = { 0xAF };
+enum class ChargePump: std::uint8_t
+{
+    DISABLED = 0x10,
+    ENABLED = 0x14,
+};
 
-static const InitCmd INIT_SEQUENCE[] = {
-    { INIT_DISPLAY_OFF,          sizeof(INIT_DISPLAY_OFF) },
-    { INIT_SET_CLK_DIV,          sizeof(INIT_SET_CLK_DIV) },
-    { INIT_SET_MUX_RATIO,        sizeof(INIT_SET_MUX_RATIO) },
-    { INIT_SET_DISPLAY_OFFSET,   sizeof(INIT_SET_DISPLAY_OFFSET) },
-    { INIT_SET_START_LINE,       sizeof(INIT_SET_START_LINE) },
-    { INIT_SET_CHARGE_PUMP,      sizeof(INIT_SET_CHARGE_PUMP) },
-    { INIT_SET_MEMORY_MODE,      sizeof(INIT_SET_MEMORY_MODE) },
-    { INIT_SET_SEG_REMAP,        sizeof(INIT_SET_SEG_REMAP) },
-    { INIT_SET_COM_SCAN_DIR,     sizeof(INIT_SET_COM_SCAN_DIR) },
-    { INIT_SET_COM_PINS,         sizeof(INIT_SET_COM_PINS) },
-    { INIT_SET_CONTRAST,         sizeof(INIT_SET_CONTRAST) },
-    { INIT_ENTIRE_DISPLAY_ON,    sizeof(INIT_ENTIRE_DISPLAY_ON) },
-    { INIT_SET_NORMAL_DISPLAY,   sizeof(INIT_SET_NORMAL_DISPLAY) },
-    { INIT_DISPLAY_ON,           sizeof(INIT_DISPLAY_ON) },
+/** Set Display Clock Divide Ratio / Oscillator Frequency (0xD5) parameter. */
+enum class ClockDivideRatio: std::uint8_t
+{
+    DIVIDE_BY_1 = 0x00,
+    DIVIDE_BY_2 = 0x01,
+    DIVIDE_BY_3 = 0x02,
+    DIVIDE_BY_4 = 0x03,
+    DIVIDE_BY_5 = 0x04,
+    DIVIDE_BY_6 = 0x05,
+    DIVIDE_BY_7 = 0x06,
+    DIVIDE_BY_8 = 0x07,
+    DIVIDE_BY_9 = 0x08,
+    DIVIDE_BY_10 = 0x09,
+    DIVIDE_BY_11 = 0x0A,
+    DIVIDE_BY_12 = 0x0B,
+    DIVIDE_BY_13 = 0x0C,
+    DIVIDE_BY_14 = 0x0D,
+    DIVIDE_BY_15 = 0x0E,
+    DIVIDE_BY_16 = 0x0F,
+};
+
+enum class OscillatorFrequency: std::uint8_t
+{
+    FREQ_0 = 0x00,
+    FREQ_1 = 0x01,
+    FREQ_2 = 0x02,
+    FREQ_3 = 0x03,
+    FREQ_4 = 0x04,
+    FREQ_5 = 0x05,
+    FREQ_6 = 0x06,
+    FREQ_7 = 0x07,
+    DEFAULT = 0x08,
+    FREQ_9 = 0x09,
+    FREQ_10 = 0x0A,
+    FREQ_11 = 0x0B,
+    FREQ_12 = 0x0C,
+    FREQ_13 = 0x0D,
+    FREQ_14 = 0x0E,
+    FREQ_15 = 0x0F,
+};
+
+enum class MemoryMode: std::uint8_t
+{
+    HORIZONTAL = 0x00,
+    VERTICAL = 0x01,
+    PAGE = 0x02,
+};
+
+enum class SegmentRemap: std::uint8_t
+{
+    COLUMN_0 = 0xA0,
+    COLUMN_127 = 0xA1,
+};
+
+enum class ComScanDirection: std::uint8_t
+{
+    NORMAL = 0xC0,
+    REMAPPED = 0xC8,
+};
+
+enum class ComPins: std::uint8_t
+{
+    SEQUENTIAL = 0x02,
+    ALTERNATIVE = 0x12,
+    SEQUENTIAL_REMAP = 0x22,
+    ALTERNATIVE_REMAP = 0x32,
+};
+
+enum class EntireDisplay: std::uint8_t
+{
+    USE_RAM = 0xA4,
+    IGNORE_RAM = 0xA5,
+};
+
+enum class DisplayMode: std::uint8_t
+{
+    NORMAL = 0xA6,
+    INVERTED = 0xA7,
+};
+
+enum class DisplayPower: std::uint8_t
+{
+    OFF = 0xAE,
+    ON = 0xAF,
+};
+
+constexpr inline Command setClockDivider(ClockDivideRatio divide_ratio,
+                                         OscillatorFrequency frequency)
+{
+    const auto value = static_cast<std::uint8_t>(
+        (static_cast<std::uint8_t>(frequency) << 4)
+        | static_cast<std::uint8_t>(divide_ratio));
+    return { { 0xD5, value }, 2 };
+}
+constexpr inline Command setMuxRatio(std::uint8_t ratio) { return { { 0xA8, ratio }, 2 }; }
+constexpr inline Command setDisplayOffset(std::uint8_t offset) { return { { 0xD3, offset }, 2 }; }
+constexpr inline Command setStartLine(std::uint8_t line) { return { { static_cast<std::uint8_t>(0x40u | (line & 0x3Fu)) }, 1 }; }
+constexpr inline Command setChargePump(ChargePump setting) { return { { 0x8D, static_cast<std::uint8_t>(setting) }, 2 }; }
+constexpr inline Command setMemoryMode(MemoryMode mode) { return { { 0x20, static_cast<std::uint8_t>(mode) }, 2 }; }
+constexpr inline Command setSegmentRemap(SegmentRemap remap) { return { { static_cast<std::uint8_t>(remap) }, 1 }; }
+constexpr inline Command setComScanDirection(ComScanDirection direction) { return { { static_cast<std::uint8_t>(direction) }, 1 }; }
+constexpr inline Command setComPins(ComPins configuration) { return { { 0xDA, static_cast<std::uint8_t>(configuration) }, 2 }; }
+constexpr inline Command setContrast(std::uint8_t contrast) { return { { 0x81, contrast }, 2 }; }
+constexpr inline Command setEntireDisplay(EntireDisplay setting) { return { { static_cast<std::uint8_t>(setting) }, 1 }; }
+constexpr inline Command setDisplayMode(DisplayMode mode) { return { { static_cast<std::uint8_t>(mode) }, 1 }; }
+constexpr inline Command setDisplayPower(DisplayPower power) { return { { static_cast<std::uint8_t>(power) }, 1 }; }
+
+/**
+ * @brief Set the page and column start address in page-addressing mode.
+ */
+constexpr inline Command setPageAndColumnAddress(std::uint8_t page,
+                                                  std::uint8_t column)
+{
+    return { { static_cast<std::uint8_t>(0xB0u | (page & 0x07u)),
+               static_cast<std::uint8_t>(column & 0x0Fu),
+               static_cast<std::uint8_t>(0x10u | ((column >> 4) & 0x0Fu)) }, 3 };
+}
+
+static constexpr Command INIT_SEQUENCE[] = {
+    setDisplayPower(DisplayPower::OFF),
+    setClockDivider(ClockDivideRatio::DIVIDE_BY_1,
+                    OscillatorFrequency::DEFAULT),
+    setMuxRatio(63),
+    setDisplayOffset(0x00),
+    setStartLine(0),
+    setChargePump(ChargePump::ENABLED),
+    setMemoryMode(MemoryMode::PAGE),
+    setSegmentRemap(SegmentRemap::COLUMN_127),
+    setComScanDirection(ComScanDirection::REMAPPED),
+    setComPins(ComPins::ALTERNATIVE),
+    setContrast(0x7F),
+    setEntireDisplay(EntireDisplay::USE_RAM),
+    setDisplayMode(DisplayMode::NORMAL),
+    setDisplayPower(DisplayPower::ON),
 };
 
 static constexpr std::size_t INIT_SEQUENCE_COUNT = sizeof(INIT_SEQUENCE) / sizeof(INIT_SEQUENCE[0]);
@@ -155,16 +266,11 @@ void Ssd1306::createRequest(I2cBus * bus)
         if (nullptr == tr)
             return;
 
-        // Set page address and column address for current page:
-        //   0xB0 | page  - set page start address
-        //   0x00          - set lower column start address to 0
-        //   0x10          - set upper column start address to 0
+        const auto cmd = setPageAndColumnAddress(current_page_, 0);
         auto * local = static_cast<std::uint8_t *>(tr->localBuffer());
         local[0] = CMD_PREFIX;
-        local[1] = static_cast<std::uint8_t>(0xB0u | current_page_);
-        local[2] = 0x00;
-        local[3] = 0x10;
-        tr->write(address(), 4);
+        std::memcpy(&local[1], cmd.data, cmd.size);
+        tr->write(address(), cmd.size + 1);
 
         state_ = State::SEND_DATA;
         break;
