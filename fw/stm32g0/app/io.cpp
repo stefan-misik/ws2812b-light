@@ -20,12 +20,16 @@ void Io::run()
     // Handle I2C transactions
     {
         const auto eeprom_address = eeprom_.address();
+        const auto display_address = display_.address();
         while (auto * transaction = i2c_bus_.get())
         {
             if (transaction->address() == eeprom_address)
                 eeprom_.handleResponse(transaction);
+            else if (transaction->address() == display_address)
+                display_.handleResponse(transaction);
             i2c_bus_.release(transaction);
         }
         eeprom_.createRequest(&i2c_bus_);
+        display_.createRequest(&i2c_bus_);
     }
 }
