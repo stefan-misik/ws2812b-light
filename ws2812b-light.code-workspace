@@ -72,7 +72,11 @@
 		"cSpell.words": [
 			"eeprom",
 			"dmamux",
-			"serdes"
+			"usart",
+			"nvic",
+			"periph",
+			"serdes",
+			"decommit"
 		],
 		// Project settings
 		"C_Cpp.intelliSenseEngine": "disabled",
