@@ -37,4 +37,18 @@ std::uint32_t toDmamuxChannel(std::uint32_t dma_channel)
     return INVALID_DMAMUX_CHANNEL;
 }
 
+void enableDmaIrq(DmaChannelId dma_channel_id)
+{
+    switch (dma_channel_id)
+    {
+    case DmaChannelId::DMA_1: ::NVIC_EnableIRQ(::DMA1_Channel1_IRQn); break;
+    case DmaChannelId::DMA_2:
+    case DmaChannelId::DMA_3: ::NVIC_EnableIRQ(::DMA1_Channel2_3_IRQn); break;
+    case DmaChannelId::DMA_4:
+    case DmaChannelId::DMA_5:
+    case DmaChannelId::DMA_6:
+    case DmaChannelId::DMA_7: ::NVIC_EnableIRQ(::DMA1_Ch4_7_DMAMUX1_OVR_IRQn); break;
+    }
+}
+
 }  // namespace driver

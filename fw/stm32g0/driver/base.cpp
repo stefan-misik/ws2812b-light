@@ -169,7 +169,7 @@ void Base::configure_pins()
     GPIO_INIT(CTRL_EN, LL_GPIO_AF_0);
 
     // Debug Trace
-#if 0  // Use UART TX for tracing
+#if 1  // Use UART TX for tracing
     ::LL_GPIO_StructInit(&gpio_init);
     gpio_init.Mode = LL_GPIO_MODE_ALTERNATE;
     gpio_init.Speed = LL_GPIO_SPEED_FREQ_MEDIUM;

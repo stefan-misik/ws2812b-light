@@ -27,6 +27,7 @@ SRC  =  \
         status_leds.cpp  \
         cpu_usage.cpp  \
         i2c_bus.cpp  \
+        usart_tx.cpp  \
         $(addprefix i2c_bus/,  \
             cat24cx.cpp  \
         )  \

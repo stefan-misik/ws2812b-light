@@ -43,6 +43,11 @@ extern "C" void DMA1_Channel1_IRQHandler()
     lights.io().ledController().maybeHandleDmaInterrupt();
 }
 
+extern "C" void DMA1_Channel4_5_6_7_DMAMUX_DMA2_Channel1_2_3_4_5_IRQHandler()
+{
+    lights.io().debugUart().maybeHandleDmaInterrupt();
+}
+
 extern "C" void I2C1_IRQHandler()
 {
     lights.io().i2cBus().maybeHandleI2cInterrupt();

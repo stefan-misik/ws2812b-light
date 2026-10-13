@@ -31,6 +31,14 @@ enum class TimerId: std::uint8_t
     TIM_16,
 };
 
+enum class UsartId: std::uint8_t
+{
+    USART_1,
+    USART_2,
+    USART_3,
+    USART_4,
+};
+
 enum class I2cId: std::uint8_t
 {
     I2C_1,
@@ -65,6 +73,13 @@ std::uint32_t toDmaChannel(DmaChannelId dma_channel_id);
  * @retval INVALID_DMAMUX_CHANNEL Failed to get DMAMUX channel
  */
 std::uint32_t toDmamuxChannel(std::uint32_t dma_channel);
+
+/**
+ * @brief Enable DMA channel interrupt
+ *
+ * @param dma_channel_id DMA channel ID
+ */
+void enableDmaIrq(DmaChannelId dma_channel_id);
 
 
 }  // namespace driver

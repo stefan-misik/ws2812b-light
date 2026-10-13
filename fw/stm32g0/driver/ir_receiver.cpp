@@ -5,6 +5,8 @@
 #include "stm32g0xx_ll_tim.h"
 #include "stm32g0xx_ll_dma.h"
 
+#include "driver/tools/dma.hpp"
+
 
 namespace driver
 {
@@ -280,21 +282,6 @@ bool initializeDma(std::uint32_t dma_channel, std::uint32_t request, ::TIM_TypeD
     ::LL_TIM_ConfigDMABurst(tim, LL_TIM_DMABURST_BASEADDR_CCR1, LL_TIM_DMABURST_LENGTH_2TRANSFERS);
     ::LL_TIM_EnableDMAReq_CC1(tim);
     return true;
-}
-
-inline void startDma(std::uint32_t dma_channel, const void * data, std::size_t length)
-{
-    ::LL_DMA_DisableChannel(DMA1, dma_channel);
-
-    ::LL_DMA_SetMemoryAddress(DMA1, dma_channel, reinterpret_cast<std::uint32_t>(data));
-    ::LL_DMA_SetDataLength(DMA1, dma_channel, length);
-
-    ::LL_DMA_EnableChannel(DMA1, dma_channel);
-}
-
-inline std::size_t getDmaDataLength(std::uint32_t dma_channel)
-{
-    return ::LL_DMA_GetDataLength(DMA1, dma_channel);
 }
 
 template <std::uint8_t EXPECTED>

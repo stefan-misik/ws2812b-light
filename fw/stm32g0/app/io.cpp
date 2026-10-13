@@ -11,6 +11,7 @@ bool Io::initialize()
     buzzer_.initialize(driver::TimerId::TIM_16, 1);
     i2c_bus_.initialize(driver::I2cId::I2C_1, driver::DmaChannelId::DMA_3, 16);
     cpu_usage_.initialize(driver::TimerId::TIM_6);
+    debug_uart_.initialize(driver::UsartId::USART_3, driver::DmaChannelId::DMA_4, 115200, 256);
 
     return true;
 }
