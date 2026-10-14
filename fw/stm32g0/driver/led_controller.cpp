@@ -385,8 +385,8 @@ std::uint32_t readDmaFlags(std::uint32_t dma_channel)
         }  \
         if (::LL_DMA_IsActiveFlag_TE ## channel(dma))  \
         {  \
-            flags |= (1 << DmaFlags::DMA_COMPLETE);  \
-            ::LL_DMA_ClearFlag_TC ## channel(dma);  \
+            flags |= (1 << DmaFlags::DMA_ERROR);  \
+            ::LL_DMA_ClearFlag_TE ## channel(dma);  \
         }
 
     std::uint32_t flags = 0;
