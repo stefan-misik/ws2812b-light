@@ -14,6 +14,7 @@
 #include "led_strip.hpp"
 #include "app/music.hpp"
 #include "app/led_strip_modifier.hpp"
+#include "app/logger.hpp"
 
 
 /**
@@ -48,6 +49,13 @@ public:
     void runBackgroundTasks(std::uint32_t current_time);
 
     Io & io() { return io_; }
+
+    /**
+     * @brief Get a logger instance
+     *
+     * @return Logger
+     */
+    Logger logger() { return Logger{&(io_.debugUart())}; }
 
 private:
     Io io_;
