@@ -16,6 +16,8 @@ int main()
     driver::Systick::initialize();
     lights.initialize();
 
+    lights.logger().log<Logger::Level::INFO, "Application started 🎄">();
+
     while (true)
     {
         const std::uint32_t current_time = system_time.currentTime();
