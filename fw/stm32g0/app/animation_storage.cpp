@@ -11,6 +11,10 @@
 #include "app/animation/twinkle.hpp"
 #include "app/animation/shifting_color.hpp"
 #include "app/animation/lights.hpp"
+#include "app/animation/comet.hpp"
+#include "app/animation/fire.hpp"
+#include "app/animation/meteor.hpp"
+#include "app/animation/bounce.hpp"
 
 
 namespace
@@ -28,6 +32,10 @@ enum AnimationName: AnimationId
     ANIM_TWINKLE,
     ANIM_SHIFTING_COLOR,
     ANIM_LIGHTS,
+    ANIM_COMET,
+    ANIM_FIRE,
+    ANIM_METEOR,
+    ANIM_BOUNCE,
 };
 
 static_assert(
@@ -46,6 +54,10 @@ void makeAnimation(AnimationStorage::Storage * storage, AnimationId id)
         case ANIM_TWINKLE: storage->create<TwinkleAnimation>(); return;
         case ANIM_SHIFTING_COLOR: storage->create<ShiftingColorAnimation>(); return;
         case ANIM_LIGHTS: storage->create<LightsAnimation>(); return;
+        case ANIM_COMET: storage->create<CometAnimation>(); return;
+        case ANIM_FIRE: storage->create<FireAnimation>(); return;
+        case ANIM_METEOR: storage->create<MeteorAnimation>(); return;
+        case ANIM_BOUNCE: storage->create<BounceAnimation>(); return;
     }
     // Default
     storage->create<ColorAnimation>();
@@ -197,6 +209,22 @@ AnimationId makeDefaultSlot(AnimationStorage::Storage * storage, AnimationSlotId
             (*storage)->setParamater(LightsAnimation::SYNCHRONIZED, is_synchronized);
         }
         return ANIM_LIGHTS;
+
+    case AnimationSlotName::ANIM_SLOT_COMET ... AnimationSlotName::ANIM_SLOT_COMET_LAST:
+        makeAnimation(storage, ANIM_COMET);
+        return ANIM_COMET;
+
+    case AnimationSlotName::ANIM_SLOT_FIRE ... AnimationSlotName::ANIM_SLOT_FIRE_LAST:
+        makeAnimation(storage, ANIM_FIRE);
+        return ANIM_FIRE;
+
+    case AnimationSlotName::ANIM_SLOT_METEOR ... AnimationSlotName::ANIM_SLOT_METEOR_LAST:
+        makeAnimation(storage, ANIM_METEOR);
+        return ANIM_METEOR;
+
+    case AnimationSlotName::ANIM_SLOT_BOUNCE ... AnimationSlotName::ANIM_SLOT_BOUNCE_LAST:
+        makeAnimation(storage, ANIM_BOUNCE);
+        return ANIM_BOUNCE;
     }
 }
 
