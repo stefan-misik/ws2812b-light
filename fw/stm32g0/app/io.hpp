@@ -12,6 +12,7 @@
 #include "driver/buzzer.hpp"
 #include "driver/i2c_bus.hpp"
 #include "driver/i2c_bus/cat24cx.hpp"
+#include "driver/i2c_bus/ssd1306.hpp"
 #include "driver/cpu_usage.hpp"
 #include "driver/usart_tx.hpp"
 
@@ -31,6 +32,7 @@ public:
     driver::Buzzer & buzzer() { return buzzer_; }
     driver::I2cBus & i2cBus() { return i2c_bus_; }
     driver::i2c::Cat24cx & eeprom() { return eeprom_; }
+    driver::i2c::Ssd1306 & display() { return display_; }
     driver::CpuUsage & cpuUsage() { return cpu_usage_; }
     driver::UsartTx & debugUart() { return debug_uart_; }
 
@@ -47,6 +49,7 @@ private:
     driver::Buzzer buzzer_;
     driver::I2cBus i2c_bus_;
     driver::i2c::Cat24cx eeprom_;
+    driver::i2c::Ssd1306 display_;
     driver::CpuUsage cpu_usage_;
     driver::UsartTx debug_uart_;
 };

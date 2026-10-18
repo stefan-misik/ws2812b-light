@@ -30,6 +30,7 @@ SRC  =  \
         usart_tx.cpp  \
         $(addprefix i2c_bus/,  \
             cat24cx.cpp  \
+            ssd1306.cpp  \
         )  \
     )  \
     $(addprefix app/,  \
