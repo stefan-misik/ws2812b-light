@@ -130,7 +130,7 @@ inline bool Logger::log(Ts &&... args)
     if constexpr (!isEnabled<LVL>())
         return true;
 
-    return log(ConcatenatedFixedString<loggerLevelPrefix<LVL>(), " %010lu: ", FMT>::VALUE.value,
+    return log(ConcatenatedFixedString<loggerLevelPrefix<LVL>(), " % 10lu: ", FMT>::VALUE.value,
         system_time.currentTime(), std::forward<Ts>(args)...);
 }
 

@@ -6,9 +6,26 @@
 
 driver::Systick system_time;
 PeriodicTimer led_update_timer;
+PeriodicTimer dump_stats_timer;
 
 Lights lights;
 
+
+void dumpCpuUsage()
+{
+    using LogToken = Logger::LevelToken<Logger::Level::TRACE>;
+    if constexpr (!LogToken::ENABLED)
+        return;
+    auto & cpu_usage = lights.io().cpuUsage();
+
+    const auto & stats = cpu_usage.stats();
+
+    const bool success = lights.logger().log<LogToken, "⏱️  min: %u ‰, max: %u ‰">(
+        stats.min / 8, stats.max / 8);
+
+    if (success)
+        cpu_usage.clearStats();
+}
 
 int main()
 {
@@ -28,6 +45,12 @@ int main()
             lights.step(current_time);
             lights.io().cpuUsage().endPeriod();
         }
+
+        if (dump_stats_timer.shouldRun(current_time, 1000))
+        {
+            dumpCpuUsage();
+        }
+
         lights.runBackgroundTasks(current_time);
     }
 
