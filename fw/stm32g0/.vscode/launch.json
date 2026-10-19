@@ -10,24 +10,15 @@
             "type": "cortex-debug",
             "servertype": "openocd",
             "configFiles": [
-                "interface-stlink-swd.cfg",
+                "interface-${input:debugProbe}.cfg",
                 "target-stm32g0x.cfg"
             ],
             "searchDir": ["${workspaceFolder}/.vscode/openocd"],
             "postLaunchCommands": [
-                "monitor halt",
-                "set $sp = &_estack",
-                "set $pc = &Reset_Handler",
+                "source ${workspaceFolder}/.vscode/start-application.gdb"
             ],
             "postResetCommands": [
-                "monitor halt",
-                "set $sp = &_estack",
-                "set $pc = &Reset_Handler",
-            ],
-            "postRestartCommands": [
-                "monitor halt",
-                "set $sp = &_estack",
-                "set $pc = &Reset_Handler",
+                "source ${workspaceFolder}/.vscode/start-application.gdb"
             ],
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none"
@@ -41,7 +32,7 @@
             "type": "cortex-debug",
             "servertype": "openocd",
             "configFiles": [
-                "interface-stlink-swd.cfg",
+                "interface-${input:debugProbe}.cfg",
                 "target-stm32g0x.cfg"
             ],
             "searchDir": ["${workspaceFolder}/.vscode/openocd"],
@@ -54,19 +45,10 @@
             "cwd": "${workspaceFolder}",
             "executable": "_build/debug/ws2812b-light.elf",
             "postLaunchCommands": [
-                "monitor halt",
-                "set $sp = &_estack",
-                "set $pc = &Reset_Handler",
+                "source ${workspaceFolder}/.vscode/start-application.gdb"
             ],
             "postResetCommands": [
-                "monitor halt",
-                "set $sp = &_estack",
-                "set $pc = &Reset_Handler",
-            ],
-            "postRestartCommands": [
-                "monitor halt",
-                "set $sp = &_estack",
-                "set $pc = &Reset_Handler",
+                "source ${workspaceFolder}/.vscode/start-application.gdb"
             ],
             "device": "STM32G070K8",
             "request": "launch",
@@ -90,6 +72,24 @@
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none",
             "servertype": "stlink"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "debugProbe",
+            "type": "pickString",
+            "description": "Select the debug probe for OpenOCD",
+            "options": [
+                {
+                    "label": "Raspberry Pi Debug Probe",
+                    "value": "rpi-debug-probe"
+                },
+                {
+                    "label": "ST-Link (SWD)",
+                    "value": "stlink-swd"
+                }
+            ],
+            "default": "rpi-debug-probe"
         }
     ]
 }
