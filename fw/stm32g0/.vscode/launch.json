@@ -10,7 +10,7 @@
             "type": "cortex-debug",
             "servertype": "openocd",
             "configFiles": [
-                "interface-stlink-swd.cfg",
+                "interface-rpi-debug-probe.cfg",
                 "target-stm32g0x.cfg"
             ],
             "searchDir": ["${workspaceFolder}/.vscode/openocd"],
@@ -41,7 +41,7 @@
             "type": "cortex-debug",
             "servertype": "openocd",
             "configFiles": [
-                "interface-stlink-swd.cfg",
+                "interface-rpi-debug-probe.cfg",
                 "target-stm32g0x.cfg"
             ],
             "searchDir": ["${workspaceFolder}/.vscode/openocd"],
