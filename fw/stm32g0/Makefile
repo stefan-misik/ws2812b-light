@@ -134,11 +134,15 @@ ifeq ($(strip $(DBG)),yes)
 LDFLAGS += -Wl,--defsym=_Fw_Offset=64K
 endif
 
+# Sizes for purposes of printing memory usage after build
+FLASH_KB = 64
+RAM_KB = 36
+
 ################################################################################
 
-.PHONY: all clean songs
+.PHONY: all clean songs after
 
-all: $(OUT_HEX)
+all: $(OUT_HEX) after
 
 # Make output binary depend on linker script
 $(OUT): $(LDSCR)
@@ -147,6 +151,18 @@ include ../rules.mk
 
 $(OUT_HEX): $(OUT)
 	$(OCP) --strip-all $< -O ihex $@
+
+after: $(OUT)
+	@$(SZ) --format=berkeley $< |  \
+      awk '  \
+        function print_mem(name, used, size) {  \
+          printf "%s: %.2f / %.2f KB (%.1f%%)\n",  \
+            name, used / 1024, size / 1024, used / size * 100;  \
+        }  \
+        NR == 2 {  \
+          print_mem("Flash", $$1 + $$2, $(FLASH_KB) * 1024);  \
+          print_mem("RAM", $$2 + $$3, $(RAM_KB) * 1024);  \
+        }'
 
 app/music.cpp: songs
 songs:
