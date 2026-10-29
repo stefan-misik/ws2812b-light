@@ -32,7 +32,13 @@
                 "isDefault": false
             },
             "problemMatcher": [
-                "$gcc"
+                {
+                    "base": "$gcc",
+                    "fileLocation": [
+                        "relative",
+                        "${workspaceFolder}"
+                    ]
+                }
             ]
         },
         {
@@ -45,7 +51,13 @@
                 "isDefault": false
             },
             "problemMatcher": [
-                "$gcc"
+                {
+                    "base": "$gcc",
+                    "fileLocation": [
+                        "relative",
+                        "${workspaceFolder}"
+                    ]
+                }
             ]
         },
         {
@@ -61,7 +73,13 @@
                 "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [
-                "$gcc"
+                {
+                    "base": "$gcc",
+                    "fileLocation": [
+                        "relative",
+                        "${workspaceFolder}"
+                    ]
+                }
             ]
         }
     ]
