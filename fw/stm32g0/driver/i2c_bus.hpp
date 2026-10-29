@@ -75,8 +75,13 @@ public:
 
         /** @brief Check if transaction is empty */
         bool isEmpty() const { return !address_.isValid(); }
+
         /** @brief Mark transaction as empty */
-        void reset() { address_ = Address::Invalid(); }
+        void reset()
+        {
+            address_ = Address::Invalid();
+            opaque_ = 0u;
+        }
 
         void * localBuffer() { return local_; }
 
@@ -113,6 +118,9 @@ public:
         Operation operation() const { return operation_; }
         Status status() const { return status_; }
 
+        std::uint8_t opaque() const { return opaque_; }
+        void setOpaque(std::uint8_t value) { opaque_ = value; }
+
     private:
         Address address_;
         Operation operation_;
@@ -120,6 +128,8 @@ public:
 
         std::uint16_t remote_size_;
         std::uint8_t local_size_;
+
+        std::uint8_t opaque_ = 0u;
 
         std::uintptr_t remote_;
         alignas (void *)
