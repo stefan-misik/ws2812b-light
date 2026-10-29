@@ -24,10 +24,9 @@ void Io::run(std::uint32_t current_time)
         while (auto * transaction = i2c_bus_.get())
         {
             if (transaction->address() == eeprom_address)
-                eeprom_.handleResponse(transaction);
+                eeprom_.handleResponse(transaction, current_time);
             i2c_bus_.release(transaction);
         }
-        eeprom_.createRequest(&i2c_bus_);
+        eeprom_.createRequest(&i2c_bus_, current_time);
     }
-    (void)current_time;
 }

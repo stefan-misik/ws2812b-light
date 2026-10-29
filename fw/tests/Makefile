@@ -6,14 +6,16 @@ endef
 
 # Sources
 SRC =  \
-    $(call test_source,app/storage/block_counter.cpp)
+	$(call test_source,app/storage/block_counter.cpp)  \
+	$(call test_source,driver/i2c_bus/cat24cx.cpp)  \
+	driver/i2c_bus_fake.cpp
 
 BUILDDIR = _build
 OPTFLAGS = -Og
 DEBUGDEFINE = DEBUG
 
 DEFINE    = $(DEBUGDEFINE)
-INCLUDE   = ../stm32g0 ../shared
+INCLUDE   = stubs . ../stm32g0 ../shared
 CPPFLAGS  =
 CFLAGS    = -g3 $(OPTFLAGS) -Wall -Wextra -Werror
 CXXFLAGS  = -g3 $(OPTFLAGS) -Wall -Wextra -Werror
