@@ -7,7 +7,10 @@
 
 #include <cstdint>
 
+extern "C"
+{
 #include "cmsis_compiler.h"
+}
 
 
 namespace driver
