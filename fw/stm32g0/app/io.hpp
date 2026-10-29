@@ -5,6 +5,8 @@
 #ifndef APP_IO_HPP_
 #define APP_IO_HPP_
 
+#include <cstdint>
+
 #include "driver/status_leds.hpp"
 #include "driver/led_controller.hpp"
 #include "driver/ir_receiver.hpp"
@@ -36,8 +38,9 @@ public:
 
     /**
      * @brief Perform background IO operations
+     * @param current_time Current time in milliseconds
      */
-    void run();
+    void run(std::uint32_t current_time);
 
 private:
     driver::StatusLeds status_leds_;

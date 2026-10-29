@@ -16,7 +16,7 @@ bool Io::initialize()
     return true;
 }
 
-void Io::run()
+void Io::run(std::uint32_t current_time)
 {
     // Handle I2C transactions
     {
@@ -29,4 +29,5 @@ void Io::run()
         }
         eeprom_.createRequest(&i2c_bus_);
     }
+    (void)current_time;
 }

@@ -57,8 +57,7 @@ void Lights::step(std::uint32_t current_time)
 
 void Lights::runBackgroundTasks(std::uint32_t current_time)
 {
-    io_.run();
-    (void) current_time;
+    io_.run(current_time);
 }
 
 void Lights::handleEvents()
