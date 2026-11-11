@@ -51,6 +51,7 @@ SRC  =  \
             shifting_color.cpp  \
             lights.cpp  \
         )  \
+        records.cpp  \
         music.cpp  \
         animation_storage.cpp  \
         led_correction.cpp  \
