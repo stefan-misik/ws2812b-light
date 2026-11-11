@@ -51,6 +51,10 @@ SRC  =  \
             shifting_color.cpp  \
             lights.cpp  \
         )  \
+        $(addprefix records/,  \
+            crc.cpp  \
+        )  \
+        records.cpp  \
         music.cpp  \
         animation_storage.cpp  \
         led_correction.cpp  \
