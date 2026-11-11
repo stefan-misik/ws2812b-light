@@ -30,7 +30,8 @@ inline Flags<Animation::RenderFlag> makeRenderFlags(Music::Result music_result)
 }  // namespace
 
 
-Lights::Lights()
+Lights::Lights():
+    records_(io_.eeprom())
 {
 }
 
@@ -43,6 +44,8 @@ bool Lights::initialize()
     // Input Sources, no need to manage them further here
     input_.createSource<KeypadSource>(0, &io_.keypad());
     input_.createSource<IrRemoteSource>(1, &io_.irReceiver());
+
+    records_.reinitialize();
 
     return true;
 }
@@ -81,6 +84,7 @@ void Lights::step(std::uint32_t current_time)
 void Lights::runBackgroundTasks(std::uint32_t current_time)
 {
     io_.run(current_time);
+    records_.run(current_time);
 }
 
 void Lights::handleEvents()
