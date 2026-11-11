@@ -45,12 +45,12 @@ bool Cat24cx::configure(const Config & config)
 {
     if (isBusy() || (1 != config.address_length && 2 != config.address_length) ||
             0 == config.page_size || config.page_size > MAX_PAGE_SIZE ||
-            0 == config.capacity || config.capacity % config.page_size != 0 ||
-            config.device_address < 0x50 || config.device_address > 0x57)
+            0 == config.page_count || config.device_address < 0x50u ||
+            config.device_address > 0x57u)
         return false;
 
     const std::uint32_t address_capacity = (1 == config.address_length) ? 256u : 65536u;
-    if (config.capacity > address_capacity)
+    if ((config.page_count * config.page_size) > address_capacity)
         return false;
 
     config_ = config;
@@ -64,7 +64,7 @@ bool Cat24cx::startPage(std::uint32_t page, State state)
     if (isBusy() || page >= pageCount())
         return false;
 
-    word_address_ = static_cast<std::uint16_t>(page * config_.page_size);
+    page_ = static_cast<std::uint16_t>(page);
     state_ = state;
     result_ = Result::SUCCESS;
     return true;
@@ -163,7 +163,7 @@ void Cat24cx::createRequest(I2cBus * bus, std::uint32_t current_time)
             return;
         }
 
-        setWordAddress(address_transaction, word_address_, config_.address_length);
+        setWordAddress(address_transaction, wordAddress(), config_.address_length);
         address_transaction->write(address(), config_.address_length);
         address_transaction->setOpaque(TransactionKind::READ_ADDRESS);
         read_transaction->read(address(), 0, buffer_.data(), pageSize());
@@ -183,7 +183,7 @@ void Cat24cx::createRequest(I2cBus * bus, std::uint32_t current_time)
         if (nullptr == transaction)
             return;
 
-        setWordAddress(transaction, word_address_, config_.address_length);
+        setWordAddress(transaction, wordAddress(), config_.address_length);
         transaction->write(address(), config_.address_length, buffer_.data(), pageSize());
         transaction->setOpaque(TransactionKind::WRITE);
         state_ = State::WRITE_IN_FLIGHT;
@@ -206,7 +206,7 @@ void Cat24cx::createRequest(I2cBus * bus, std::uint32_t current_time)
             return;
 
         // Address-only writes do not modify EEPROM data
-        setWordAddress(transaction, word_address_, config_.address_length);
+        setWordAddress(transaction, wordAddress(), config_.address_length);
         transaction->write(address(), config_.address_length);
         transaction->setOpaque(TransactionKind::POLL);
         state_ = State::POLL_IN_FLIGHT;

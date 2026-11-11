@@ -32,6 +32,8 @@ bool Lights::initialize()
     input_.createSource<KeypadSource>(0, &io_.keypad());
     input_.createSource<IrRemoteSource>(1, &io_.irReceiver());
 
+    records_.reinitialize();
+
     return true;
 }
 
@@ -58,6 +60,7 @@ void Lights::step(std::uint32_t current_time)
 void Lights::runBackgroundTasks(std::uint32_t current_time)
 {
     io_.run(current_time);
+    records_.run(&io_.eeprom(), current_time);
 }
 
 void Lights::handleEvents()

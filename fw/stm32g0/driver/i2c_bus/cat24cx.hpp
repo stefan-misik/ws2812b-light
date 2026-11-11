@@ -25,15 +25,16 @@ namespace i2c
 class Cat24cx
 {
 public:
-    static const inline std::size_t MAX_PAGE_SIZE = 64;
-    static const inline std::uint32_t WRITE_READY_TIMEOUT_MS = 10;
+    static constexpr std::size_t MAX_PAGE_SIZE = 64;
+    static constexpr std::uint32_t WRITE_READY_TIMEOUT_MS = 10;
+    static constexpr std::uint16_t INVALID_PAGE_ID = 0xFFFFu;
 
     struct Config
     {
-        std::uint32_t capacity = 32768;
-        std::uint8_t page_size = 64;
-        std::uint8_t address_length = 2;
-        std::uint8_t device_address = 0x50;
+        std::uint32_t page_count = 32768u / 64u;
+        std::uint8_t page_size = 64u;
+        std::uint8_t address_length = 2u;
+        std::uint8_t device_address = 0x50u;
     };
 
     enum class Result: std::uint8_t
@@ -61,9 +62,10 @@ public:
 
     I2cBus::Address address() const { return I2cBus::Address(config_.device_address); }
     std::size_t pageSize() const { return config_.page_size; }
-    std::uint32_t pageCount() const { return config_.capacity / config_.page_size; }
+    std::uint32_t pageCount() const { return config_.page_count; }
     Result result() const { return result_; }
     bool isBusy() const { return State::IDLE != state_; }
+    std::uint16_t page() const { return page_; }
 
     /**
      * @brief Get direct access to the driver-owned page buffer
@@ -76,6 +78,7 @@ public:
     {
         if (isBusy())
             return {};
+        page_ = INVALID_PAGE_ID;
         return {buffer_.data(), pageSize()};
     }
 
@@ -174,6 +177,11 @@ private:
         result_ = result;
     }
 
+    std::size_t wordAddress() const
+    {
+        return static_cast<std::size_t>(page_) * config_.page_size;
+    }
+
     alignas(void *)
     std::array<std::uint8_t, MAX_PAGE_SIZE> buffer_{};
 
@@ -181,7 +189,7 @@ private:
 
     Timer poll_timeout_;
     Timer poll_interval_;
-    std::uint16_t word_address_ = 0;
+    std::uint16_t page_ = INVALID_PAGE_ID;
     State state_ = State::IDLE;
     Result result_ = Result::SUCCESS;
 };

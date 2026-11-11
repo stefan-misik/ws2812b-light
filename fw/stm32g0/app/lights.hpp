@@ -16,6 +16,7 @@
 #include "app/led_strip_modifier.hpp"
 #include "app/status_leds.hpp"
 #include "app/logger.hpp"
+#include "app/records.hpp"
 
 
 /**
@@ -79,6 +80,8 @@ private:
     LedStripModifier modifier_;
 
     StatusLeds status_leds_;
+
+    Records records_;
 
     void handleEvents();
     Music::Result handleMusic();
