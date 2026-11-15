@@ -2,14 +2,20 @@ PROJ = tests
 
 # Sources
 SRC =  \
-    test.cpp
+    test.cpp  \
+    cat24cx_tests.cpp  \
+    crc_tests.cpp  \
+    records_tests.cpp  \
+    ../stm32g0/app/records.cpp  \
+    ../stm32g0/app/records/crc.cpp  \
+    ../stm32g0/driver/i2c_bus/cat24cx.cpp
 
 BUILDDIR = _build
 OPTFLAGS = -Og
 DEBUGDEFINE = DEBUG
 
 DEFINE    = $(DEBUGDEFINE)
-INCLUDE   = ../stm32g0 ../shared
+INCLUDE   = host_include ../stm32g0 ../shared
 CPPFLAGS  =
 CFLAGS    = -g3 $(OPTFLAGS) -Wall -Wextra -Werror
 CXXFLAGS  = -g3 $(OPTFLAGS) -Wall -Wextra -Werror
@@ -32,9 +38,12 @@ OUT = $(BUILDDIR)/$(PROJ).exe
 
 ################################################################################
 
-.PHONY: all clean
+.PHONY: all test clean
 
 all: $(OUT)
+
+test: $(OUT)
+	./$(OUT)
 
 include ../rules.mk
 

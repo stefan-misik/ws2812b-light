@@ -99,16 +99,45 @@ void Cat24cx::handleResponse(const I2cBus::Transaction * transaction, std::uint3
     switch (state_)
     {
     case State::READ_IN_FLIGHT:
-        if (!check(TransactionKind::READ_ADDRESS))
-            return;
-        state_ = State::READ_DATA_IN_FLIGHT;
-        break;
-
     case State::READ_DATA_IN_FLIGHT:
-        if (!check(TransactionKind::READ_DATA))
-            return;
-        finish();
+    case State::READ_DRAINING:
+    {
+        const bool address_response = transaction == read_address_transaction_;
+        const bool data_response = transaction == read_data_transaction_;
+
+        if (State::READ_DRAINING != state_)
+        {
+            const bool expected_address = State::READ_IN_FLIGHT == state_ && address_response &&
+                    TransactionKind::READ_ADDRESS == request;
+            const bool expected_data = State::READ_DATA_IN_FLIGHT == state_ && data_response &&
+                    TransactionKind::READ_DATA == request;
+
+            if (!expected_address && !expected_data)
+            {
+                read_result_ = Result::ERR_BAD_ANSWER;
+                state_ = State::READ_DRAINING;
+            }
+            else if (response >= Result::FIRST_ERROR_)
+            {
+                read_result_ = response;
+                state_ = State::READ_DRAINING;
+            }
+            else if (expected_address)
+            {
+                state_ = State::READ_DATA_IN_FLIGHT;
+            }
+        }
+
+        // Even after an address failure, the queued data transaction may still
+        // write to buffer_. Only its own completion can release that ownership.
+        if (address_response)
+            read_address_transaction_ = nullptr;
+        if (data_response)
+            read_data_transaction_ = nullptr;
+        if (nullptr == read_address_transaction_ && nullptr == read_data_transaction_)
+            finish(read_result_);
         break;
+    }
 
     case State::WRITE_IN_FLIGHT:
         if (!check(TransactionKind::WRITE))
@@ -168,6 +197,9 @@ void Cat24cx::createRequest(I2cBus * bus, std::uint32_t current_time)
         address_transaction->setOpaque(TransactionKind::READ_ADDRESS);
         read_transaction->read(address(), 0, buffer_.data(), pageSize());
         read_transaction->setOpaque( TransactionKind::READ_DATA);
+        read_address_transaction_ = address_transaction;
+        read_data_transaction_ = read_transaction;
+        read_result_ = Result::SUCCESS;
         state_ = State::READ_IN_FLIGHT;
 
         {

@@ -70,6 +70,8 @@ public:
      *
      * Returns an empty span while busy. A previously obtained span must not be
      * accessed while an operation is busy, and must not outlive the driver.
+     * A failed read remains busy until both queued read responses are handled;
+     * the data transaction may still modify the buffer after an address error.
      * After a failed read the buffer contents are unspecified.
      */
     std::span<std::uint8_t> buffer()
@@ -113,6 +115,7 @@ public:
      *
      * Transactions for this device must be owned by this driver, and their
      * opaque values must remain unchanged until their responses are handled.
+     * Each queued transaction must be delivered once, before it is released.
      *
      * @param current_time Current time in milliseconds
      */
@@ -133,6 +136,7 @@ private:
         READ_PENDING,
         READ_IN_FLIGHT,
         READ_DATA_IN_FLIGHT,
+        READ_DRAINING,
 
         WRITE_PENDING,
         WRITE_IN_FLIGHT,
@@ -166,9 +170,12 @@ private:
 
     Timer poll_timeout_;
     Timer poll_interval_;
+    const I2cBus::Transaction * read_address_transaction_ = nullptr;
+    const I2cBus::Transaction * read_data_transaction_ = nullptr;
     std::uint16_t word_address_ = 0;
     State state_ = State::IDLE;
     Result result_ = Result::SUCCESS;
+    Result read_result_ = Result::SUCCESS;
 };
 
 }  // namespace i2c
