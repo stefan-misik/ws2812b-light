@@ -77,3 +77,9 @@ void *_sbrk(ptrdiff_t incr)
 
   return (void *)prev_heap_end;
 }
+
+size_t heap_end()
+{
+  extern uint8_t _end; /* Symbol defined in the linker script */
+  return NULL == __sbrk_heap_end ? (size_t)(&_end) : (size_t)__sbrk_heap_end;
+}
