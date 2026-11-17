@@ -1,3 +1,4 @@
+#include "support/sysmem.h"
 #include "driver/base.hpp"
 #include "driver/systick.hpp"
 #include "tools/periodic_timer.hpp"
@@ -29,11 +30,16 @@ void dumpCpuUsage()
 
 int main()
 {
-    driver::Base::init();
-    driver::Systick::initialize();
-    lights.initialize();
+    {
+        const std::size_t heap_pos = heap_end();
+        driver::Base::init();
+        driver::Systick::initialize();
+        lights.initialize();
 
-    lights.logger().log<Logger::Level::INFO, "Application started 🎄">();
+        lights.logger().log<Logger::Level::INFO, "Application started 🎄, mem_usage: %u">(
+            heap_end() - heap_pos);
+    }
+
 
     while (true)
     {
