@@ -14,6 +14,7 @@
 #include "led_strip.hpp"
 #include "app/music.hpp"
 #include "app/led_strip_modifier.hpp"
+#include "app/status_leds.hpp"
 #include "app/logger.hpp"
 
 
@@ -57,6 +58,13 @@ public:
      */
     Logger logger() { return Logger{&(io_.debugUart())}; }
 
+    /**
+     * @brief Get the status LEDs
+     *
+     * @return Status LEDs
+     */
+    StatusLeds & statusLeds() { return status_leds_; }
+
 private:
     Io io_;
 
@@ -70,9 +78,12 @@ private:
 
     LedStripModifier modifier_;
 
+    StatusLeds status_leds_;
+
     void handleEvents();
     Music::Result handleMusic();
     bool handleInputEvent(const Input::EventParam & e);
+    void handleStatusLeds();
 
     void switchAnimation(int dir);
 };
