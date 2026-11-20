@@ -51,7 +51,7 @@ void Lights::step(std::uint32_t current_time)
         animation_->render(leds_.abstractPtr(), flags);
         modifier_.modify(leds_.abstractPtr());
     }
-    io_.statusLeds().update();
+    handleStatusLeds();
     io_.ledController().update(leds_.abstractPtr());
 }
 
@@ -135,6 +135,23 @@ bool Lights::handleInputEvent(const Input::EventParam & e)
     }
 
     return false;
+}
+
+void Lights::handleStatusLeds()
+{
+    const bool new_status_leds = status_leds_.run();
+    if (new_status_leds)
+    {
+        auto & status_leds = io_.statusLeds();
+        auto led_states = status_leds_.ledStates();
+        for (std::size_t i = 0; i != StatusLeds::LED_COUNT; ++i)
+        {
+            const bool led_on = 0u != (led_states & 0x1u);
+            led_states >>= 1u;
+            status_leds.setLed(static_cast<StatusLeds::LedId>(i), led_on);
+        }
+        status_leds.update();
+    }
 }
 
 void Lights::switchAnimation(int dir)

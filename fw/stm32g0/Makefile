@@ -57,6 +57,7 @@ SRC  =  \
         event_queue.cpp  \
         input.cpp  \
         io.cpp  \
+        status_leds.cpp  \
         logger.cpp  \
         lights.cpp  \
         main.cpp  \
