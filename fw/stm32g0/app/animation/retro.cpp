@@ -21,7 +21,7 @@ inline void copyColors(LedState (&led)[4])
 }  // namespace
 
 
-void RetroAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
+bool RetroAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
 {
     if (flags.isFlagSet(RenderFlag::NOTE_CHANGED))
     {
@@ -39,7 +39,7 @@ void RetroAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
     if (0 != delay_)
     {
         --(delay_);
-        return;
+        return false;
     }
 
     LedState ram_colors[4];
@@ -75,6 +75,8 @@ void RetroAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
         break;
     }
     delay_ = delay << 5;
+
+    return true;
 }
 
 bool RetroAnimation::setParamater(std::uint32_t param_id, int value, ChangeType type)

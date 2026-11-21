@@ -54,7 +54,7 @@ public:
         }
     };
 
-    void render(AbstractLedStrip * strip, Flags<RenderFlag> flags) override;
+    bool render(AbstractLedStrip * strip, Flags<RenderFlag> flags) override;
 
     bool setParamater(std::uint32_t param_id, int value, ChangeType type = ChangeType::ABSOLUTE) override;
     std::optional<int> getParameter(std::uint32_t param_id) override;

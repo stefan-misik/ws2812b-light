@@ -71,8 +71,11 @@ public:
      *
      * @param[in,out] strip Object representing the led strip
      * @param flags Flags modifying the render
+     *
+     * @return Rendering occurred
+     * @retval false Rendering was skipped, e.g. because the animation is paused, strip is not modified
      */
-    virtual void render(AbstractLedStrip * strip, Flags<RenderFlag> flags) = 0;
+    virtual bool render(AbstractLedStrip * strip, Flags<RenderFlag> flags) = 0;
 
     /**
      * @brief Set an animation parameter

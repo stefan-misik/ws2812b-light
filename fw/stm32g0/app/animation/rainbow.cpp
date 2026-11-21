@@ -5,7 +5,7 @@
 #include "app/tools/color.hpp"
 
 
-void RainbowAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
+bool RainbowAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
 {
     LedState color;
     std::uint16_t hue = state_.hue;
@@ -22,6 +22,8 @@ void RainbowAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
         state_.hue = incrementHue(state_.hue, -config_.time_increment);
         step_ = 0;
     }
+
+    return true;
     (void)flags;
 }
 

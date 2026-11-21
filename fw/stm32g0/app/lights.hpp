@@ -7,6 +7,7 @@
 
 #include <array>
 
+#include "app/tools/flip_controller.hpp"
 #include "app/io.hpp"
 #include "app/animation_storage.hpp"
 #include "app/event_queue.hpp"
@@ -72,7 +73,9 @@ private:
 
     EventQueue event_queue_;
     Input input_;
-    LedStrip<100> leds_;
+
+    FlipController flip_controller_;
+    LedStrip<100> leds_[FlipController::BUFFER_COUNT];
 
     Music music_;
 

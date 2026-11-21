@@ -39,7 +39,7 @@ bool getColor(LedState * color, std::span<const KeyFrame> key_frames, std::uint3
 }  // namespace
 
 
-void TwinkleAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
+bool TwinkleAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
 {
     ++(step_);
     if (5 == step_)
@@ -76,6 +76,8 @@ void TwinkleAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
         if (!getColor(strip->begin() + blink.led(), key_frames, blink.position() + 1u))
             blink.done();
     }
+
+    return true;
 }
 
 bool TwinkleAnimation::setParamater(std::uint32_t param_id, int value, ChangeType type)

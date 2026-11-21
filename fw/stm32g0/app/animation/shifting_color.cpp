@@ -119,7 +119,7 @@ private:
 }  // namespace
 
 
-void ShiftingColorAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
+bool ShiftingColorAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
 {
     SequenceWalker seq_walker(config_.theme.cbegin(), config_.theme_length);
 
@@ -129,6 +129,7 @@ void ShiftingColorAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> 
         seq_walker.step(&led, 1ul << FRACTION_BITS);
 
     (void) flags;
+    return true;
 }
 
 bool ShiftingColorAnimation::setParamater(std::uint32_t param_id, int value, ChangeType type)

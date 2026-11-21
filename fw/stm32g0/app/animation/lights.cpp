@@ -48,10 +48,10 @@ inline std::size_t countAvailableLeds(const LedFlags * begin, const LedFlags * c
 }  // namespace
 
 
-void LightsAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
+bool LightsAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
 {
     if (strip->led_count > MAX_STRIP_SIZE)
-        return;  // Can not render this
+        return false;  // Can not render this
 
     // Render individual lights
     {
@@ -128,6 +128,8 @@ void LightsAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
         // here, all LEDs suddenly become available, and this code is not executed until next transition.
         state_.synchronized_pos = LedFlags::next(state_.synchronized_pos, config_.theme_length);
     }
+
+    return true;
     (void)flags;
 }
 

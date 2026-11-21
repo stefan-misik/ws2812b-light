@@ -37,6 +37,7 @@ bool Lights::initialize()
 
 void Lights::step(std::uint32_t current_time)
 {
+    io_.ledController().update(leds_[flip_controller_.updateBuffer()].abstractPtr());
     input_.update(current_time, &event_queue_);
     handleEvents();
     {
@@ -48,11 +49,17 @@ void Lights::step(std::uint32_t current_time)
         case Music::Result::STOPPED: flags.setFlag(Animation::RenderFlag::MUSIC_STOPPED); break;
         default: break;
         }
-        animation_->render(leds_.abstractPtr(), flags);
-        modifier_.modify(leds_.abstractPtr());
+        {
+            auto & render_buffer = leds_[flip_controller_.renderBuffer()];
+            const bool new_frame = animation_->render(render_buffer.abstractPtr(), flags);
+            if (new_frame)
+            {
+                modifier_.modify(render_buffer.abstractPtr());
+                flip_controller_.flip();
+            }
+        }
     }
     handleStatusLeds();
-    io_.ledController().update(leds_.abstractPtr());
 }
 
 void Lights::runBackgroundTasks(std::uint32_t current_time)

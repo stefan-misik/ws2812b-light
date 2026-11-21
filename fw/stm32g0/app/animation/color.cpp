@@ -12,13 +12,14 @@ const inline std::size_t MY_COLOR_COUNT = COLOR_COUNT - ColorAnimation::FIRST_CO
 }  // namespace
 
 
-void ColorAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
+bool ColorAnimation::render(AbstractLedStrip * strip, Flags<RenderFlag> flags)
 {
     LedState color;
     getColor(&color, static_cast<ColorId>(FIRST_COLOR + config_.color));
     for (auto & led: *strip)
         led = color;
 
+    return true;
     (void)flags;
 }
 
