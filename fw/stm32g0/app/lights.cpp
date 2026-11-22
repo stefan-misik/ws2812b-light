@@ -15,6 +15,18 @@ inline std::size_t changeAnimation(std::size_t current, int dir)
         Animation::ChangeType::RELATIVE);
 }
 
+inline Flags<Animation::RenderFlag> makeRenderFlags(Music::Result music_result)
+{
+    Flags<Animation::RenderFlag> flags;
+    switch (music_result)
+    {
+    case Music::Result::CHANGE: flags.setFlag(Animation::RenderFlag::NOTE_CHANGED); break;
+    case Music::Result::STOPPED: flags.setFlag(Animation::RenderFlag::MUSIC_STOPPED); break;
+    default: break;
+    }
+    return flags;
+}
+
 }  // namespace
 
 
@@ -37,18 +49,22 @@ bool Lights::initialize()
 
 void Lights::step(std::uint32_t current_time)
 {
+    // Update the LED controller with the buffer rendered in the previous step
     io_.ledController().update(leds_[flip_controller_.updateBuffer()].abstractPtr());
+    // Update the input sources and push events to the event queue
     input_.update(current_time, &event_queue_);
+
     handleEvents();
     {
-        const auto music_result = handleMusic();
         Flags<Animation::RenderFlag> flags;
-        switch (music_result)
+
+        // Handle music
         {
-        case Music::Result::CHANGE: flags.setFlag(Animation::RenderFlag::NOTE_CHANGED); break;
-        case Music::Result::STOPPED: flags.setFlag(Animation::RenderFlag::MUSIC_STOPPED); break;
-        default: break;
+            const auto music_result = handleMusic();
+            flags |= makeRenderFlags(music_result);
         }
+
+        // Render animation
         {
             auto & render_buffer = leds_[flip_controller_.renderBuffer()];
             const bool new_frame = animation_->render(render_buffer.abstractPtr(), flags);
