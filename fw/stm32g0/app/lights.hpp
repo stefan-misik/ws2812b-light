@@ -18,6 +18,7 @@
 #include "app/status_leds.hpp"
 #include "app/logger.hpp"
 #include "app/records.hpp"
+#include "app/settings_store.hpp"
 
 
 /**
@@ -85,13 +86,14 @@ private:
     StatusLeds status_leds_;
 
     Records records_;
+    SettingsStore settings_;
 
-    void handleEvents();
+    void handleEvents(std::uint32_t current_time);
     Music::Result handleMusic();
-    bool handleInputEvent(const Input::EventParam & e);
+    bool handleInputEvent(const Input::EventParam & e, std::uint32_t current_time);
     void handleStatusLeds();
 
-    void switchAnimation(int dir);
+    void switchAnimation(int dir, std::uint32_t current_time);
 };
 
 

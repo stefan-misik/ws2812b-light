@@ -247,3 +247,51 @@ bool AnimationStorage::change(AnimationSlotId new_slot_id)
     slot_id_ = new_slot_id;
     return true;
 }
+
+std::size_t AnimationStorage::storeConfig(AnimationSlotId slot_id, void * buffer, std::size_t capacity) const
+{
+    if (slot_id >= SLOT_COUNT || nullptr == buffer)
+        return 0;
+    if (slot_id == slot_id_)
+        return storage_->store(buffer, capacity, Animation::DataType::ONLY_CONFIG);
+
+    Storage temporary(TypeTag<ColorAnimation>{});
+    const auto & slot = slots_[slot_id];
+    makeAnimation(&temporary, slot.animationId());
+    const bool restored = slot.restore(temporary.get(), Animation::DataType::BOTH);
+    if (!restored)
+        return 0;
+    return temporary->store(buffer, capacity, Animation::DataType::ONLY_CONFIG);
+}
+
+bool AnimationStorage::restoreConfig(AnimationSlotId slot_id, const void * buffer, std::size_t size)
+{
+    if (slot_id >= SLOT_COUNT || nullptr == buffer)
+        return false;
+
+    Storage temporary(TypeTag<ColorAnimation>{});
+    Animation * animation = storage_.get();
+    if (slot_id != slot_id_)
+    {
+        const auto & slot = slots_[slot_id];
+        makeAnimation(&temporary, slot.animationId());
+        const bool restored = slot.restore(temporary.get(), Animation::DataType::BOTH);
+        if (!restored)
+            return false;
+        animation = temporary.get();
+    }
+
+    // Existing restore methods copy the configuration as a whole. Check the
+    // exact size before calling them, so a truncated record cannot change it.
+    char expected[Register::MAX_STATE_SIZE];
+    const auto expected_size = animation->store(expected, sizeof(expected), Animation::DataType::ONLY_CONFIG);
+    if (0u == expected_size || size != expected_size)
+        return false;
+    const auto restored_size = animation->restore(buffer, size, Animation::DataType::ONLY_CONFIG);
+    if (restored_size != expected_size)
+        return false;
+
+    if (slot_id != slot_id_)
+        return slots_[slot_id].store(animation, Animation::DataType::BOTH);
+    return true;
+}

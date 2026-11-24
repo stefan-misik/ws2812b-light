@@ -55,6 +55,7 @@ SRC  =  \
             crc.cpp  \
         )  \
         records.cpp  \
+        settings_store.cpp  \
         music.cpp  \
         animation_storage.cpp  \
         led_correction.cpp  \

@@ -95,6 +95,12 @@ public:
         return change(static_cast<AnimationSlotId>(new_slot_name));
     }
 
+    /** Store only the configuration of a slot, including the active slot. */
+    std::size_t storeConfig(AnimationSlotId slot_id, void * buffer, std::size_t capacity) const;
+
+    /** Restore only a slot's configuration, leaving its runtime state intact. */
+    bool restoreConfig(AnimationSlotId slot_id, const void * buffer, std::size_t size);
+
 private:
     AnimationSlotId slot_id_;
     Storage storage_;

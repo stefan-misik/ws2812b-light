@@ -30,7 +30,8 @@ inline Flags<Animation::RenderFlag> makeRenderFlags(Music::Result music_result)
 }  // namespace
 
 
-Lights::Lights()
+Lights::Lights():
+    settings_(animation_, records_, io_.eeprom())
 {
 }
 
@@ -44,7 +45,7 @@ bool Lights::initialize()
     input_.createSource<KeypadSource>(0, &io_.keypad());
     input_.createSource<IrRemoteSource>(1, &io_.irReceiver());
 
-    records_.reinitialize();
+    settings_.initialize();
 
     return true;
 }
@@ -56,7 +57,7 @@ void Lights::step(std::uint32_t current_time)
     // Update the input sources and push events to the event queue
     input_.update(current_time, &event_queue_);
 
-    handleEvents();
+    handleEvents(current_time);
     {
         Flags<Animation::RenderFlag> flags;
 
@@ -83,10 +84,15 @@ void Lights::step(std::uint32_t current_time)
 void Lights::runBackgroundTasks(std::uint32_t current_time)
 {
     io_.run(current_time);
-    records_.run(&io_.eeprom(), current_time);
+    const auto previous_error = settings_.error();
+    settings_.run(current_time);
+    const auto settings_error = settings_.error();
+    if (Records::SUCCESS == previous_error && Records::SUCCESS != settings_error)
+        logger().log<Logger::Level::ERROR, "Settings persistence failed: %u">(
+            static_cast<std::uint32_t>(settings_error));
 }
 
-void Lights::handleEvents()
+void Lights::handleEvents(std::uint32_t current_time)
 {
     while (true)
     {
@@ -99,7 +105,7 @@ void Lights::handleEvents()
             switch (e->type())
             {
             case EventType::KEY_EVENT:
-                handleInputEvent(e->param<Input::EventParam>());
+                handleInputEvent(e->param<Input::EventParam>(), current_time);
                 break;
             default: break;
             }
@@ -127,25 +133,33 @@ Music::Result Lights::handleMusic()
     return result;
 }
 
-bool Lights::handleInputEvent(const Input::EventParam & e)
+bool Lights::handleInputEvent(const Input::EventParam & e, std::uint32_t current_time)
 {
     if (0 == (e.flags & Input::KeyState::PRESS))
         return false;
     switch (e.key)
     {
     case Input::KeyId::KEY_RIGHT:
-        if (!animation_->setParamater(Animation::PRIMARY, 1, Animation::ChangeType::RELATIVE))
-            switchAnimation(1);
+    {
+        const bool accepted = settings_.setAnimationParameter(Animation::PRIMARY, 1, Animation::ChangeType::RELATIVE,
+            current_time);
+        if (!accepted)
+            switchAnimation(1, current_time);
         return true;
+    }
     case Input::KeyId::KEY_LEFT:
-        if (!animation_->setParamater(Animation::PRIMARY, -1, Animation::ChangeType::RELATIVE))
-            switchAnimation(-1);
+    {
+        const bool accepted = settings_.setAnimationParameter(Animation::PRIMARY, -1, Animation::ChangeType::RELATIVE,
+            current_time);
+        if (!accepted)
+            switchAnimation(-1, current_time);
         return true;
+    }
     case Input::KeyId::KEY_UP:
-        animation_->setParamater(Animation::SECONDARY, 1, Animation::ChangeType::RELATIVE);
+        settings_.setAnimationParameter(Animation::SECONDARY, 1, Animation::ChangeType::RELATIVE, current_time);
         return true;
     case Input::KeyId::KEY_DOWN:
-        animation_->setParamater(Animation::SECONDARY, -1, Animation::ChangeType::RELATIVE);
+        settings_.setAnimationParameter(Animation::SECONDARY, -1, Animation::ChangeType::RELATIVE, current_time);
         return true;
     case Input::KeyId::KEY_O:
         music_.change(1);
@@ -180,9 +194,9 @@ void Lights::handleStatusLeds()
     }
 }
 
-void Lights::switchAnimation(int dir)
+void Lights::switchAnimation(int dir, std::uint32_t current_time)
 {
     const std::size_t next_id = changeAnimation(animation_.slotId(), dir);
-    animation_.change(next_id);
+    settings_.changeAnimation(next_id, current_time);
 }
 
