@@ -31,7 +31,8 @@ inline Flags<Animation::RenderFlag> makeRenderFlags(Music::Result music_result)
 
 
 Lights::Lights():
-    records_(io_.eeprom())
+    records_(io_.eeprom()),
+    settings_store_(records_, animation_)
 {
 }
 
@@ -46,6 +47,7 @@ bool Lights::initialize()
     input_.createSource<IrRemoteSource>(1, &io_.irReceiver());
 
     records_.reinitialize();
+    settings_store_.initialize();
 
     return true;
 }
@@ -85,6 +87,7 @@ void Lights::runBackgroundTasks(std::uint32_t current_time)
 {
     io_.run(current_time);
     records_.run(current_time);
+    settings_store_.run(current_time);
 }
 
 void Lights::handleEvents()

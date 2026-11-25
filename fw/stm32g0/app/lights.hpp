@@ -18,6 +18,7 @@
 #include "app/status_leds.hpp"
 #include "app/logger.hpp"
 #include "app/records.hpp"
+#include "app/settings_store.hpp"
 
 
 /**
@@ -85,6 +86,7 @@ private:
     StatusLeds status_leds_;
 
     Records records_;
+    SettingsStore settings_store_;
 
     void handleEvents();
     Music::Result handleMusic();
