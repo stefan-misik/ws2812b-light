@@ -104,11 +104,13 @@ public:
      *
      * @param[out] buffer Buffer to receive the state of the animation
      * @param capacity Capacity of the buffer
-     * @param type Type of the state to store
+     * @param config_size[out] Number of bytes from beginning of the buffer that contain configuration data followed by
+     *        state data. When this parameter is `nullptr`, only configuration data is stored in the buffer and its size
+     *        is returned.
      *
      * @return Number of bytes written in the buffer
      */
-    virtual std::size_t store(void * buffer, std::size_t capacity, DataType type) const = 0;
+    virtual std::size_t store(void * buffer, std::size_t capacity, std::size_t * config_size) const = 0;
 
     /**
      * @brief Restore state of the animation

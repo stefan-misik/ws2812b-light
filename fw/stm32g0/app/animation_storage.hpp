@@ -5,6 +5,10 @@
 #ifndef APP_ANIMATION_STORAGE_HPP_
 #define APP_ANIMATION_STORAGE_HPP_
 
+#include <cstddef>
+#include <cstdint>
+#include <cstring>
+#include <utility>
 #include <array>
 
 #include "tools/polymorphic_storage.hpp"
@@ -28,25 +32,47 @@ public:
         AnimationId animationId() const { return id_; }
         void setAnimationId(AnimationId anim_id) { id_ = anim_id; }
 
-        bool store(const Animation * anim, Animation::DataType type)
+        bool store(const Animation * anim)
         {
-            size_ = anim->store(data_, sizeof(data_), type);
+            std::size_t config_size = 0;
+            size_ = anim->store(data_, sizeof(data_), &config_size);
+            config_size_ = config_size;
             return 0u != size_;
         }
 
-        bool restore(Animation * anim, Animation::DataType type) const
+        bool restore(Animation * anim) const
         {
-            const auto processed = anim->restore(data_, size_, type);
+            const auto processed = anim->restore(data_, size_,
+                hasState() ? Animation::DataType::BOTH : Animation::DataType::ONLY_CONFIG);
             return 0u != processed;
         }
 
         void reset()
         {
             size_ = 0;
+            config_size_ = 0;
+        }
+
+        bool hasState() const { return size_ > config_size_; }
+
+        std::pair<const void *, std::size_t> configData() const
+        {
+            return {data_, config_size_};
+        }
+
+        bool setConfigData(const void * data, std::size_t size)
+        {
+            if (size > sizeof(data_))
+                return false;
+            std::memcpy(data_, data, size);
+            config_size_ = static_cast<std::uint16_t>(size);
+            size_ = static_cast<std::uint16_t>(size);
+            return true;
         }
 
     private:
         AnimationId id_;
+        std::uint16_t config_size_ = 0;
         std::uint16_t size_ = 0;
 
         alignas (void *)
@@ -94,6 +120,23 @@ public:
     {
         return change(static_cast<AnimationSlotId>(new_slot_name));
     }
+
+    void storeCurrentSlot()
+    {
+        auto & reg = slots_[slot_id_];
+        reg.store(storage_.get());
+    }
+
+    /**
+     * @brief Restore the current animation from its slot
+     *
+     * This is useful when the animation slot was changed e.g. when the
+     * configuration was loaded from the non-volatile memory.
+     */
+    void restoreCurrentSlot();
+
+    Register & slot(AnimationSlotId slot_id) { return slots_[slot_id]; }
+    const Register & slot(AnimationSlotId slot_id) const { return slots_[slot_id]; }
 
 private:
     AnimationSlotId slot_id_;

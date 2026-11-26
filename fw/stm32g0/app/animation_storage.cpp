@@ -211,7 +211,7 @@ AnimationStorage::AnimationStorage():
     // Load the animation
     auto & reg = slots_[slot_id_];
     makeAnimation(&storage_, reg.animationId());
-    reg.restore(storage_.get(), Animation::DataType::BOTH);
+    reg.restore(storage_.get());
 }
 
 void AnimationStorage::initialize()
@@ -222,14 +222,14 @@ void AnimationStorage::initialize()
         const auto anim_id = makeDefaultSlot(&tmp_storage, slot_id);
         auto & slot = slots_[slot_id];
         slot.setAnimationId(anim_id);
-        slot.store(tmp_storage.get(), Animation::DataType::BOTH);
+        slot.store(tmp_storage.get());
     }
 }
 
 void AnimationStorage::initializeCurrentSlot()
 {
     makeDefaultSlot(&storage_, slot_id_);
-    slots_[slot_id_].store(storage_.get(), Animation::DataType::BOTH);
+    slots_[slot_id_].store(storage_.get());
 }
 
 bool AnimationStorage::change(AnimationSlotId new_slot_id)
@@ -239,11 +239,18 @@ bool AnimationStorage::change(AnimationSlotId new_slot_id)
     if (new_slot_id >= SLOT_COUNT)
         return false;
 
-    slots_[slot_id_].store(storage_.get(), Animation::DataType::BOTH);
+    slots_[slot_id_].store(storage_.get());
 
     auto & reg = slots_[new_slot_id];
     makeAnimation(&storage_, reg.animationId());
-    reg.restore(storage_.get(), Animation::DataType::BOTH);
+    reg.restore(storage_.get());
     slot_id_ = new_slot_id;
     return true;
+}
+
+void AnimationStorage::restoreCurrentSlot()
+{
+    const auto & reg = slots_[slot_id_];
+    makeAnimation(&storage_, reg.animationId());
+    reg.restore(storage_.get());
 }

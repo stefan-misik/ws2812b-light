@@ -63,7 +63,8 @@ PYBIND11_MODULE(animations, m)
             py::buffer_info info = b.request(true);
             if (info.ndim != 1 || info.itemsize != 1)
                 throw std::runtime_error("Expected 1D buffer of bytes (itemsize=1)");
-            return self->store(info.ptr, info.size, t); },
+            std::size_t config_size = 0;
+            return self->store(info.ptr, info.size, t == Animation::DataType::BOTH ? &config_size : nullptr); },
             py::arg("buffer"), py::arg("type"))
 
         .def("restore", +[](Animation * self, py::buffer b, Animation::DataType t) {

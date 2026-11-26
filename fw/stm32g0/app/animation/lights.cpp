@@ -192,12 +192,15 @@ std::optional<int> LightsAnimation::getParameter(std::uint32_t param_id)
     }
 }
 
-std::size_t LightsAnimation::store(void * buffer, std::size_t capacity, DataType type) const
+std::size_t LightsAnimation::store(void * buffer, std::size_t capacity, std::size_t * config_size) const
 {
     Serializer ser(buffer, capacity);
     ser.serialize(&config_);
-    if (type == DataType::BOTH)
+    if (config_size)
+    {
+        *config_size = ser.processed(buffer);
         ser.serialize(&state_);
+    }
     return ser.processed(buffer);
 }
 
